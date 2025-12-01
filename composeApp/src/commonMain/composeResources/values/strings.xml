@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Live Voice Translator</string>
+    <string name="conservation">Conservation</string>
+    <string name="translate">Translate</string>
+    <string name="camera">Camera</string>
+    <string name="phrases">Phrases</string>
+    <string name="menu">Menu</string>
+    <string name="pro">Pro</string>
+</resources>
