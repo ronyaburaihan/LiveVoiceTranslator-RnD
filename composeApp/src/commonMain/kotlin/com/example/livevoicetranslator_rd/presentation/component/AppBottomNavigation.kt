@@ -50,7 +50,14 @@ import com.example.livevoicetranslator_rd.presentation.theme.PrimaryBrush
 import livevoicetranslatorrd.composeapp.generated.resources.Res
 import livevoicetranslatorrd.composeapp.generated.resources.camera
 import livevoicetranslatorrd.composeapp.generated.resources.conservation
+import livevoicetranslatorrd.composeapp.generated.resources.ic_camera
+import livevoicetranslatorrd.composeapp.generated.resources.ic_camera_selected
+import livevoicetranslatorrd.composeapp.generated.resources.ic_conversation
+import livevoicetranslatorrd.composeapp.generated.resources.ic_conversation_selected
+import livevoicetranslatorrd.composeapp.generated.resources.ic_phrase
+import livevoicetranslatorrd.composeapp.generated.resources.ic_phrase_selected
 import livevoicetranslatorrd.composeapp.generated.resources.ic_translate
+import livevoicetranslatorrd.composeapp.generated.resources.ic_translate_selected
 import livevoicetranslatorrd.composeapp.generated.resources.phrases
 import livevoicetranslatorrd.composeapp.generated.resources.translate
 import org.jetbrains.compose.resources.DrawableResource
@@ -219,28 +226,28 @@ sealed class AppBottomNavItem(
     object Conservation : AppBottomNavItem(
         label = Res.string.conservation,
         route = ScreenRoute.Conservation,
-        selectedIcon = Res.drawable.ic_translate,
-        unselectedIcon = Res.drawable.ic_translate,
+        selectedIcon = Res.drawable.ic_conversation_selected,
+        unselectedIcon = Res.drawable.ic_conversation,
     )
 
     object Translate : AppBottomNavItem(
         label = Res.string.translate,
         route = ScreenRoute.Translate,
-        selectedIcon = Res.drawable.ic_translate,
+        selectedIcon = Res.drawable.ic_translate_selected,
         unselectedIcon = Res.drawable.ic_translate,
     )
 
     object Camera : AppBottomNavItem(
         label = Res.string.camera,
         route = ScreenRoute.Camera,
-        selectedIcon = Res.drawable.ic_translate,
-        unselectedIcon = Res.drawable.ic_translate,
+        selectedIcon = Res.drawable.ic_camera_selected,
+        unselectedIcon = Res.drawable.ic_camera,
     )
 
     object Phrases : AppBottomNavItem(
         label = Res.string.phrases,
         route = ScreenRoute.Phrases,
-        selectedIcon = Res.drawable.ic_translate,
-        unselectedIcon = Res.drawable.ic_translate,
+        selectedIcon = Res.drawable.ic_phrase_selected,
+        unselectedIcon = Res.drawable.ic_phrase,
     )
 }
