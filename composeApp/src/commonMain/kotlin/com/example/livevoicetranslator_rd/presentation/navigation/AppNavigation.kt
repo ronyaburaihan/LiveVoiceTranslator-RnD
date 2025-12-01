@@ -12,17 +12,36 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.toRoute
 import com.example.livevoicetranslator_rd.presentation.app.AppState
 import com.example.livevoicetranslator_rd.presentation.screen.main.MainScreen
+import com.example.livevoicetranslator_rd.presentation.screen.phrases.CategoryData
+import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhraseDetailScreen
+import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhrasesScreen
 import com.example.livevoicetranslator_rd.presentation.screen.premium.PremiumScreen
 import com.example.livevoicetranslator_rd.presentation.util.LocalAppState
 import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
 import com.example.livevoicetranslator_rd.presentation.util.LocalSnackBarHostState
 import com.example.livevoicetranslator_rd.presentation.util.appNavComposable
+import livevoicetranslatorrd.composeapp.generated.resources.Res
+import livevoicetranslatorrd.composeapp.generated.resources.ic_cat_accommodation
+import livevoicetranslatorrd.composeapp.generated.resources.ic_cat_airport
+import livevoicetranslatorrd.composeapp.generated.resources.ic_cat_basic
+import livevoicetranslatorrd.composeapp.generated.resources.ic_cat_emergency
+import livevoicetranslatorrd.composeapp.generated.resources.ic_cat_favourite
+import livevoicetranslatorrd.composeapp.generated.resources.ic_cat_others
+import livevoicetranslatorrd.composeapp.generated.resources.ic_cat_restaurant
+import livevoicetranslatorrd.composeapp.generated.resources.ic_cat_shopping
+import livevoicetranslatorrd.composeapp.generated.resources.ic_cat_tourism
+import livevoicetranslatorrd.composeapp.generated.resources.ic_cat_transport
+import livevoicetranslatorrd.composeapp.generated.resources.ic_cat_travel
+import livevoicetranslatorrd.composeapp.generated.resources.ic_cat_workplace
 
 @Composable
 fun AppNavigation(
@@ -71,6 +90,15 @@ fun AppNavHost(
         }
         appNavComposable<ScreenRoute.Premium> {
             PremiumScreen()
+        }
+        appNavComposable<ScreenRoute.Phrases> {
+            PhrasesScreen()
+        }
+        appNavComposable<ScreenRoute.PhraseDetail> { backStackEntry ->
+            val categoryTitle = backStackEntry.toRoute<ScreenRoute.PhraseDetail>().categoryTitle
+            PhraseDetailScreen(
+                categoryTitle = categoryTitle,
+            )
         }
     }
 }
