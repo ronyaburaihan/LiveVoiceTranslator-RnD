@@ -22,6 +22,7 @@ materialIconExtended = "1.7.3"
 room = "2.8.4"
 sqlite = "2.6.2"
 ksp = "2.2.20-2.0.2"
+mlkitTextRecognition = "16.0.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -73,6 +74,9 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 
 # Optional SQLite Wrapper available in version 2.8.0 and higher
 androidx-room-sqlite-wrapper = { module = "androidx.room:room-sqlite-wrapper", version.ref = "room" }
+
+#Ml kit
+mlkit-text-recognition = { group = "com.google.mlkit", name = "text-recognition", version.ref = "mlkitTextRecognition" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
