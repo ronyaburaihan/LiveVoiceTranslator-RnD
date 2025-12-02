@@ -21,6 +21,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.toRoute
 import com.example.livevoicetranslator_rd.presentation.app.AppState
 import com.example.livevoicetranslator_rd.presentation.screen.main.MainScreen
+import com.example.livevoicetranslator_rd.presentation.screen.onboard.OnBoardingScreenOne
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.CategoryData
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhraseDetailScreen
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhrasesScreen
@@ -85,6 +86,9 @@ fun AppNavHost(
         navController = navController,
         startDestination = initialRoute,
     ) {
+        appNavComposable<ScreenRoute.OnBoardingOne> {
+            OnBoardingScreenOne()
+        }
         appNavComposable<ScreenRoute.Main> {
             MainScreen()
         }

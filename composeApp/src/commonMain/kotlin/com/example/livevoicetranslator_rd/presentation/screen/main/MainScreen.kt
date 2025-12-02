@@ -30,6 +30,7 @@ import com.example.livevoicetranslator_rd.presentation.util.LocalAppState
 import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
 import com.example.livevoicetranslator_rd.presentation.util.appNavComposable
 import com.example.livevoicetranslator_rd.presentation.component.AppDrawer
+import com.example.livevoicetranslator_rd.presentation.screen.onboard.OnBoardingScreenOne
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.CategoryData
 import kotlinx.coroutines.launch
 import livevoicetranslatorrd.composeapp.generated.resources.Res
@@ -124,6 +125,7 @@ fun MainScreenContent(
                 }
                 appNavComposable<ScreenRoute.Phrases> {
                     PhrasesScreen()
+
                 }
             }
         }

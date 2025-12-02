@@ -2,12 +2,10 @@ package com.example.livevoicetranslator_rd.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -23,8 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.livevoicetranslator_rd.presentation.theme.dimens
 import com.example.livevoicetranslator_rd.presentation.theme.PrimaryBrush
+import com.example.livevoicetranslator_rd.presentation.theme.dimens
 import com.hashtag.generator.ai.post.writer.presentation.theme.TurnerAppTheme
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
@@ -42,7 +40,7 @@ fun PrimaryButton(
     disabledBackground: Color = MaterialTheme.colorScheme.surfaceVariant,
     containerBrush: Brush = PrimaryBrush,
     buttonHeight: Dp = dimens.buttonHeight,
-    cornerRadius: Dp = dimens.cornerRadiusSmall,
+    cornerRadius: Dp = dimens.cornerRadiusLarge,
     onClick: () -> Unit,
 ) {
     Box(
@@ -75,15 +73,15 @@ fun PrimaryButton(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    leftIcon?.let {
+                    leftIcon?.let { iconRes ->
                         Icon(
-                            painter = painterResource(leftIcon),
+                            painter = painterResource(resource = iconRes),
                             contentDescription = null,
-                            modifier = Modifier.size(dimens.smallIconSize)
+                            modifier = Modifier
+                                .size(dimens.smallIconSize)
                                 .padding(2.dp),
                             tint = Color.Unspecified
                         )
-                        Spacer(modifier = Modifier.width(10.dp))
                     }
 
                     Text(
@@ -93,16 +91,17 @@ fun PrimaryButton(
                         style = MaterialTheme.typography.titleSmall
                     )
 
-                    rightIcon?.let {
-                        Spacer(modifier = Modifier.width(10.dp))
+                    rightIcon?.let { iconRes ->
                         Icon(
-                            painter = painterResource(rightIcon),
+                            painter = painterResource(resource = iconRes),
                             contentDescription = null,
-                            modifier = Modifier.size(dimens.smallIconSize)
+                            modifier = Modifier
+                                .size(dimens.smallIconSize)
                                 .padding(2.dp),
                             tint = Color.Unspecified
                         )
                     }
+
                 }
             }
         )

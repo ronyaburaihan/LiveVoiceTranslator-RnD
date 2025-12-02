@@ -19,7 +19,7 @@ fun App() {
         AppNavigation(
             navController = navController,
             snackBarHostState = snackBarHostState,
-            initialRoute = ScreenRoute.Main,
+            initialRoute = ScreenRoute.OnBoardingOne,
             appState = AppState.Free
         )
     }

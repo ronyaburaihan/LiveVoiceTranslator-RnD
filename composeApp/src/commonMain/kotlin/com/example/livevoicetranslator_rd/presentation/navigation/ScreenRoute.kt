@@ -5,6 +5,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed class ScreenRoute {
+    @Serializable
+    object OnBoardingOne : ScreenRoute()
+
 
     @Serializable
     object Main : ScreenRoute()
@@ -28,4 +31,5 @@ sealed class ScreenRoute {
 
     @Serializable
     object Premium : ScreenRoute()
+
 }
