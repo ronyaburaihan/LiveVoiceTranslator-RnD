@@ -58,11 +58,17 @@ actual class OCRProcessor actual constructor() {
                         )
                     },
                     boundingBox = BoundingBox(
-                        left = block.boundingBox?.left?.toFloat() ?: 0f,
-                        top = block.boundingBox?.top?.toFloat() ?: 0f,
-                        right = block.boundingBox?.right?.toFloat() ?: 0f,
-                        bottom = block.boundingBox?.bottom?.toFloat() ?: 0f,
-                    )
+
+                        left = (block.boundingBox?.left?.toFloat() ?: 0f) / image.width.toFloat(),
+                        top = (block.boundingBox?.top?.toFloat() ?: 0f) / image.height.toFloat(),
+                        right = (block.boundingBox?.right?.toFloat() ?: 0f) / image.width.toFloat(),
+                        bottom = (block.boundingBox?.bottom?.toFloat() ?: 0f) / image.height.toFloat(),
+                    ),
+                    confidence = if (block.lines.isNotEmpty()) {
+                        block.lines.map { it.confidence }.average().toFloat()
+                    } else {
+                        0f
+                    }
                 )
             }
             Result.success(

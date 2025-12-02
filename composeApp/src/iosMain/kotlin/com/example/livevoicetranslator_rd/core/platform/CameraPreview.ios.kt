@@ -12,6 +12,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVCaptureVideoPreviewLayer
 import platform.AVFoundation.AVLayerVideoGravityResizeAspectFill
 import platform.UIKit.UIView
+import platform.darwin.dispatch_async
 import platform.darwin.dispatch_get_main_queue
 
 @OptIn(ExperimentalForeignApi::class)
@@ -28,6 +29,7 @@ actual fun CameraPreview(
             val containerView = UIView()
             val previewLayer = AVCaptureVideoPreviewLayer(session = session).apply {
                 videoGravity = AVLayerVideoGravityResizeAspectFill
+                frame = containerView.bounds // set initial frame
             }
             containerView.layer.addSublayer(previewLayer)
             previewLayerRef = previewLayer
@@ -38,7 +40,7 @@ actual fun CameraPreview(
             // Update frame to match view bounds
             previewLayerRef?.frame = view.bounds
 
-            // Start session if not running
+            // Ensure session is running
             if (!session.running) {
                 dispatch_async(dispatch_get_main_queue()) {
                     session.startRunning()

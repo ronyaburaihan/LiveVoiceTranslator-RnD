@@ -76,8 +76,9 @@ actual class OCRProcessor actual constructor() {
                                 left = CGRectGetMinX(boundingBox).toFloat(),
                                 top = CGRectGetMinY(boundingBox).toFloat(),
                                 right = CGRectGetMaxX(boundingBox).toFloat(),
-                                bottom = CGRectGetMaxY(boundingBox).toFloat()
-                            )
+                                bottom = 1.0f - CGRectGetMinY(boundingBox).toFloat()
+                            ),
+                            confidence = candidate.confidence
                         )
                     }
 

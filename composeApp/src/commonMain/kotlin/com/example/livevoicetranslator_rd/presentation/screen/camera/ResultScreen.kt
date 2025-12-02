@@ -1,94 +1,140 @@
 package com.example.livevoicetranslator_rd.presentation.screen.camera
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.livevoicetranslator_rd.domain.model.OCRResult
 
 @Composable
 fun ResultScreen(
+    imageBitmap: ImageBitmap?,
     ocrResult: OCRResult,
     onBack: () -> Unit,
-    imageBitmap: ImageBitmap? = null,
-    onTranslate: (String) -> Unit
+    onTranslate: (String) -> Unit = {}
 ) {
-    //var r by remember { mutableStateOf(ocrResult) }
-
     Scaffold(
-        modifier = Modifier.fillMaxSize()
-            .systemBarsPadding(),
+        modifier = Modifier.fillMaxSize(),
+        topBar = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                IconButton(onClick = onBack, modifier = Modifier.align(Alignment.TopStart)) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close",
+                        tint = Color.White
+                    )
+                }
+            }
+        },
+        bottomBar = {
+            CameraActionBar(
+                onSpeakClick = { /* TODO */ },
+                onCopyClick = { /* TODO */ },
+                onSaveClick = { /* TODO */ },
+                onShareClick = { /* TODO */ }
+            )
+        },
+        containerColor = Color.Black
     ) { paddingValues ->
-        Box(
-            modifier = Modifier.fillMaxSize()
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            imageBitmap?.let {
+            val screenWidth = maxWidth
+            val screenHeight = maxHeight
+            val density = LocalDensity.current
+
+            imageBitmap?.let { bitmap ->
+                // Calculate scale based on ContentScale.FillWidth
+                val imageAspect = bitmap.height.toFloat() / bitmap.width.toFloat()
+                val displayWidth = screenWidth.toPx(density)
+                val displayHeight = displayWidth * imageAspect
+
+                val scaleX = displayWidth / bitmap.width
+                val scaleY = displayHeight / bitmap.height
+
+                val offsetY = (screenHeight.toPx(density) - displayHeight) / 2f
+                val offsetX = 0f // FillWidth centers horizontally by default
+
+                // Display Image
                 Image(
-                    modifier = Modifier.fillMaxSize(),
-                    bitmap = imageBitmap,
-                    contentScale = ContentScale.Fit,
+                    bitmap = bitmap,
                     contentDescription = null,
-                )
-            }
-
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(16.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                OutlinedTextField(
-                    value = ocrResult.fullText,
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(
-                        color = Color.White
-                    ),
-                    onValueChange = { /*text = it*/ },
-                    modifier = Modifier.weight(1f),
-                    label = { Text("Recognized Text", color = Color.White) }
+                    contentScale = ContentScale.FillWidth,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
                 )
 
-                Spacer(modifier = Modifier.height(16.dp))
+                // Overlay OCR Blocks
+                ocrResult.blocks
+                    .filter { it.confidence > 0.45f }
+                    .forEach { block ->
+                    val box = block.boundingBox
 
-                Button(
-                    onClick = { onTranslate(ocrResult.fullText) },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Translate")
-                }
+                    // Bounding boxes are normalized (0-1), so multiply by display dimensions
+                    // Clamp values to ensure we don't exceed bounds
+                    val clampedLeft = box.left.coerceIn(0f, 1f)
+                    val clampedTop = box.top.coerceIn(0f, 1f)
+                    val clampedRight = box.right.coerceIn(0f, 1f)
+                    val clampedBottom = box.bottom.coerceIn(0f, 1f)
 
-                Spacer(modifier = Modifier.height(8.dp))
+                    val left = clampedLeft * displayWidth + offsetX
+                    val top = clampedTop * displayHeight + offsetY
+                    val boxWidth = (clampedRight - clampedLeft) * displayWidth
+                    val boxHeight = (clampedBottom - clampedTop) * displayHeight
 
-                Button(
-                    onClick = onBack,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Retake")
+                    // Draw OCR block text at exact image coordinates
+                    Text(
+                        text = block.text,
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 10.sp),
+                        modifier = Modifier
+                            .offset(
+                                x = with(density) { left.toDp() },
+                                y = with(density) { top.toDp() }
+                            )
+                            .size(
+                                width = with(density) { boxWidth.toDp() },
+                                height = with(density) { boxHeight.toDp() }
+                            )
+                            .background(Color.Black.copy(alpha = 0.3f))
+                            .border(1.dp, Color.Red)
+                            .padding(2.dp) // slight padding inside the box
+                    )
                 }
             }
         }
     }
 }
+
+fun Dp.toPx(density: Density): Float = with(density) { this@toPx.toPx() }

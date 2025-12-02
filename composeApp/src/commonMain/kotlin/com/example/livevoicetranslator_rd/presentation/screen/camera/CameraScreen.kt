@@ -16,10 +16,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FlashOff
 import androidx.compose.material.icons.filled.FlashOn
+import androidx.compose.material.icons.filled.SwapHoriz
+import com.example.livevoicetranslator_rd.core.platform.toImageBitmap
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.TextFields
 import androidx.compose.material3.Button
@@ -59,7 +63,6 @@ import com.example.livevoicetranslator_rd.core.platform.rememberPermissionState
 import com.example.livevoicetranslator_rd.core.platform.toImageBitmap
 import com.example.livevoicetranslator_rd.domain.model.CameraImage
 import com.example.livevoicetranslator_rd.domain.model.ImageSource
-import com.example.livevoicetranslator_rd.domain.model.OCREngine
 import com.example.livevoicetranslator_rd.domain.model.OCRResult
 import com.example.livevoicetranslator_rd.presentation.theme.PrimaryBrush
 import com.example.livevoicetranslator_rd.presentation.theme.dimens
@@ -92,6 +95,7 @@ fun CameraScreen() {
         imagePicker.RegisterPicker { imageBytes ->
             imageByte = imageBytes
             scope.launch {
+                println("Trying to OCR: imageBytes: ${imageBytes.size}")
                 // We need to convert bytes to CameraImage or InputImage
                 // Since we don't have easy conversion here without platform code,
                 // we might need to move this logic to a helper or use ImageProcessor if it supports ByteArray
@@ -110,8 +114,10 @@ fun CameraScreen() {
                 val ocrResult = OCRProcessor()
                     .recognizeText(cameraImage, emptyList())
                 ocrResult.onSuccess {
+                    println("OCR Result: $it")
                     capturedOcrResult = it
                 }.onFailure {
+                    println("OCR Error: $it")
                     capturedOcrResult = null
                 }
             }
@@ -124,7 +130,9 @@ fun CameraScreen() {
 
         DisposableEffect(cameraController) {
             onDispose {
-                // cameraController.release()
+                // Stop preview when composable is disposed
+                // Use coroutine scope to call suspend function
+                scope.launch { cameraController.stopPreview() }
             }
         }
 
