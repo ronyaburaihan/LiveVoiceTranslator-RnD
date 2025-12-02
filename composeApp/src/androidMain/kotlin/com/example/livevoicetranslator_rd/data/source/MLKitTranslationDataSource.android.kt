@@ -53,10 +53,8 @@ actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
         targetLang: String
     ): String {
         val translator = getTranslator(sourceLang, targetLang)
-        if (translator == null) {
-            // Fallback: return original text if translation client unavailable
+            ?: // Fallback: return original text if translation client unavailable
             return text
-        }
         return suspendCancellableCoroutine { cont ->
             translator.downloadModelIfNeeded()
                 .addOnSuccessListener {

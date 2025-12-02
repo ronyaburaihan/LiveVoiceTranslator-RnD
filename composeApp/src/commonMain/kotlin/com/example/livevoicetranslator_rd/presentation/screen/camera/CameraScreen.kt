@@ -56,6 +56,7 @@ import com.example.livevoicetranslator_rd.core.platform.OCRProcessor
 import com.example.livevoicetranslator_rd.core.platform.Permission
 import com.example.livevoicetranslator_rd.core.platform.rememberCameraController
 import com.example.livevoicetranslator_rd.core.platform.rememberPermissionState
+import com.example.livevoicetranslator_rd.core.platform.toImageBitmap
 import com.example.livevoicetranslator_rd.domain.model.CameraImage
 import com.example.livevoicetranslator_rd.domain.model.ImageSource
 import com.example.livevoicetranslator_rd.presentation.theme.PrimaryBrush
@@ -69,6 +70,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun CameraScreen() {
     val cameraPermissionState = rememberPermissionState(Permission.CAMERA)
+    var imageByte by remember { mutableStateOf<ByteArray?>(null) }
 
     LaunchedEffect(Unit) {
         if (!cameraPermissionState.isGranted) {
@@ -86,6 +88,7 @@ fun CameraScreen() {
         val imagePicker =
             remember { com.example.livevoicetranslator_rd.core.platform.ImagePicker() }
         imagePicker.RegisterPicker { imageBytes ->
+            imageByte = imageBytes
             scope.launch {
                 // We need to convert bytes to CameraImage or InputImage
                 // Since we don't have easy conversion here without platform code,
@@ -126,6 +129,7 @@ fun CameraScreen() {
         if (capturedText != null) {
             ResultScreen(
                 initialText = capturedText!!,
+                imageBitmap = imageByte?.toImageBitmap(),
                 onBack = {
                     capturedText = null
                     scope.launch { cameraController.startPreview() }
@@ -164,6 +168,7 @@ fun CameraScreen() {
                         } else {
                             val result = cameraController.capturePhoto()
                             result.onSuccess { image ->
+                                imageByte = image.imageData
                                 // Perform OCR on captured image
                                 val ocrResult = OCRProcessor().recognizeText(image, emptyList())
                                 ocrResult.onSuccess {
@@ -251,7 +256,7 @@ private fun CameraScreenContent(
                     )
                 }
 
-                IconButton(onClick = { }) {
+                IconButton(onClick = { onPickImage() }) {
                     Icon(Icons.Default.Image, contentDescription = "Gallery", tint = Color.White)
                 }
 
