@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,76 +15,264 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.FlashOff
+import androidx.compose.material.icons.filled.FlashOn
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.TextFields
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.example.livevoicetranslator_rd.core.platform.ImagePicker
-import com.example.livevoicetranslator_rd.core.platform.toImageBitmap
+import com.example.livevoicetranslator_rd.core.platform.CameraController
+import com.example.livevoicetranslator_rd.core.platform.CameraPreview
+import com.example.livevoicetranslator_rd.core.platform.FlashMode
+import com.example.livevoicetranslator_rd.core.platform.OCRProcessor
+import com.example.livevoicetranslator_rd.core.platform.Permission
+import com.example.livevoicetranslator_rd.core.platform.rememberCameraController
+import com.example.livevoicetranslator_rd.core.platform.rememberPermissionState
+import com.example.livevoicetranslator_rd.domain.model.CameraImage
+import com.example.livevoicetranslator_rd.domain.model.ImageSource
 import com.example.livevoicetranslator_rd.presentation.theme.PrimaryBrush
 import com.example.livevoicetranslator_rd.presentation.theme.dimens
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import livevoicetranslatorrd.composeapp.generated.resources.Res
 import livevoicetranslatorrd.composeapp.generated.resources.ic_upload
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun CameraScreen() {
+    val cameraPermissionState = rememberPermissionState(Permission.CAMERA)
 
-    val imagePicker = remember { ImagePicker() }
-    var pickedImage by remember { mutableStateOf<ByteArray?>(null) }
-
-    imagePicker.RegisterPicker { imageBytes ->
-        pickedImage = imageBytes
-        println("Compressed bytes: ${pickedImage?.size}")
+    LaunchedEffect(Unit) {
+        if (!cameraPermissionState.isGranted) {
+            cameraPermissionState.launchPermissionRequest()
+        }
     }
 
-    CameraScreenContent(
-        pickedImage = pickedImage,
-        onPickImage = imagePicker::pickImage,
-    )
+    if (cameraPermissionState.isGranted) {
+        val cameraController = rememberCameraController()
+        val scope = rememberCoroutineScope()
+        var capturedText by remember { mutableStateOf<String?>(null) }
+        var isLiveMode by remember { mutableStateOf(false) }
+        var detectedText by remember { mutableStateOf("") }
+
+        val imagePicker =
+            remember { com.example.livevoicetranslator_rd.core.platform.ImagePicker() }
+        imagePicker.RegisterPicker { imageBytes ->
+            scope.launch {
+                // We need to convert bytes to CameraImage or InputImage
+                // Since we don't have easy conversion here without platform code,
+                // we might need to move this logic to a helper or use ImageProcessor if it supports ByteArray
+                // For now, let's try to use OCRProcessor directly if we can create InputImage from bytes (Android)
+                // But this is common code.
+                // We should add `recognizeTextFromBytes` to OCRProcessor?
+                // Or just use the existing recognizeText(CameraImage)
+
+                val cameraImage = CameraImage(
+                    imageData = imageBytes,
+                    width = 0, // Unknown
+                    height = 0, // Unknown
+                    source = ImageSource.GALLERY
+                )
+
+                val ocrResult = OCRProcessor()
+                    .recognizeText(cameraImage, emptyList())
+                ocrResult.onSuccess {
+                    capturedText = it.fullText
+                }.onFailure {
+                    capturedText = "OCR Failed"
+                }
+            }
+        }
+
+        LaunchedEffect(cameraController) {
+            cameraController.initialize()
+            cameraController.startPreview()
+        }
+
+        DisposableEffect(cameraController) {
+            onDispose {
+                // cameraController.release()
+            }
+        }
+
+        if (capturedText != null) {
+            ResultScreen(
+                initialText = capturedText!!,
+                onBack = {
+                    capturedText = null
+                    scope.launch { cameraController.startPreview() }
+                },
+                onTranslate = { text ->
+                    // Handle translation navigation or logic
+                    println("Translate: $text")
+                }
+            )
+        } else {
+            CameraScreenContent(
+                cameraController = cameraController,
+                isLiveMode = isLiveMode,
+                detectedText = detectedText,
+                onToggleLiveMode = {
+                    isLiveMode = !isLiveMode
+                    scope.launch {
+                        if (isLiveMode) {
+                            cameraController.startLiveMode { text ->
+                                detectedText = text
+                            }
+                        } else {
+                            cameraController.stopLiveMode()
+                            detectedText = ""
+                        }
+                    }
+                },
+                onPickImage = {
+                    imagePicker.pickImage()
+                },
+                scope = scope,
+                onCapture = {
+                    scope.launch {
+                        if (isLiveMode && detectedText.isNotEmpty()) {
+                            capturedText = detectedText
+                        } else {
+                            val result = cameraController.capturePhoto()
+                            result.onSuccess { image ->
+                                // Perform OCR on captured image
+                                val ocrResult = OCRProcessor().recognizeText(image, emptyList())
+                                ocrResult.onSuccess {
+                                    capturedText = it.fullText
+                                }.onFailure {
+                                    capturedText = "OCR Failed"
+                                }
+                            }
+                        }
+                    }
+                }
+            )
+        }
+    } else {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Text("Camera permission required")
+            Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
+                Text("Grant Permission")
+            }
+        }
+    }
 }
 
 @Composable
 private fun CameraScreenContent(
-    pickedImage: ByteArray?,
+    cameraController: CameraController,
+    isLiveMode: Boolean,
+    detectedText: String,
+    scope: CoroutineScope,
     onPickImage: () -> Unit,
+    onToggleLiveMode: () -> Unit,
+    onCapture: () -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize().systemBarsPadding(),
     ) { paddingValues ->
-        Column(
-            modifier = Modifier.fillMaxSize()
-                .padding(paddingValues)
-                .padding(horizontal = dimens.horizontalPadding)
-                .verticalScroll(rememberScrollState())
-        ) {
-            Spacer(modifier = Modifier.height(dimens.verticalPadding))
-
-            ImagePickerLayout(
-                modifier = Modifier.fillMaxWidth(),
-                title = "Pick Image",
-                imageBitmap = pickedImage?.toImageBitmap(),
-                onPickImage = onPickImage
+        Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+            CameraPreview(
+                controller = cameraController,
+                modifier = Modifier.fillMaxSize()
             )
+
+            // Overlay for detected text
+            if (isLiveMode && detectedText.isNotEmpty()) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.TopCenter)
+                        .background(Color.Black.copy(alpha = 0.5f))
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = detectedText,
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+
+            // Controls
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.BottomCenter)
+                    .padding(24.dp)
+                    .background(Color.Black.copy(alpha = 0.3f), RoundedCornerShape(16.dp))
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                val flashMode by cameraController.flashState.collectAsState()
+                IconButton(
+                    onClick = {
+                        scope.launch { cameraController.toggleFlash() }
+                    }
+                ) {
+                    Icon(
+                        imageVector = when (flashMode) {
+                            FlashMode.ON -> Icons.Default.FlashOn
+                            FlashMode.AUTO -> Icons.Default.FlashOn // Use same icon or different
+                            FlashMode.OFF -> Icons.Default.FlashOff
+                        },
+                        contentDescription = "Flash",
+                        tint = if (flashMode == FlashMode.OFF) Color.White else Color.Yellow
+                    )
+                }
+
+                IconButton(onClick = { }) {
+                    Icon(Icons.Default.Image, contentDescription = "Gallery", tint = Color.White)
+                }
+
+                IconButton(
+                    onClick = onCapture,
+                    modifier = Modifier
+                        .height(64.dp)
+                        .width(64.dp)
+                        .background(Color.White, androidx.compose.foundation.shape.CircleShape)
+                ) {
+                    Icon(Icons.Default.Camera, contentDescription = "Capture", tint = Color.Black)
+                }
+
+                IconButton(onClick = onToggleLiveMode) {
+                    Icon(
+                        imageVector = if (isLiveMode) Icons.Default.TextFields else Icons.Default.Camera,
+                        contentDescription = "Toggle Live Mode",
+                        tint = if (isLiveMode) MaterialTheme.colorScheme.primary else Color.White
+                    )
+                }
+            }
         }
     }
 }
