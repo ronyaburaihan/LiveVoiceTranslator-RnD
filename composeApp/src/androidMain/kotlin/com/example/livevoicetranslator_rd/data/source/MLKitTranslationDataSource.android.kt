@@ -10,13 +10,24 @@ import kotlin.coroutines.resumeWithException
 
 actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
 
-    private val languageIdentifier = LanguageIdentification.getClient(
-        LanguageIdentificationOptions.Builder().build()
-    )
+    // Lazy initialization with safe fallback for language identification
+    private fun getLanguageIdentifier() = try {
+        LanguageIdentification.getClient(
+            LanguageIdentificationOptions.Builder().build()
+        )
+    } catch (e: IllegalStateException) {
+        null // Fallback: will return "und" (undetermined)
+    }
 
     actual override suspend fun detectLanguage(text: String): String =
         suspendCancellableCoroutine { cont ->
-            languageIdentifier.identifyLanguage(text)
+            val identifier = getLanguageIdentifier()
+            if (identifier == null) {
+                // No ML Kit delegate available, return "und" (undetermined)
+                cont.resume("und")
+                return@suspendCancellableCoroutine
+            }
+            identifier.identifyLanguage(text)
                 .addOnSuccessListener { languageCode ->
                     cont.resume(languageCode)
                 }
@@ -25,17 +36,27 @@ actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
                 }
         }
 
+    // Lazy initialization for translator with safe fallback
+    private fun getTranslator(sourceLang: String, targetLang: String) = try {
+        val options = TranslatorOptions.Builder()
+            .setSourceLanguage(sourceLang)
+            .setTargetLanguage(targetLang)
+            .build()
+        Translation.getClient(options)
+    } catch (e: IllegalStateException) {
+        null
+    }
+
     actual override suspend fun translate(
         text: String,
         sourceLang: String,
         targetLang: String
     ): String {
-        val options = TranslatorOptions.Builder()
-            .setSourceLanguage(sourceLang)
-            .setTargetLanguage(targetLang)
-            .build()
-        val translator = Translation.getClient(options)
-
+        val translator = getTranslator(sourceLang, targetLang)
+        if (translator == null) {
+            // Fallback: return original text if translation client unavailable
+            return text
+        }
         return suspendCancellableCoroutine { cont ->
             translator.downloadModelIfNeeded()
                 .addOnSuccessListener {
