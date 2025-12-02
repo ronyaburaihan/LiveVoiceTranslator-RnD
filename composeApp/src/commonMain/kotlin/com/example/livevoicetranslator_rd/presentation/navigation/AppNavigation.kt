@@ -19,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import com.example.livevoicetranslator_rd.presentation.app.AppState
 import com.example.livevoicetranslator_rd.presentation.screen.main.MainScreen
 import com.example.livevoicetranslator_rd.presentation.screen.premium.PremiumScreen
+import com.example.livevoicetranslator_rd.presentation.screen.translate.TranslateScreen
 import com.example.livevoicetranslator_rd.presentation.util.LocalAppState
 import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
 import com.example.livevoicetranslator_rd.presentation.util.LocalSnackBarHostState

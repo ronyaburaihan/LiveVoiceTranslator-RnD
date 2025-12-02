@@ -1,3 +1,4 @@
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -55,6 +56,10 @@ kotlin {
             // Kotlinx Coroutines
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.coroutines.play.services)
+
+            // Translate
+            implementation(libs.language.id.common)
+            implementation(libs.translate)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
