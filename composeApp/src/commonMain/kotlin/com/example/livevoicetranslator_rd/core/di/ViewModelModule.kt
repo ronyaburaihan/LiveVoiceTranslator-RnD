@@ -1,6 +1,6 @@
 package com.example.livevoicetranslator_rd.core.di
 
-import com.example.kmppractice.presentation.translate.TranslateViewModel
+import com.example.livevoicetranslator_rd.presentation.screen.translate.TranslateViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 

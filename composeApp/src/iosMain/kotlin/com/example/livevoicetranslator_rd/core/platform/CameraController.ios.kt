@@ -33,9 +33,15 @@ import platform.darwin.dispatch_get_main_queue
 import platform.darwin.dispatch_queue_create
 import kotlin.coroutines.resume
 
+// -------------------------
+// NSData extension
+// -------------------------
+import kotlinx.cinterop.*
+import platform.Foundation.*
+
 @OptIn(ExperimentalForeignApi::class)
 actual class CameraController {
-    private val _previewState = MutableStateFlow(CameraPreviewState.Idle)
+    private val _previewState = MutableStateFlow<CameraPreviewState>(CameraPreviewState.Idle)
     actual val previewState: StateFlow<CameraPreviewState> = _previewState
 
     private val _flashState = MutableStateFlow(FlashMode.OFF)
@@ -83,7 +89,7 @@ actual class CameraController {
                 return
             }
 
-            val bytes = fileData.toByteArray()
+            val bytes = fileData.toByteArrayy()
 
             val image = CameraImage(
                 imageData = bytes,
@@ -143,7 +149,7 @@ actual class CameraController {
                     session.addOutput(videoOutput)
                 }
 
-                _previewState.value = CameraPreviewState.Idle
+                _previewState.value = CameraPreviewState.Ready
             } catch (e: Exception) {
                 println("Error initializing camera: ${e.message}")
             }
@@ -228,4 +234,19 @@ fun dispatch_async(queue: platform.darwin.dispatch_queue_t, block: () -> Unit) {
     platform.darwin.dispatch_async(queue) {
         block()
     }
+}
+
+@OptIn(ExperimentalForeignApi::class)
+fun NSData.toByteArrayy(): ByteArray {
+    val length = this.length.toInt()
+    val byteArray = ByteArray(length)
+    if (length == 0) return byteArray
+
+    // Use memScoped and reinterpret<ByteVar>() to read the bytes
+    this.bytes?.reinterpret<ByteVar>()?.let { ptr ->
+        for (i in 0 until length) {
+            byteArray[i] = ptr[i]
+        }
+    }
+    return byteArray
 }

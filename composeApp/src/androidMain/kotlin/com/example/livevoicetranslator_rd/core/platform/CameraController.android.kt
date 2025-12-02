@@ -2,7 +2,6 @@ package com.example.livevoicetranslator_rd.core.platform
 
 import com.example.livevoicetranslator_rd.domain.model.CameraImage
 import kotlinx.coroutines.flow.StateFlow
-
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -54,7 +53,7 @@ actual class CameraController(
         val preview = Preview.Builder().build()
 
         previewView?.let { view ->
-            preview.setSurfaceProvider(view.surfaceProvider)
+            preview.surfaceProvider = view.surfaceProvider
         }
 
         imageCapture = ImageCapture.Builder()

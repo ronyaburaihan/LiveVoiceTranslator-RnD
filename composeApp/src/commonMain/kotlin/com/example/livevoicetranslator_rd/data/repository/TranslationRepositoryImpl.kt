@@ -4,13 +4,13 @@ import com.example.livevoicetranslator_rd.data.mapper.mapToResult
 import com.example.livevoicetranslator_rd.data.source.CloudTranslationDataSource
 import com.example.livevoicetranslator_rd.data.source.HistoryDataSource
 import com.example.livevoicetranslator_rd.data.source.LocalCacheDataSource
-import com.example.livevoicetranslator_rd.data.source.MLKitTranslationDataSource
+import com.example.livevoicetranslator_rd.data.source.MLTranslator
 import com.example.livevoicetranslator_rd.domain.model.TranslationRequest
 import com.example.livevoicetranslator_rd.domain.model.TranslationResult
 import com.example.livevoicetranslator_rd.domain.repository.TranslationRepository
 
 class TranslationRepositoryImpl(
-    private val mlKit: MLKitTranslationDataSource,
+    private val mlKit: MLTranslator,
     private val cloud: CloudTranslationDataSource,
     private val cache: LocalCacheDataSource,
     private val history: HistoryDataSource

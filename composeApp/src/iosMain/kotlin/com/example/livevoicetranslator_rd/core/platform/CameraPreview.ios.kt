@@ -1,14 +1,18 @@
 package com.example.livevoicetranslator_rd.core.platform
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.interop.UIKitView
+import androidx.compose.ui.viewinterop.UIKitView
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.AVFoundation.AVCaptureVideoPreviewLayer
 import platform.AVFoundation.AVLayerVideoGravityResizeAspectFill
 import platform.UIKit.UIView
-import platform.QuartzCore.CATransaction
+import platform.darwin.dispatch_get_main_queue
 
 @OptIn(ExperimentalForeignApi::class)
 @Composable
@@ -17,24 +21,33 @@ actual fun CameraPreview(
     modifier: Modifier
 ) {
     val session = controller.session
-    
+    var previewLayerRef by remember { mutableStateOf<AVCaptureVideoPreviewLayer?>(null) }
+
     UIKitView(
         factory = {
-            val view = UIView()
-            val previewLayer = AVCaptureVideoPreviewLayer(session = session)
-            previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
-            view.layer.addSublayer(previewLayer)
-            view
+            val containerView = UIView()
+            val previewLayer = AVCaptureVideoPreviewLayer(session = session).apply {
+                videoGravity = AVLayerVideoGravityResizeAspectFill
+            }
+            containerView.layer.addSublayer(previewLayer)
+            previewLayerRef = previewLayer
+            containerView
         },
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         update = { view ->
-            val layer = view.layer.sublayers?.firstOrNull() as? AVCaptureVideoPreviewLayer
-            layer?.frame = view.bounds
-            // Ensure animations are disabled for frame updates to avoid glitches
-            CATransaction.begin()
-            CATransaction.setDisableActions(true)
-            layer?.frame = view.bounds
-            CATransaction.commit()
+            // Update frame to match view bounds
+            previewLayerRef?.frame = view.bounds
+
+            // Start session if not running
+            if (!session.running) {
+                dispatch_async(dispatch_get_main_queue()) {
+                    session.startRunning()
+                }
+            }
+        },
+        onRelease = { view ->
+            previewLayerRef?.removeFromSuperlayer()
+            previewLayerRef = null
         }
     )
 }

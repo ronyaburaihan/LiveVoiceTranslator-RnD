@@ -1,4 +1,4 @@
-package com.example.kmppractice.presentation.translate
+package com.example.livevoicetranslator_rd.presentation.screen.translate
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
