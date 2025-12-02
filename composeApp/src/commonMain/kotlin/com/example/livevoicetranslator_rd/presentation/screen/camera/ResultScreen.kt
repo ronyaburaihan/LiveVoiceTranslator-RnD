@@ -26,15 +26,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import com.example.livevoicetranslator_rd.domain.model.OCRResult
 
 @Composable
 fun ResultScreen(
-    initialText: String,
+    ocrResult: OCRResult,
     onBack: () -> Unit,
     imageBitmap: ImageBitmap? = null,
     onTranslate: (String) -> Unit
 ) {
-    var text by remember { mutableStateOf(initialText) }
+    //var r by remember { mutableStateOf(ocrResult) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize()
@@ -61,11 +62,11 @@ fun ResultScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 OutlinedTextField(
-                    value = text,
+                    value = ocrResult.fullText,
                     textStyle = MaterialTheme.typography.bodyLarge.copy(
                         color = Color.White
                     ),
-                    onValueChange = { text = it },
+                    onValueChange = { /*text = it*/ },
                     modifier = Modifier.weight(1f),
                     label = { Text("Recognized Text", color = Color.White) }
                 )
@@ -73,7 +74,7 @@ fun ResultScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Button(
-                    onClick = { onTranslate(text) },
+                    onClick = { onTranslate(ocrResult.fullText) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Translate")

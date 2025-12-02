@@ -59,6 +59,8 @@ import com.example.livevoicetranslator_rd.core.platform.rememberPermissionState
 import com.example.livevoicetranslator_rd.core.platform.toImageBitmap
 import com.example.livevoicetranslator_rd.domain.model.CameraImage
 import com.example.livevoicetranslator_rd.domain.model.ImageSource
+import com.example.livevoicetranslator_rd.domain.model.OCREngine
+import com.example.livevoicetranslator_rd.domain.model.OCRResult
 import com.example.livevoicetranslator_rd.presentation.theme.PrimaryBrush
 import com.example.livevoicetranslator_rd.presentation.theme.dimens
 import kotlinx.coroutines.CoroutineScope
@@ -81,7 +83,7 @@ fun CameraScreen() {
     if (cameraPermissionState.isGranted) {
         val cameraController = rememberCameraController()
         val scope = rememberCoroutineScope()
-        var capturedText by remember { mutableStateOf<String?>(null) }
+        var capturedOcrResult by remember { mutableStateOf<OCRResult?>(null) }
         var isLiveMode by remember { mutableStateOf(false) }
         var detectedText by remember { mutableStateOf("") }
 
@@ -108,9 +110,9 @@ fun CameraScreen() {
                 val ocrResult = OCRProcessor()
                     .recognizeText(cameraImage, emptyList())
                 ocrResult.onSuccess {
-                    capturedText = it.fullText
+                    capturedOcrResult = it
                 }.onFailure {
-                    capturedText = "OCR Failed"
+                    capturedOcrResult = null
                 }
             }
         }
@@ -126,12 +128,12 @@ fun CameraScreen() {
             }
         }
 
-        if (capturedText != null) {
+        if (capturedOcrResult != null) {
             ResultScreen(
-                initialText = capturedText!!,
+                ocrResult = capturedOcrResult!!,
                 imageBitmap = imageByte?.toImageBitmap(),
                 onBack = {
-                    capturedText = null
+                    capturedOcrResult = null
                     scope.launch { cameraController.startPreview() }
                 },
                 onTranslate = { text ->
@@ -143,7 +145,7 @@ fun CameraScreen() {
             CameraScreenContent(
                 cameraController = cameraController,
                 isLiveMode = isLiveMode,
-                detectedText = detectedText,
+                capturedOcrResult = capturedOcrResult,
                 onToggleLiveMode = {
                     isLiveMode = !isLiveMode
                     scope.launch {
@@ -163,19 +165,15 @@ fun CameraScreen() {
                 scope = scope,
                 onCapture = {
                     scope.launch {
-                        if (isLiveMode && detectedText.isNotEmpty()) {
-                            capturedText = detectedText
-                        } else {
-                            val result = cameraController.capturePhoto()
-                            result.onSuccess { image ->
-                                imageByte = image.imageData
-                                // Perform OCR on captured image
-                                val ocrResult = OCRProcessor().recognizeText(image, emptyList())
-                                ocrResult.onSuccess {
-                                    capturedText = it.fullText
-                                }.onFailure {
-                                    capturedText = "OCR Failed"
-                                }
+                        val result = cameraController.capturePhoto()
+                        result.onSuccess { image ->
+                            imageByte = image.imageData
+                            // Perform OCR on captured image
+                            val ocrResult = OCRProcessor().recognizeText(image, emptyList())
+                            ocrResult.onSuccess {
+                                capturedOcrResult = it
+                            }.onFailure {
+                                capturedOcrResult = null
                             }
                         }
                     }
@@ -196,7 +194,7 @@ fun CameraScreen() {
 private fun CameraScreenContent(
     cameraController: CameraController,
     isLiveMode: Boolean,
-    detectedText: String,
+    capturedOcrResult: OCRResult?,
     scope: CoroutineScope,
     onPickImage: () -> Unit,
     onToggleLiveMode: () -> Unit,
@@ -212,7 +210,7 @@ private fun CameraScreenContent(
             )
 
             // Overlay for detected text
-            if (isLiveMode && detectedText.isNotEmpty()) {
+            if (isLiveMode && capturedOcrResult?.fullText?.isNotEmpty() == true) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -221,7 +219,7 @@ private fun CameraScreenContent(
                         .padding(16.dp)
                 ) {
                     Text(
-                        text = detectedText,
+                        text = capturedOcrResult.fullText,
                         color = Color.White,
                         style = MaterialTheme.typography.bodyMedium
                     )
