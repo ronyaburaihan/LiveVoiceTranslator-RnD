@@ -15,9 +15,9 @@ actual class MLKitTranslationDataSource actual constructor() :
     }
 
     actual override suspend fun downloadModelIfNeeded(
-        source: String,
-        target: String
-    ) {
+        sourceLang: String,
+        targetLang: String
+    ): Boolean {
         TODO("Not yet implemented")
     }
 }

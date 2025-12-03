@@ -60,6 +60,7 @@ kotlin {
             // Translate
             implementation(libs.language.id)
             implementation(libs.translate)
+            implementation(libs.play.services.language.id)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

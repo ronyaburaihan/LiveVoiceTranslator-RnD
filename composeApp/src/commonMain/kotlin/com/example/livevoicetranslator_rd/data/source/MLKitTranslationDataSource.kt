@@ -7,5 +7,5 @@ expect class MLKitTranslationDataSource() : MLTranslator {
         sourceLang: String,
         targetLang: String
     ): String
-    override suspend fun downloadModelIfNeeded(source: String, target: String)
+    override suspend fun downloadModelIfNeeded(sourceLang: String, targetLang: String): Boolean
 }

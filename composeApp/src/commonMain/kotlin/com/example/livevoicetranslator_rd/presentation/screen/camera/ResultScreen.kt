@@ -55,12 +55,12 @@ fun ResultScreen(
             }
         },
         bottomBar = {
-            CameraActionBar(
-                onSpeakClick = { /* TODO */ },
-                onCopyClick = { /* TODO */ },
-                onSaveClick = { /* TODO */ },
-                onShareClick = { /* TODO */ }
-            )
+//            CameraActionBar(
+//                onSpeakClick = { /* TODO */ },
+//                onCopyClick = { /* TODO */ },
+//                onSaveClick = { /* TODO */ },
+//                onShareClick = { /* TODO */ }
+//            )
         },
         containerColor = Color.Black
     ) { paddingValues ->
