@@ -20,7 +20,8 @@ class ConversationViewModel(
     private val startSpeechRecognitionUseCase: StartSpeechRecognitionUseCase,
     private val stopSpeechRecognitionUseCase: StopSpeechRecognitionUseCase,
     private val requestPermissionUseCase: RequestPermissionUseCase,
-    private val copyTranscriptUseCase: CopyTranscriptUseCase
+    private val copyTranscriptUseCase: CopyTranscriptUseCase,
+    private val startSpeek: StartS
 ) : ViewModel() {
 
     val transcriptState = speechToText.transcriptState

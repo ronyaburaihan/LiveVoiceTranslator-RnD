@@ -20,7 +20,12 @@ actual val platformModule = module {
             startSpeechRecognitionUseCase = get(),
             stopSpeechRecognitionUseCase = get(),
             requestPermissionUseCase = get(),
-            copyTranscriptUseCase = get()
+            copyTranscriptUseCase = get(),
+            startSpeek = get(),
+            releaseTTSUseCase = get(),
+            initializeTTSUseCase = get()
+
+
         )
     }
 }
