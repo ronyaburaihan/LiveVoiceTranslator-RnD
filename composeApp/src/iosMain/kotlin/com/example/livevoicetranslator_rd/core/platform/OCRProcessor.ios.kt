@@ -113,7 +113,7 @@ actual class OCRProcessor actual constructor() {
                             OCRResult(
                                 fullText = fullText,
                                 blocks = blocks,
-                                confidence = if (blocks.isNotEmpty()) {
+                                overallConfidence = if (blocks.isNotEmpty()) {
                                     blocks.map {
                                         it.lines.firstOrNull()?.confidence ?: 0f
                                     }.average().toFloat()
