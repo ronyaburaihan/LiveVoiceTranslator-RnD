@@ -11,10 +11,30 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.usePinned
 import platform.CoreGraphics.CGRectGetMaxX
+import platform.CoreGraphics.CGRectGetMaxY
 import platform.CoreGraphics.CGRectGetMinX
 import platform.CoreGraphics.CGRectGetMinY
 import platform.Foundation.NSData
 import platform.Foundation.create
+import platform.NaturalLanguage.NLLanguageArabic
+import platform.NaturalLanguage.NLLanguageBengali
+import platform.NaturalLanguage.NLLanguageEnglish
+import platform.NaturalLanguage.NLLanguageHindi
+import platform.NaturalLanguage.NLLanguageIndonesian
+import platform.NaturalLanguage.NLLanguageJapanese
+import platform.NaturalLanguage.NLLanguageKorean
+import platform.NaturalLanguage.NLLanguagePersian
+import platform.NaturalLanguage.NLLanguagePolish
+import platform.NaturalLanguage.NLLanguagePortuguese
+import platform.NaturalLanguage.NLLanguageRecognizer
+import platform.NaturalLanguage.NLLanguageRussian
+import platform.NaturalLanguage.NLLanguageSimplifiedChinese
+import platform.NaturalLanguage.NLLanguageSpanish
+import platform.NaturalLanguage.NLLanguageTamil
+import platform.NaturalLanguage.NLLanguageThai
+import platform.NaturalLanguage.NLLanguageTraditionalChinese
+import platform.NaturalLanguage.NLLanguageTurkish
+import platform.NaturalLanguage.NLLanguageVietnamese
 import platform.UIKit.UIImage
 import platform.Vision.VNImageRequestHandler
 import platform.Vision.VNRecognizeTextRequest
@@ -52,13 +72,11 @@ actual class OCRProcessor actual constructor() {
                     }
 
                     val results = request?.results
-                    val observations =
-                        results as? List<VNRecognizedTextObservation> ?: emptyList()
+                    val observations = results as? List<VNRecognizedTextObservation> ?: emptyList()
 
                     val blocks = observations.mapNotNull { observation ->
-                        val candidate =
-                            observation.topCandidates(1.toULong()).firstOrNull()
-                                    as? VNRecognizedText ?: return@mapNotNull null
+                        val candidate = observation.topCandidates(1.toULong()).firstOrNull()
+                                as? VNRecognizedText ?: return@mapNotNull null
 
                         val boundingBox = observation.boundingBox
 
@@ -72,7 +90,7 @@ actual class OCRProcessor actual constructor() {
                             ),
                             boundingBox = BoundingBox(
                                 left = CGRectGetMinX(boundingBox).toFloat(),
-                                top = CGRectGetMinY(boundingBox).toFloat(),
+                                top = 1.0f - CGRectGetMaxY(boundingBox).toFloat(),
                                 right = CGRectGetMaxX(boundingBox).toFloat(),
                                 bottom = 1.0f - CGRectGetMinY(boundingBox).toFloat()
                             ),
@@ -82,15 +100,25 @@ actual class OCRProcessor actual constructor() {
 
                     val fullText = blocks.joinToString("\n") { it.text }
 
+                    val detectedLang = if (fullText.isNotEmpty()) {
+                        val recognizer = NLLanguageRecognizer()
+                        recognizer.processString(fullText)
+
+                        // Get the dominant language as a string
+                        recognizer.dominantLanguage
+                    } else null
+
                     continuation.resume(
                         Result.success(
                             OCRResult(
                                 fullText = fullText,
                                 blocks = blocks,
-                                confidence = blocks.map {
-                                    it.lines.firstOrNull()?.confidence ?: 0f
-                                }.average().toFloat(),
-                                detectedLanguage = null,
+                                confidence = if (blocks.isNotEmpty()) {
+                                    blocks.map {
+                                        it.lines.firstOrNull()?.confidence ?: 0f
+                                    }.average().toFloat()
+                                } else 0f,
+                                detectedLanguage = detectedLang,
                                 engine = OCREngine.VISION
                             )
                         )
@@ -98,10 +126,30 @@ actual class OCRProcessor actual constructor() {
                 }
 
                 request.recognitionLevel = VNRequestTextRecognitionLevelAccurate
-                if (language.isNotEmpty()) request.recognitionLanguages = listOf(language)
+
+                /*println("language: $language")
+
+                // Set recognition languages with proper locale codes
+                request.recognitionLanguages = when {
+                    language.isEmpty() -> listOf("en-US")
+                    language == "hi" -> listOf("hi-IN")
+                    language == "bn" -> listOf("bn-IN")
+                    language == "zh-Hans" -> listOf("zh-Hans")
+                    language == "zh-Hant" -> listOf("zh-Hant")
+                    language == "ar" -> listOf("ar")
+                    language == "ko" -> listOf("ko")
+                    language == "ja" -> listOf("ja")
+                    else -> listOf(language)
+                }
+
+                println("recognitionLanguages: ${request.recognitionLanguages}")*/
+
+                request.usesLanguageCorrection = true
+                request.automaticallyDetectsLanguage = true  // Disable to prevent conflicts
 
                 val handler = VNImageRequestHandler(
                     cGImage = uiImage.CGImage!!,
+                    orientation = uiImage.imageOrientation.value.toUInt(),
                     options = emptyMap<Any?, Any?>()
                 )
 

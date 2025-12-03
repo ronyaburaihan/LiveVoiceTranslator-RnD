@@ -148,7 +148,7 @@ fun ResultScreen(
                                     height = with(density) { boxHeight.toDp() }
                                 )
                                 .clip(RoundedCornerShape(2.dp))
-                                .background(Color.Black.copy(alpha = 0.3f))
+                                .background(Color.Black.copy(alpha = 0.7f))
                                 .padding(1.dp)
                         )
                     }
