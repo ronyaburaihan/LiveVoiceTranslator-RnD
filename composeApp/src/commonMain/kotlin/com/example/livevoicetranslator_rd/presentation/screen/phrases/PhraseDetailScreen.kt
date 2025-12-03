@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import com.example.livevoicetranslator_rd.presentation.component.AppTopBar
 import com.example.livevoicetranslator_rd.presentation.component.AppTopBarTitle
 import com.example.livevoicetranslator_rd.presentation.component.LanguageDropdown
+import com.example.livevoicetranslator_rd.presentation.component.LanguageDropdownConversation
 import com.example.livevoicetranslator_rd.presentation.component.PhraseCard
 import com.example.livevoicetranslator_rd.presentation.theme.dimens
 import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
