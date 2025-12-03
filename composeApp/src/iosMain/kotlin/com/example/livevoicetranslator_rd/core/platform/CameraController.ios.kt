@@ -125,6 +125,7 @@ actual class CameraController {
     // Initialize camera
     // -------------------------
     actual suspend fun initialize() {
+        session.beginConfiguration()
         session.sessionPreset = AVCaptureSessionPresetPhoto
 
         val discoverySession = AVCaptureDeviceDiscoverySession.discoverySessionWithDeviceTypes(
@@ -149,28 +150,11 @@ actual class CameraController {
                     session.addOutput(videoOutput)
                 }
 
+                session.commitConfiguration()
                 _previewState.value = CameraPreviewState.Ready
             } catch (e: Exception) {
                 println("Error initializing camera: ${e.message}")
-            }
-        }
-    }
-
-    // -------------------------
-    // Preview control
-    // -------------------------
-    actual suspend fun startPreview() {
-        if (!session.running) {
-            dispatch_async(cameraQueue) {
-                session.startRunning()
-            }
-        }
-    }
-
-    actual suspend fun stopPreview() {
-        if (session.running) {
-            dispatch_async(cameraQueue) {
-                session.stopRunning()
+                session.commitConfiguration() // Ensure commit is called even on error
             }
         }
     }
@@ -210,7 +194,9 @@ actual class CameraController {
     // Release resources
     // -------------------------
     actual suspend fun release() {
-        stopPreview()
+        if (session.isRunning()) {
+            session.stopRunning()
+        }
     }
 
     // -------------------------
@@ -224,6 +210,18 @@ actual class CameraController {
     actual suspend fun stopLiveMode() {
         isLiveMode = false
         onTextDetectedCallback = null
+    }
+
+    actual suspend fun startPreview() {
+        if (!session.isRunning()) {
+            session.startRunning()
+        }
+    }
+
+    actual suspend fun stopPreview() {
+        if (session.isRunning()) {
+            session.stopRunning()
+        }
     }
 }
 
