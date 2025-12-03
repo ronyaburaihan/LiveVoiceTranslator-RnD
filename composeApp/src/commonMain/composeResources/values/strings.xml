@@ -7,4 +7,8 @@
     <string name="menu">Menu</string>
     <string name="pro">Pro</string>
     <string name="get_started">Get Started</string>
+    <string name="continue_label">Continue</string>
+    <string name="on_boarding_description_1">Translate voice, text, and camera in real\ntime across 200+ languages.</string>
+    <string name="on_boarding_description_2">Have natural conversations with anyone\nusing two-way voice translation.</string>
+    <string name="on_boarding_description_3">Point your camera at signs, menus, or\ndocuments to get fast translations.</string>
 </resources>
