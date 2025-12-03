@@ -5,6 +5,7 @@ import com.example.livevoicetranslator_rd.data.source.CloudTranslationDataSource
 import com.example.livevoicetranslator_rd.data.source.HistoryDataSource
 import com.example.livevoicetranslator_rd.data.source.LocalCacheDataSource
 import com.example.livevoicetranslator_rd.data.source.MLTranslator
+import com.example.livevoicetranslator_rd.domain.model.LanguageDetectionResult
 import com.example.livevoicetranslator_rd.domain.model.TranslationRequest
 import com.example.livevoicetranslator_rd.domain.model.TranslationResult
 import com.example.livevoicetranslator_rd.domain.repository.TranslationRepository
@@ -22,7 +23,7 @@ class TranslationRepositoryImpl(
         cache.get(request)?.let { return it }
 
         // 2. Offline attempt using MLKit
-        val source = request.sourceLang ?: mlKit.detectLanguage(request.text)
+        val source = request.sourceLang ?: mlKit.detectLanguage(request.text).languageCode
 
         try {
             mlKit.downloadModelIfNeeded(source, request.targetLang)
@@ -73,7 +74,7 @@ class TranslationRepositoryImpl(
         }
     }
 
-    override suspend fun detectLanguage(text: String): String {
+    override suspend fun detectLanguage(text: String): LanguageDetectionResult {
         return mlKit.detectLanguage(text)
     }
 

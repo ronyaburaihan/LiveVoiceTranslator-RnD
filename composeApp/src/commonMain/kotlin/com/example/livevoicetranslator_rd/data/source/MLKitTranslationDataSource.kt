@@ -1,7 +1,9 @@
 package com.example.livevoicetranslator_rd.data.source
 
+import com.example.livevoicetranslator_rd.domain.model.LanguageDetectionResult
+
 expect class MLKitTranslationDataSource() : MLTranslator {
-    override suspend fun detectLanguage(text: String): String
+    override suspend fun detectLanguage(text: String): LanguageDetectionResult
     override suspend fun translate(
         text: String,
         sourceLang: String,

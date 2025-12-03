@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.livevoicetranslator_rd.core.platform.ClipboardService
 import com.example.livevoicetranslator_rd.core.platform.ShareService
 import com.example.livevoicetranslator_rd.core.platform.TTSService
+import com.example.livevoicetranslator_rd.domain.model.LanguageDetectionResult
 import com.example.livevoicetranslator_rd.domain.model.TranslationRequest
 import com.example.livevoicetranslator_rd.domain.model.TranslationResult
 import com.example.livevoicetranslator_rd.domain.usecase.DetectLanguageUseCase
@@ -89,13 +90,20 @@ class TranslateViewModel(
 
         _uiState.update { it.copy(isLoading = true, error = null) }
 
-        val detectedLang = try {
+        val detectedLangResult = try {
             detectLanguageUseCase(text)
         } catch (e: Exception) {
             "und"
-        }
+        } as LanguageDetectionResult
 
-        _uiState.update { it.copy(detectedLanguage = detectedLang) }
+        _uiState.update {
+            it.copy(
+                languageDetectionResult = LanguageDetectionResult(
+                    languageCode = detectedLangResult.languageCode,
+                    confidence = detectedLangResult.confidence
+                )
+            )
+        }
 
         val targetLang = uiState.value.targetLang
 
@@ -103,7 +111,7 @@ class TranslateViewModel(
             val result = translateTextUseCase(
                 TranslationRequest(
                     text = text,
-                    sourceLang = detectedLang,
+                    sourceLang = detectedLangResult.languageCode,
                     targetLang = targetLang
                 )
             )

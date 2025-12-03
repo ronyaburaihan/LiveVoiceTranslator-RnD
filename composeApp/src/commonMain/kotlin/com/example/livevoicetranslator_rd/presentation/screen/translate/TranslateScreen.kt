@@ -48,10 +48,15 @@ fun TranslateScreen(
 
         Spacer(Modifier.height(8.dp))
 
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Detected: ${uiState.detectedLanguage ?: "--"}")
-            TargetLanguageDropdown()
-            Text("${uiState.charCount} chars")
+        Column {
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Detected: ${uiState.detectedLanguage ?: "--"}")
+                Text("${uiState.charCount} chars")
+            }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Text("Source Confidence: ${uiState.languageDetectionResult.confidence}")
+                TargetLanguageDropdown()
+            }
         }
 
         Spacer(Modifier.height(8.dp))

@@ -1,5 +1,6 @@
 package com.example.livevoicetranslator_rd.domain.repository
 
+import com.example.livevoicetranslator_rd.domain.model.LanguageDetectionResult
 import com.example.livevoicetranslator_rd.domain.model.TranslationRequest
 import com.example.livevoicetranslator_rd.domain.model.TranslationResult
 
@@ -8,7 +9,7 @@ interface TranslationRepository {
 
     suspend fun translate(request: TranslationRequest): TranslationResult
 
-    suspend fun detectLanguage(text: String): String
+    suspend fun detectLanguage(text: String): LanguageDetectionResult
 
     suspend fun saveFavorite(result: TranslationResult)
 

@@ -1,6 +1,8 @@
 package com.example.livevoicetranslator_rd.data.source
 
+import com.example.livevoicetranslator_rd.domain.model.LanguageDetectionResult
 import com.google.mlkit.common.model.DownloadConditions
+import com.google.mlkit.nl.languageid.IdentifiedLanguage
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentificationOptions
 import com.google.mlkit.nl.translate.TranslateLanguage
@@ -32,34 +34,37 @@ actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
         }
     }
 
-    actual override suspend fun detectLanguage(text: String): String =
+    actual override suspend fun detectLanguage(text: String): LanguageDetectionResult =
         suspendCancellableCoroutine { cont ->
             if (text.isBlank() || text.length < 3) {
-                cont.resume("und")
+                cont.resume(LanguageDetectionResult("und", 0f))
                 return@suspendCancellableCoroutine
             }
+
             try {
-                identifier.identifyLanguage(text)
-                    .addOnSuccessListener { langCode ->
-                        cont.resume(langCode)
+                identifier.identifyPossibleLanguages(text)
+                    .addOnSuccessListener { languages ->
+                        if (languages.isNotEmpty()) {
+                            // Take the top language (highest confidence)
+                            val topLanguage = languages.maxByOrNull { it.confidence }!!
+                            cont.resume(
+                                LanguageDetectionResult(
+                                    topLanguage.languageTag,
+                                    topLanguage.confidence
+                                )
+                            )
+                        } else {
+                            cont.resume(LanguageDetectionResult("und", 0f))
+                        }
                     }
                     .addOnFailureListener { e ->
                         cont.resumeWithException(e)
                     }
             } catch (e: Exception) {
-                cont.resume("und")
+                cont.resume(LanguageDetectionResult("und", 0f))
             }
         }
 
-    private fun getTranslator(sourceLang: String, targetLang: String) = try {
-        val options = TranslatorOptions.Builder()
-            .setSourceLanguage(sourceLang)
-            .setTargetLanguage(targetLang)
-            .build()
-        Translation.getClient(options)
-    } catch (e: IllegalStateException) {
-        null
-    }
 
     actual override suspend fun translate(text: String, sourceLang: String, targetLang: String): String =
         suspendCancellableCoroutine { cont ->

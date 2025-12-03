@@ -1,7 +1,9 @@
 package com.example.livevoicetranslator_rd.data.source
 
+import com.example.livevoicetranslator_rd.domain.model.LanguageDetectionResult
+
 interface MLTranslator {
-    suspend fun detectLanguage(text: String): String
+    suspend fun detectLanguage(text: String): LanguageDetectionResult
     suspend fun translate(
         text: String,
         sourceLang: String,
