@@ -1,5 +1,6 @@
 package com.example.livevoicetranslator_rd.presentation.navigation
 
+import com.example.livevoicetranslator_rd.presentation.screen.phrases.CategoryData
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -21,5 +22,15 @@ sealed class ScreenRoute {
     object Phrases : ScreenRoute()
 
     @Serializable
+    data class PhraseDetail(
+        val categoryTitle: String
+    ) : ScreenRoute()
+
+    @Serializable
     object Premium : ScreenRoute()
+
+    @Serializable
+    object OnBoardingScreen : ScreenRoute()
+
+
 }

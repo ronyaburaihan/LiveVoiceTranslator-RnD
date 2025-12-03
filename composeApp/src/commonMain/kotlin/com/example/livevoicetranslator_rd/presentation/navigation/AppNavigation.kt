@@ -16,8 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.toRoute
 import com.example.livevoicetranslator_rd.presentation.app.AppState
 import com.example.livevoicetranslator_rd.presentation.screen.main.MainScreen
+import com.example.livevoicetranslator_rd.presentation.screen.onboard.OnBoardingScreen
+import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhraseDetailScreen
+import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhrasesScreen
 import com.example.livevoicetranslator_rd.presentation.screen.premium.PremiumScreen
 import com.example.livevoicetranslator_rd.presentation.screen.translate.TranslateScreen
 import com.example.livevoicetranslator_rd.presentation.util.LocalAppState
@@ -72,6 +76,18 @@ fun AppNavHost(
         }
         appNavComposable<ScreenRoute.Premium> {
             PremiumScreen()
+        }
+        appNavComposable<ScreenRoute.Phrases> {
+            PhrasesScreen()
+        }
+        appNavComposable<ScreenRoute.PhraseDetail> { backStackEntry ->
+            val categoryTitle = backStackEntry.toRoute<ScreenRoute.PhraseDetail>().categoryTitle
+            PhraseDetailScreen(
+                categoryTitle = categoryTitle,
+            )
+        }
+        appNavComposable<ScreenRoute.OnBoardingScreen> {
+            OnBoardingScreen()
         }
     }
 }
