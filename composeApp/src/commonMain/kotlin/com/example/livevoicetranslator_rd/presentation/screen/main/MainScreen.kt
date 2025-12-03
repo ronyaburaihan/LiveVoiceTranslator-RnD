@@ -17,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.livevoicetranslator_rd.presentation.app.isPremium
 import com.example.livevoicetranslator_rd.presentation.component.AppBottomNavigation
+import com.example.livevoicetranslator_rd.presentation.component.AppDrawer
 import com.example.livevoicetranslator_rd.presentation.component.AppTopBar
 import com.example.livevoicetranslator_rd.presentation.component.AppTopBarTitle
 import com.example.livevoicetranslator_rd.presentation.component.CustomIconButton
@@ -29,7 +30,6 @@ import com.example.livevoicetranslator_rd.presentation.screen.translate.Translat
 import com.example.livevoicetranslator_rd.presentation.util.LocalAppState
 import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
 import com.example.livevoicetranslator_rd.presentation.util.appNavComposable
-import com.example.livevoicetranslator_rd.presentation.component.AppDrawer
 import kotlinx.coroutines.launch
 import livevoicetranslatorrd.composeapp.generated.resources.Res
 import livevoicetranslatorrd.composeapp.generated.resources.app_name
@@ -123,6 +123,7 @@ fun MainScreenContent(
                 }
                 appNavComposable<ScreenRoute.Phrases> {
                     PhrasesScreen()
+
                 }
             }
         }
@@ -130,7 +131,7 @@ fun MainScreenContent(
 }
 
 @Composable
-private fun MainTopBar(
+fun MainTopBar(
     modifier: Modifier,
     title: String = stringResource(Res.string.app_name),
     onNavigationClick: () -> Unit,

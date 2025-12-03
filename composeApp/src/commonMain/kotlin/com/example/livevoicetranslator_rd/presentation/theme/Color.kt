@@ -87,4 +87,13 @@ val SeekbarBrashUnfill = Brush.linearGradient(
 )
 
 
-val BorderColor = Color(0xFFE5E5E5)
+val borderColor = Color(0xFFEAEAEA)
+val boxColor = Color(0xFF2C6CFF)
+val iconBackgroundColor = Color(0x1A0252FF)
+val premiumBackgroundColor = Color(0xFFFFC107)
+val textColour = Color(0xFF212121)
+val primaryPink = Color(0xFFBF35E9)
+val SecondaryPink = Color(0xFF7D02FF)
+val secondaryBox = Color(0xFFF3F9FE)
+val greenBox = Color(0x0F01B056)
+val purpleBox = Color(0x0A7C02FF)

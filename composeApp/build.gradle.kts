@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -40,7 +39,12 @@ kotlin {
             implementation(libs.androidx.room.sqlite.wrapper)
 
             // ML Kit
-            implementation(libs.mlkit.text.recognition)
+            implementation(libs.bundle.mlkit.text.recognition)
+            implementation(libs.play.services.mlkit.text.recognition.devanagari)
+            implementation(libs.play.services.mlkit.text.recognition.chinese)
+            implementation(libs.play.services.mlkit.text.recognition.japanese)
+            implementation(libs.play.services.mlkit.text.recognition.korean)
+
 
             // CameraX
             implementation(libs.androidx.camera.core)

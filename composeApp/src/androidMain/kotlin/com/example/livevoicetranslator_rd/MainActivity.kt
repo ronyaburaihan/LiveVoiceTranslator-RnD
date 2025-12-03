@@ -7,11 +7,16 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.livevoicetranslator_rd.presentation.app.App
+import com.example.livevoicetranslator_rd.presentation.screen.phrases.ClipboardProvider
+import com.example.livevoicetranslator_rd.presentation.screen.phrases.ClipboardService
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        // Initialize clipboard service
+        ClipboardProvider.instance = ClipboardService(this)
 
         setContent {
             App()
