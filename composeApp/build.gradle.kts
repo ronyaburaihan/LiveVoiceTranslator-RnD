@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -17,7 +16,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -27,7 +26,7 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
@@ -38,6 +37,33 @@ kotlin {
 
             //Room
             implementation(libs.androidx.room.sqlite.wrapper)
+
+            // ML Kit
+            implementation(libs.bundle.mlkit.text.recognition)
+            implementation(libs.play.services.mlkit.text.recognition.devanagari)
+            implementation(libs.play.services.mlkit.text.recognition.chinese)
+            implementation(libs.play.services.mlkit.text.recognition.japanese)
+            implementation(libs.play.services.mlkit.text.recognition.korean)
+
+
+            // CameraX
+            implementation(libs.androidx.camera.core)
+            implementation(libs.androidx.camera.camera2)
+            implementation(libs.androidx.camera.lifecycle)
+            implementation(libs.androidx.camera.view)
+            implementation(libs.androidx.camera.extensions)
+
+            // Guava
+            implementation(libs.guava)
+            implementation(libs.concurrent.futures)
+
+            // Kotlinx Coroutines
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.coroutines.play.services)
+
+            // Translate
+            implementation(libs.language.id.common)
+            implementation(libs.translate)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -83,6 +109,7 @@ kotlin {
             // Room
             implementation(libs.androidx.room.runtime)
             implementation(libs.androidx.sqlite.bundled)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

@@ -23,6 +23,7 @@ import com.example.livevoicetranslator_rd.presentation.screen.onboard.OnBoarding
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhraseDetailScreen
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhrasesScreen
 import com.example.livevoicetranslator_rd.presentation.screen.premium.PremiumScreen
+import com.example.livevoicetranslator_rd.presentation.screen.translate.TranslateScreen
 import com.example.livevoicetranslator_rd.presentation.util.LocalAppState
 import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
 import com.example.livevoicetranslator_rd.presentation.util.LocalSnackBarHostState

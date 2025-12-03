@@ -22,6 +22,19 @@ materialIconExtended = "1.7.3"
 room = "2.8.4"
 sqlite = "2.6.2"
 ksp = "2.2.20-2.0.2"
+mlkitTextRecognition = "16.0.1"
+camerax = "1.5.1"
+guava = "33.5.0-android"
+concurrent = "1.3.0"
+kotlinx-coroutines = "1.10.2"
+languageIdCommon = "16.1.0"
+translate = "17.0.3"
+
+mlkitTextRecognitionBundle = "16.0.1"
+mlkitTextRecognitionDevanagari = "16.0.1"
+mlkitTextRecognitionChinese = "16.0.1"
+mlkitTextRecognitionJapanese = "16.0.1"
+mlkitTextRecognitionKorean = "16.0.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -73,6 +86,31 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 
 # Optional SQLite Wrapper available in version 2.8.0 and higher
 androidx-room-sqlite-wrapper = { module = "androidx.room:room-sqlite-wrapper", version.ref = "room" }
+
+#Ml kit
+bundle-mlkit-text-recognition = { group = "com.google.mlkit", name = "text-recognition", version.ref = "mlkitTextRecognitionBundle" }
+play-services-mlkit-text-recognition-devanagari = { group = "com.google.android.gms", name = "play-services-mlkit-text-recognition-devanagari", version.ref = "mlkitTextRecognitionDevanagari" }
+play-services-mlkit-text-recognition-chinese = { group = "com.google.android.gms", name = "play-services-mlkit-text-recognition-chinese", version.ref = "mlkitTextRecognitionChinese" }
+play-services-mlkit-text-recognition-japanese = { group = "com.google.android.gms", name = "play-services-mlkit-text-recognition-japanese", version.ref = "mlkitTextRecognitionJapanese" }
+play-services-mlkit-text-recognition-korean = { group = "com.google.android.gms", name = "play-services-mlkit-text-recognition-korean", version.ref = "mlkitTextRecognitionKorean" }
+language-id-common = { group = "com.google.mlkit", name = "language-id-common", version.ref = "languageIdCommon" }
+translate = { group = "com.google.mlkit", name = "translate", version.ref = "translate" }
+
+# Kotlinx Coroutines
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines" }
+
+
+# CameraX
+androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "camerax" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camerax" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camerax" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "camerax" }
+androidx-camera-extensions = { module = "androidx.camera:camera-extensions", version.ref = "camerax" }
+
+# Guava (Needed for CameraX ListenableFuture)
+guava = { module = "com.google.guava:guava", version.ref = "guava" }
+concurrent-futures = { module = "androidx.concurrent:concurrent-futures", version.ref = "concurrent" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
