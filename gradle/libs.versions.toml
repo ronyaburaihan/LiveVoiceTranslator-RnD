@@ -30,6 +30,12 @@ kotlinx-coroutines = "1.10.2"
 languageIdCommon = "16.1.0"
 translate = "17.0.3"
 
+mlkitTextRecognitionBundle = "16.0.1"
+mlkitTextRecognitionDevanagari = "16.0.1"
+mlkitTextRecognitionChinese = "16.0.1"
+mlkitTextRecognitionJapanese = "16.0.1"
+mlkitTextRecognitionKorean = "16.0.1"
+
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
@@ -82,7 +88,11 @@ androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref =
 androidx-room-sqlite-wrapper = { module = "androidx.room:room-sqlite-wrapper", version.ref = "room" }
 
 #Ml kit
-mlkit-text-recognition = { group = "com.google.mlkit", name = "text-recognition", version.ref = "mlkitTextRecognition" }
+bundle-mlkit-text-recognition = { group = "com.google.mlkit", name = "text-recognition", version.ref = "mlkitTextRecognitionBundle" }
+play-services-mlkit-text-recognition-devanagari = { group = "com.google.android.gms", name = "play-services-mlkit-text-recognition-devanagari", version.ref = "mlkitTextRecognitionDevanagari" }
+play-services-mlkit-text-recognition-chinese = { group = "com.google.android.gms", name = "play-services-mlkit-text-recognition-chinese", version.ref = "mlkitTextRecognitionChinese" }
+play-services-mlkit-text-recognition-japanese = { group = "com.google.android.gms", name = "play-services-mlkit-text-recognition-japanese", version.ref = "mlkitTextRecognitionJapanese" }
+play-services-mlkit-text-recognition-korean = { group = "com.google.android.gms", name = "play-services-mlkit-text-recognition-korean", version.ref = "mlkitTextRecognitionKorean" }
 language-id-common = { group = "com.google.mlkit", name = "language-id-common", version.ref = "languageIdCommon" }
 translate = { group = "com.google.mlkit", name = "translate", version.ref = "translate" }
 

@@ -6,7 +6,7 @@ import com.example.livevoicetranslator_rd.domain.model.OCRResult
 expect class OCRProcessor() {
     suspend fun recognizeText(
         image: CameraImage,
-        languageHints: List<String>
+        language: String
     ): Result<OCRResult>
 
     suspend fun downloadModel(languageCode: String): Result<Unit>

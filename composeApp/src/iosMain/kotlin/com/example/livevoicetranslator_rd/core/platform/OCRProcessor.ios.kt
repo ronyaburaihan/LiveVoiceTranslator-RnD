@@ -6,12 +6,11 @@ import com.example.livevoicetranslator_rd.domain.model.OCREngine
 import com.example.livevoicetranslator_rd.domain.model.OCRResult
 import com.example.livevoicetranslator_rd.domain.model.TextBlock
 import com.example.livevoicetranslator_rd.domain.model.TextLine
-import io.ktor.client.request.invoke
+import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
 import kotlinx.cinterop.usePinned
 import platform.CoreGraphics.CGRectGetMaxX
-import platform.CoreGraphics.CGRectGetMaxY
 import platform.CoreGraphics.CGRectGetMinX
 import platform.CoreGraphics.CGRectGetMinY
 import platform.Foundation.NSData
@@ -19,19 +18,18 @@ import platform.Foundation.create
 import platform.UIKit.UIImage
 import platform.Vision.VNImageRequestHandler
 import platform.Vision.VNRecognizeTextRequest
-import platform.Vision.VNRecognizeTextRequestRevision1
 import platform.Vision.VNRecognizedText
 import platform.Vision.VNRecognizedTextObservation
-import platform.Vision.VNRequestTextRecognitionLevel
 import platform.Vision.VNRequestTextRecognitionLevelAccurate
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
 @OptIn(ExperimentalForeignApi::class)
 actual class OCRProcessor actual constructor() {
+    @OptIn(BetaInteropApi::class)
     actual suspend fun recognizeText(
         image: CameraImage,
-        languageHints: List<String>
+        language: String
     ): Result<OCRResult> {
         return try {
             val imageData = image.imageData
@@ -100,7 +98,7 @@ actual class OCRProcessor actual constructor() {
                 }
 
                 request.recognitionLevel = VNRequestTextRecognitionLevelAccurate
-                if (languageHints.isNotEmpty()) request.recognitionLanguages = languageHints
+                if (language.isNotEmpty()) request.recognitionLanguages = listOf(language)
 
                 val handler = VNImageRequestHandler(
                     cGImage = uiImage.CGImage!!,
