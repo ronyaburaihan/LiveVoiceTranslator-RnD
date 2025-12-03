@@ -1,10 +1,13 @@
 package com.example.livevoicetranslator_rd.data.source
 
+import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.nl.languageid.LanguageIdentification
 import com.google.mlkit.nl.languageid.LanguageIdentificationOptions
+import com.google.mlkit.nl.translate.TranslateLanguage
 import com.google.mlkit.nl.translate.Translation
 import com.google.mlkit.nl.translate.TranslatorOptions
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.tasks.await
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
 
@@ -70,5 +73,54 @@ actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
                     cont.resumeWithException(e)
                 }
         }
+    }
+
+    actual override suspend fun downloadModelIfNeeded(source: String, target: String) {
+        val src = normalize(source)
+        val tgt = normalize(target)
+
+        if (src == null || tgt == null) {
+            println("this model don't Support")
+            return
+        }
+
+        val srcModel = TranslateLanguage.fromLanguageTag(src)
+        val tgtModel = TranslateLanguage.fromLanguageTag(tgt)
+
+        if (srcModel == null || tgtModel == null) {
+            println("this model don't Support")
+            return
+        }
+
+        val client = Translation.getClient(
+            TranslatorOptions.Builder()
+                .setSourceLanguage(srcModel)
+                .setTargetLanguage(tgtModel)
+                .build()
+        )
+
+        val conditions = DownloadConditions.Builder().build()
+
+        client.downloadModelIfNeeded(conditions)
+            .addOnSuccessListener { println("Model downloaded: $source → $target") }
+            .addOnFailureListener { e -> println("Model download failed: ${e.message}") }
+            .await()
+    }
+
+}
+
+private fun normalize(tag: String?): String? {
+    if (tag.isNullOrBlank()) return null
+
+    val cleaned = tag.lowercase()
+
+    return when {
+        cleaned.startsWith("en") -> "en"
+        cleaned.startsWith("bn") -> "bn"
+        cleaned.startsWith("hi") -> "hi"
+        cleaned.startsWith("ar") -> "ar"
+        cleaned.startsWith("fr") -> "fr"
+        cleaned.startsWith("es") -> "es"
+        else -> null
     }
 }

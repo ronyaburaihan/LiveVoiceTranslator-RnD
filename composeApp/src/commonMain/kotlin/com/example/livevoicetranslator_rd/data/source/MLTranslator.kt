@@ -7,4 +7,6 @@ interface MLTranslator {
         sourceLang: String,
         targetLang: String
     ): String
+
+    suspend fun downloadModelIfNeeded(source: String, target: String)
 }

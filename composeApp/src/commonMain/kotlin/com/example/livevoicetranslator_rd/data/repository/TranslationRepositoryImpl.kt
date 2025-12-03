@@ -24,6 +24,12 @@ class TranslationRepositoryImpl(
         // 2. Offline attempt using MLKit
         val source = request.sourceLang ?: mlKit.detectLanguage(request.text)
 
+        try {
+            mlKit.downloadModelIfNeeded(source, request.targetLang)
+        } catch (e: Exception) {
+            println("Model download failed: ${e.cause?.message}")
+        }
+
         return try {
             val translated = mlKit.translate(
                 text = request.text,
@@ -45,7 +51,7 @@ class TranslationRepositoryImpl(
             result
 
         } catch (offlineError: Exception) {
-
+            println("Offline translation failed: ${offlineError.cause?.message}") // Log the error
             // 3. Cloud fallback
             val translatedCloud = cloud.translateOnline(
                 text = request.text,

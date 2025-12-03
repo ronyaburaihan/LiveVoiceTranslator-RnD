@@ -53,7 +53,7 @@ class TranslateViewModel(
             val request = TranslationRequest(
                 text = uiState.value.inputText,
                 sourceLang = uiState.value.detectedLanguage,
-                targetLang = "en"
+                targetLang = "es"
             )
             val result = translateTextUseCase(request)
             _uiState.update {

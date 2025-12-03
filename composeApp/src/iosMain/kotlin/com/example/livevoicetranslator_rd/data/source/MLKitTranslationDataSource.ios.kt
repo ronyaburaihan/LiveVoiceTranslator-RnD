@@ -13,4 +13,11 @@ actual class MLKitTranslationDataSource actual constructor() :
     ): String {
         TODO("Not yet implemented")
     }
+
+    actual override suspend fun downloadModelIfNeeded(
+        source: String,
+        target: String
+    ) {
+        TODO("Not yet implemented")
+    }
 }

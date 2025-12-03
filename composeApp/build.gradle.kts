@@ -58,7 +58,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.play.services)
 
             // Translate
-            implementation(libs.language.id.common)
+            implementation(libs.language.id)
             implementation(libs.translate)
         }
         iosMain.dependencies {
