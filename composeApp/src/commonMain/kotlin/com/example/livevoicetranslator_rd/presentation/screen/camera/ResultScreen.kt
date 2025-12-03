@@ -8,7 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -26,7 +27,6 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
@@ -143,10 +143,11 @@ fun ResultScreen(
                                     x = with(density) { left.toDp() },
                                     y = with(density) { top.toDp() }
                                 )
-                                .size(
-                                    width = with(density) { boxWidth.toDp() },
-                                    height = with(density) { boxHeight.toDp() }
+                                .sizeIn(
+                                    minWidth = with(density) { boxWidth.toDp() },
+                                    minHeight = with(density) { boxHeight.toDp() }
                                 )
+                                .wrapContentSize()
                                 .clip(RoundedCornerShape(2.dp))
                                 .background(Color.Black.copy(alpha = 0.7f))
                                 .padding(1.dp)

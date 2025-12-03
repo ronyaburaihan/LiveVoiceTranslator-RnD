@@ -3,7 +3,7 @@ package com.example.livevoicetranslator_rd.domain.model
 data class OCRResult(
     val fullText: String,
     val blocks: List<TextBlock>,
-    val confidence: Float,
+    val overallConfidence: Float,
     val detectedLanguage: String?,
     val engine: OCREngine
 )
@@ -12,7 +12,8 @@ data class TextBlock(
     val text: String,
     val confidence: Float = 0.0f,
     val boundingBox: BoundingBox,
-    val lines: List<TextLine> = emptyList()
+    val lines: List<TextLine> = emptyList(),
+    val rotationAngle: Float = 0f
 )
 
 data class TextLine(

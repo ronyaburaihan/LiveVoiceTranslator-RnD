@@ -16,25 +16,7 @@ import platform.CoreGraphics.CGRectGetMinX
 import platform.CoreGraphics.CGRectGetMinY
 import platform.Foundation.NSData
 import platform.Foundation.create
-import platform.NaturalLanguage.NLLanguageArabic
-import platform.NaturalLanguage.NLLanguageBengali
-import platform.NaturalLanguage.NLLanguageEnglish
-import platform.NaturalLanguage.NLLanguageHindi
-import platform.NaturalLanguage.NLLanguageIndonesian
-import platform.NaturalLanguage.NLLanguageJapanese
-import platform.NaturalLanguage.NLLanguageKorean
-import platform.NaturalLanguage.NLLanguagePersian
-import platform.NaturalLanguage.NLLanguagePolish
-import platform.NaturalLanguage.NLLanguagePortuguese
 import platform.NaturalLanguage.NLLanguageRecognizer
-import platform.NaturalLanguage.NLLanguageRussian
-import platform.NaturalLanguage.NLLanguageSimplifiedChinese
-import platform.NaturalLanguage.NLLanguageSpanish
-import platform.NaturalLanguage.NLLanguageTamil
-import platform.NaturalLanguage.NLLanguageThai
-import platform.NaturalLanguage.NLLanguageTraditionalChinese
-import platform.NaturalLanguage.NLLanguageTurkish
-import platform.NaturalLanguage.NLLanguageVietnamese
 import platform.UIKit.UIImage
 import platform.Vision.VNImageRequestHandler
 import platform.Vision.VNRecognizeTextRequest
@@ -113,7 +95,7 @@ actual class OCRProcessor actual constructor() {
                             OCRResult(
                                 fullText = fullText,
                                 blocks = blocks,
-                                confidence = if (blocks.isNotEmpty()) {
+                                overallConfidence = if (blocks.isNotEmpty()) {
                                     blocks.map {
                                         it.lines.firstOrNull()?.confidence ?: 0f
                                     }.average().toFloat()

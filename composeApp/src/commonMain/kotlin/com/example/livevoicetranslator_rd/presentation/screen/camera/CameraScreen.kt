@@ -112,7 +112,7 @@ fun CameraScreen() {
                 )
 
                 val ocrResult = OCRProcessor()
-                    .recognizeText(cameraImage, "zh-Hans")
+                    .recognizeText(cameraImage, "hi")
                 ocrResult.onSuccess {
                     println("OCR Result: $it")
                     capturedOcrResult = it
