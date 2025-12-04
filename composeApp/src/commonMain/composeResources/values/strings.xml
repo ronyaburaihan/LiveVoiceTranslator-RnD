@@ -11,4 +11,30 @@
     <string name="on_boarding_description_1">Translate voice, text, and camera in real\ntime across 200+ languages.</string>
     <string name="on_boarding_description_2">Have natural conversations with anyone\nusing two-way voice translation.</string>
     <string name="on_boarding_description_3">Point your camera at signs, menus, or\ndocuments to get fast translations.</string>
+    <string name="unlock_premium">Unlock Premium</string>
+    <string name="clear_conversation">Clear Conversation</string>
+    <string name="translate_history">History</string>
+    <string name="settings">Settings</string>
+    <string name="offline_translation">Offline Translation</string>
+    <string name="refer_get_credit">Refer &amp; Get Credit</string>
+    <string name="share_app">Share App</string>
+    <string name="rate_app">Rate App</string>
+    <string name="contact_us">Contact Us</string>
+    <string name="unlock_pro_access">Unlock PRO Access</string>
+    <string name="feature_1">Unlimited Voice Translations</string>
+    <string name="feature_2">Unlimited Camera Translations</string>
+    <string name="feature_3">AI-powered Translations</string>
+    <string name="feature_4">Offline Translation</string>
+    <string name="feature_5">Voice Customization</string>
+    <string name="feature_6">Unlimited History</string>
+    <string name="feature_7">Ad-free Experience</string>
+    <string name="start_free_trial">Start Free Trial</string>
+    <string name="premium_billing_description">Recurrent billing. Cancel anytime. You will be\ncharged after trial ends unless canceled.</string>
+    <string name="referral__title">Share the link and earn rewards!</string>
+    <string name="referral__subtitle">You’ll receive 10 Credit bonus for each successful\nreferral — up to 10 persons.</string>
+    <string name="referral__copy_button">Share &amp; Earn Now</string>
+    <string name="total_earnings">Total Credit Earn</string>
+    <string name="referrals">Referrals</string>
+
+
 </resources>

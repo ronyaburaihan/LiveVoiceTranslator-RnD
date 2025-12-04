@@ -2,6 +2,7 @@ package com.example.livevoicetranslator_rd.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -17,6 +19,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -35,19 +38,44 @@ import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.livevoicetranslator_rd.presentation.navigation.ScreenRoute
+import com.example.livevoicetranslator_rd.presentation.theme.BackgroundColor
+import com.example.livevoicetranslator_rd.presentation.theme.OnBackgroundColor
+import com.example.livevoicetranslator_rd.presentation.theme.PremiumButtonColor
 import com.example.livevoicetranslator_rd.presentation.theme.dimens
 import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
 import com.example.livevoicetranslator_rd.presentation.theme.PremiumGradient
 import com.example.livevoicetranslator_rd.presentation.theme.PremiumIconColor
 import com.example.livevoicetranslator_rd.presentation.theme.PrimaryBrush
+import com.example.livevoicetranslator_rd.presentation.theme.SurfaceColor
+import com.example.livevoicetranslator_rd.presentation.theme.black
+import com.example.livevoicetranslator_rd.presentation.theme.buttonBackGround
+import com.example.livevoicetranslator_rd.presentation.theme.dividerColor
+import com.example.livevoicetranslator_rd.presentation.theme.textColour
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import livevoicetranslatorrd.composeapp.generated.resources.Res
 import livevoicetranslatorrd.composeapp.generated.resources.app_name
+import livevoicetranslatorrd.composeapp.generated.resources.clear_conversation
+import livevoicetranslatorrd.composeapp.generated.resources.contact_us
+import livevoicetranslatorrd.composeapp.generated.resources.ic_coin
+import livevoicetranslatorrd.composeapp.generated.resources.ic_contact_us
 import livevoicetranslatorrd.composeapp.generated.resources.ic_crown
+import livevoicetranslatorrd.composeapp.generated.resources.ic_delete
+import livevoicetranslatorrd.composeapp.generated.resources.ic_history
+import livevoicetranslatorrd.composeapp.generated.resources.ic_offline_translation
+import livevoicetranslatorrd.composeapp.generated.resources.ic_rating_star
+import livevoicetranslatorrd.composeapp.generated.resources.ic_setting
+import livevoicetranslatorrd.composeapp.generated.resources.ic_share_app
 import livevoicetranslatorrd.composeapp.generated.resources.ic_translate
+import livevoicetranslatorrd.composeapp.generated.resources.offline_translation
 import livevoicetranslatorrd.composeapp.generated.resources.pro
+import livevoicetranslatorrd.composeapp.generated.resources.rate_app
+import livevoicetranslatorrd.composeapp.generated.resources.refer_get_credit
+import livevoicetranslatorrd.composeapp.generated.resources.settings
+import livevoicetranslatorrd.composeapp.generated.resources.share_app
 import livevoicetranslatorrd.composeapp.generated.resources.translate
+import livevoicetranslatorrd.composeapp.generated.resources.translate_history
+import livevoicetranslatorrd.composeapp.generated.resources.unlock_premium
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -102,17 +130,17 @@ fun AppDrawer(
                 }
             }
             Column(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Box(modifier = Modifier.padding(top = 24.dp, bottom = 16.dp)) {
+                Spacer(modifier = Modifier.height(16.dp))
                     DrawerItem(
                         icon = Res.drawable.ic_crown,
-                        label = stringResource(Res.string.pro),
-                        backgroundGradient = PremiumGradient,
+                        label = stringResource(Res.string.unlock_premium),
+                        backgroundColor = black,
                         fontWeight = FontWeight.SemiBold,
                         iconSize = DpSize(18.dp, 18.dp),
-                        textColor = PremiumIconColor,
-                        iconTint = PremiumIconColor
+                        textColor = BackgroundColor,
+                        iconTint = PremiumButtonColor
 
                     ) {
                         scope.launch { drawerState.close() }
@@ -121,14 +149,105 @@ fun AppDrawer(
                             restoreState = true
                         }
                     }
-                }
                 DrawerItem(
-                    label = stringResource(Res.string.translate),
-                    icon = Res.drawable.ic_translate,
-                    iconTint = Color.Unspecified,
+                    icon = Res.drawable.ic_delete,
+                    label = stringResource(Res.string.clear_conversation),
+                    backgroundColor = buttonBackGround,
+                    fontWeight = FontWeight.SemiBold,
+                    iconSize = DpSize(18.dp, 18.dp),
+                    textColor = textColour,
+                    iconTint = Color.Unspecified
+
                 ) {
                     scope.launch { drawerState.close() }
                 }
+                DrawerItem(
+                    icon = Res.drawable.ic_history,
+                    label = stringResource(Res.string.translate_history),
+                    backgroundColor = buttonBackGround,
+                    fontWeight = FontWeight.SemiBold,
+                    iconSize = DpSize(18.dp, 18.dp),
+                    textColor = textColour,
+                    iconTint = Color.Unspecified
+
+                ) {
+                    scope.launch { drawerState.close() }
+                }
+                DrawerItem(
+                    icon = Res.drawable.ic_setting,
+                    label = stringResource(Res.string.settings),
+                    backgroundColor = buttonBackGround,
+                    fontWeight = FontWeight.SemiBold,
+                    iconSize = DpSize(18.dp, 18.dp),
+                    textColor = textColour,
+                    iconTint = Color.Unspecified
+
+                ) {
+                    scope.launch { drawerState.close() }
+                }
+                DrawerItem(
+                    icon = Res.drawable.ic_offline_translation,
+                    label = stringResource(Res.string.offline_translation),
+                    backgroundColor = buttonBackGround,
+                    fontWeight = FontWeight.SemiBold,
+                    iconSize = DpSize(18.dp, 18.dp),
+                    textColor = textColour,
+                    iconTint = Color.Unspecified
+
+                ) {
+                    scope.launch { drawerState.close() }
+                }
+                DrawerItem(
+                    icon = Res.drawable.ic_coin,
+                    label = stringResource(Res.string.refer_get_credit),
+                    backgroundColor = buttonBackGround,
+                    fontWeight = FontWeight.SemiBold,
+                    iconSize = DpSize(18.dp, 18.dp),
+                    textColor = textColour,
+                    iconTint = Color.Unspecified
+
+                ) {
+                    scope.launch { drawerState.close() }
+                    navController.navigate(ScreenRoute.Referral)
+                }
+                HorizontalDivider(thickness = 1.dp, color = dividerColor)
+                DrawerItem(
+                    icon = Res.drawable.ic_share_app,
+                    label = stringResource(Res.string.share_app),
+                    backgroundColor = buttonBackGround,
+                    fontWeight = FontWeight.SemiBold,
+                    iconSize = DpSize(18.dp, 18.dp),
+                    textColor = textColour,
+                    iconTint = Color.Unspecified
+
+                ) {
+                    scope.launch { drawerState.close() }
+                }
+                DrawerItem(
+                    icon = Res.drawable.ic_rating_star,
+                    label = stringResource(Res.string.rate_app),
+                    backgroundColor = buttonBackGround,
+                    fontWeight = FontWeight.SemiBold,
+                    iconSize = DpSize(18.dp, 18.dp),
+                    textColor = textColour,
+                    iconTint = Color.Unspecified
+
+                ) {
+                    scope.launch { drawerState.close() }
+                }
+                DrawerItem(
+                    icon = Res.drawable.ic_contact_us,
+                    label = stringResource(Res.string.contact_us),
+                    backgroundColor = buttonBackGround,
+                    fontWeight = FontWeight.SemiBold,
+                    iconSize = DpSize(18.dp, 18.dp),
+                    textColor = textColour,
+                    iconTint = Color.Unspecified
+
+                ) {
+                    scope.launch { drawerState.close() }
+                }
+
 
             }
         }

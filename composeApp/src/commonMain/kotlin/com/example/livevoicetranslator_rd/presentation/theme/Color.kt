@@ -61,6 +61,14 @@ val IconButtonColorBlack = Brush.linearGradient(
     ),
 )
 
+val headerBrush = Brush.linearGradient(
+    listOf(
+        Color(0xFF0252FF),
+        Color(0xFF081548)
+    )
+)
+
+
 
 val TransparentColor = Color(0x00000000)
 val PurpleColor = Color(0xFF6200EE)
@@ -97,3 +105,12 @@ val SecondaryPink = Color(0xFF7D02FF)
 val secondaryBox = Color(0xFFF3F9FE)
 val greenBox = Color(0x0F01B056)
 val purpleBox = Color(0x0A7C02FF)
+val black = Color(0xFF000000)
+val buttonBackGround = Color(0xFFF7F7F7)
+val dividerColor = Color(0xFFF1F1F1)
+val featureBackground = Color(0xFFFAFAFA)
+val yearlyBackground = Color(0xFFFEFDE2)
+val monthlyBackground = Color(0xFFE2F2FE)
+val defaultCardBorder = Color(0xFFEEEEEE)
+val billingDescriptionColor = Color(0xFFA7A7A7)
+

@@ -118,14 +118,14 @@ fun PhraseDetailScreenContent(
                             onLanguageChange = { selectedSourceLanguage = it }
                         )
 
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
 
                         // Swap Button
                         Image(
                             painter = painterResource(Res.drawable.ic_swap),
                             contentDescription = "Swap",
                             modifier = Modifier
-                                .size(16.dp)
+                                .size(24.dp)
                                 .clickable(
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = null
@@ -135,7 +135,7 @@ fun PhraseDetailScreenContent(
                                     selectedTargetLanguage = temp
                                 }
                         )
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
 
                         // Target Language
                         LanguageDropdown(
