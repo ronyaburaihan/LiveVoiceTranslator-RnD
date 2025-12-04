@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
+    kotlin("native.cocoapods")
 }
 
 kotlin {
@@ -17,11 +18,32 @@ kotlin {
         }
     }
 
-    listOf(
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
+//    listOf(
+//        iosArm64(),
+//        iosSimulatorArm64()
+//    ).forEach { iosTarget ->
+//        iosTarget.binaries.framework {
+//            baseName = "ComposeApp"
+//            isStatic = true
+//        }
+//    }
+
+    iosArm64()
+    iosSimulatorArm64()
+
+    cocoapods {
+        summary = "VoiceTranslator Shared Module"
+        homepage = "VoiceTranslator"
+        version = "1.0"
+        ios.deploymentTarget = "13.0"
+
+        // Use the underlying frameworks directly for cinterop.
+        // GoogleMLKit/Translate is just a wrapper and causes module not found errors in cinterop.
+        pod("MLKitTranslate", "3.0.0")
+        pod("MLKitLanguageID", "4.0.0")
+        pod("MLKitCommon", "9.0.0")
+
+        framework {
             baseName = "ComposeApp"
             isStatic = true
         }

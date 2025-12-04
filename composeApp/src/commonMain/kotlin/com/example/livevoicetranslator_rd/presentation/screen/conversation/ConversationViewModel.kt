@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import com.example.livevoicetranslator_rd.domain.usecase.tranlate.TranslatorTextUseCase
 import kotlin.time.Clock
 
 class ConversationViewModel(
@@ -30,6 +31,7 @@ class ConversationViewModel(
     private val observeTTSStateUseCase: ObserveTTSStateUseCase,
     private val releaseTTSUseCase: ReleaseTTSUseCase,
     private val speakTextUseCase: SpeakTextUseCase,
+    private val translatorTextUseCase: TranslatorTextUseCase,
 ) : ViewModel() {
 
     val transcriptState = speechToText.transcriptState
@@ -68,43 +70,43 @@ class ConversationViewModel(
     init {
         // Set initial languages
         speechToText.setLanguage("en-US")
-        
+
         // Observe transcript updates for real-time display and automatic processing
         var previousStatus = ListeningStatus.INACTIVE
         var wasListening = false
-        
+
         viewModelScope.launch {
             transcriptState.collect { state ->
                 println("ConversationViewModel: Transcript state changed - Status: ${state.listeningStatus}, Transcript: '${state.transcript}', Mic states: Left=${_uiState.value.isLeftMicActive}, Right=${_uiState.value.isRightMicActive}")
-                
+
                 // Track if we were listening
                 if (state.listeningStatus == ListeningStatus.LISTENING) {
                     wasListening = true
                 }
-                
+
                 // Handle automatic stop (system stopped recognition)
                 // This triggers when status changes from LISTENING to INACTIVE
-                if (previousStatus == ListeningStatus.LISTENING && 
-                    state.listeningStatus == ListeningStatus.INACTIVE && 
+                if (previousStatus == ListeningStatus.LISTENING &&
+                    state.listeningStatus == ListeningStatus.INACTIVE &&
                     !state.transcript.isNullOrEmpty() &&
                     wasListening) {
-                    
+
                     // Check if we were actively listening (mic was active)
                     if (_uiState.value.isLeftMicActive || _uiState.value.isRightMicActive) {
                         println("ConversationViewModel: System stopped recognition automatically, processing text: '${state.transcript}'")
                         // Process the recognized text
                         processRecognizedText(state.transcript)
                         // Reset mic states
-                        _uiState.update { 
+                        _uiState.update {
                             it.copy(
                                 isLeftMicActive = false,
                                 isRightMicActive = false
-                            ) 
+                            )
                         }
                         wasListening = false
                     }
                 }
-                
+
                 // Update previous status for next iteration
                 previousStatus = state.listeningStatus
             }
@@ -174,20 +176,20 @@ class ConversationViewModel(
         println("ConversationViewModel: Current mic states - Left: ${_uiState.value.isLeftMicActive}, Right: ${_uiState.value.isRightMicActive}")
         if (transcriptState.value.listeningStatus != ListeningStatus.INACTIVE) {
             stopListening()
-            _uiState.update { 
+            _uiState.update {
                 it.copy(
                     isLeftMicActive = false,
                     isRightMicActive = false
-                ) 
+                )
             }
         } else {
             println("ConversationViewModel: Mic released but no active listening")
             // Reset mic states anyway to ensure clean state
-            _uiState.update { 
+            _uiState.update {
                 it.copy(
                     isLeftMicActive = false,
                     isRightMicActive = false
-                ) 
+                )
             }
         }
     }
@@ -204,22 +206,22 @@ class ConversationViewModel(
                     } else {
                         println("ConversationViewModel: Permission denied")
                         _uiEvent.value = UiEvent.ShowSnackbar("Permission denied")
-                        _uiState.update { 
+                        _uiState.update {
                             it.copy(
                                 isLeftMicActive = false,
                                 isRightMicActive = false
-                            ) 
+                            )
                         }
                     }
                 }
                 is SpeachResult.Error -> {
                     println("ConversationViewModel: Permission request failed: ${result.exception?.message}")
                     _uiEvent.value = UiEvent.ShowSnackbar("Permission request failed")
-                    _uiState.update { 
+                    _uiState.update {
                         it.copy(
                             isLeftMicActive = false,
                             isRightMicActive = false
-                        ) 
+                        )
                     }
                 }
                 SpeachResult.Loading -> {
@@ -229,7 +231,7 @@ class ConversationViewModel(
         }
     }
 
-        private fun processRecognizedText(recognizedText: String) {
+    private fun processRecognizedText(recognizedText: String) {
         println("ConversationViewModel: Processing recognized text: '$recognizedText'")
         if (recognizedText.isNotBlank()) {
             addMessage(recognizedText)
@@ -250,11 +252,11 @@ class ConversationViewModel(
                 is SpeachResult.Error -> {
                     println("ConversationViewModel: Error starting speech recognition: ${result.exception?.message}")
                     _uiEvent.value = UiEvent.ShowSnackbar("Failed to start speech recognition: ${result.exception?.message ?: "Unknown error"}")
-                    _uiState.update { 
+                    _uiState.update {
                         it.copy(
                             isLeftMicActive = false,
                             isRightMicActive = false
-                        ) 
+                        )
                     }
                 }
                 SpeachResult.Loading -> {
@@ -279,7 +281,7 @@ class ConversationViewModel(
                         // } else {
                         //     _uiEvent.value = UiEvent.ShowSnackbar("No speech detected")
                         // }
-                         processRecognizedText(recognizedText)
+                        processRecognizedText(recognizedText)
                     } ?: run {
                         println("ConversationViewModel: No transcript available")
                         _uiEvent.value = UiEvent.ShowSnackbar("No speech detected")
@@ -301,34 +303,91 @@ class ConversationViewModel(
         val isLeftSide = _uiState.value.isLeftMicActive
         val targetLanguage = if (isLeftSide) _uiState.value.rightLanguage else _uiState.value.leftLanguage
         val sourceLanguage = if (isLeftSide) _uiState.value.leftLanguage else _uiState.value.rightLanguage
-        
-        // Enhanced translation logic
-        val translatedText = translateText(sourceText, sourceLanguage, targetLanguage)
-        
+
+        // Add message with source text first, then update with translation
         val newMessage = ConversationMessage(
             sourceText = sourceText,
-            translatedText = translatedText,
-            isLeftSide = isLeftSide
+            translatedText = "Translating...", // Placeholder while translating
+            isLeftSide = isLeftSide,
+            timestamp = 0L
         )
-        
+
+        // Add the message to the list
         _uiState.update { currentState ->
             currentState.copy(messages = currentState.messages + newMessage)
         }
-        
+
+        // Perform translation asynchronously
+        translateTextAsync(sourceText, sourceLanguage, targetLanguage, newMessage.timestamp)
+
         // Log for debugging
-        println("ConversationViewModel: Added message - '$sourceText' -> '$translatedText' (side: ${if (isLeftSide) "left" else "right"})")
+        println("ConversationViewModel: Added message - '$sourceText' -> 'Translating...' (side: ${if (isLeftSide) "left" else "right"})")
     }
-    
-    private fun translateText(sourceText: String, sourceLanguage: String, targetLanguage: String): String {
-        // Simple translation simulation - in a real app, this would call a translation API
-        return when {
-            sourceLanguage == targetLanguage -> sourceText // No translation needed
-            sourceText.isBlank() -> ""
-            else -> {
-                // Simulate translation with language codes
-               // val sourceLangCode = getLanguageCode(sourceLanguage)
-               // val targetLangCode = getLanguageCode(targetLanguage)
-                "[$targetLanguage] $sourceText"
+
+    private fun translateTextAsync(sourceText: String, sourceLanguage: String, targetLanguage: String, messageTimestamp: Long) {
+        viewModelScope.launch {
+            fun normalize(code: String): String {
+                val lower = code.lowercase()
+                if (lower.length == 2) return lower
+                if (lower.contains("-")) {
+                    val first = lower.split("-").first()
+                    return when (first) {
+                        "bd" -> "bn"
+                        else -> first
+                    }
+                }
+                if (lower.contains("_")) {
+                    return lower.split("_").first()
+                }
+                return when (lower) {
+                    "english" -> "en"
+                    "spanish" -> "es"
+                    "bengali" -> "bn"
+                    "hindi" -> "hi"
+                    "french" -> "fr"
+                    "german" -> "de"
+                    "italian" -> "it"
+                    "portuguese" -> "pt"
+                    "chinese" -> "zh"
+                    "japanese" -> "ja"
+                    "korean" -> "ko"
+                    "russian" -> "ru"
+                    else -> lower
+                }
+            }
+
+            val src = normalize(sourceLanguage)
+            val tgt = normalize(targetLanguage)
+
+            val translatedText = when {
+                src == tgt -> sourceText
+                sourceText.isBlank() -> ""
+                else -> {
+                    when (val result = translatorTextUseCase(sourceText, src, tgt)) {
+                        is SpeachResult.Success -> {
+                            println("ConversationViewModel: Translation successful - '$sourceText' -> '${result.data}'")
+                            result.data
+                        }
+                        is SpeachResult.Error -> {
+                            println("ConversationViewModel: Translation failed - ${result.exception?.message}")
+                            "[$tgt] $sourceText"
+                        }
+                        SpeachResult.Loading -> {
+                            "[$tgt] $sourceText"
+                        }
+                    }
+                }
+            }
+
+            _uiState.update { currentState ->
+                val updatedMessages = currentState.messages.map { message ->
+                    if (message.timestamp == messageTimestamp) {
+                        message.copy(translatedText = translatedText)
+                    } else {
+                        message
+                    }
+                }
+                currentState.copy(messages = updatedMessages)
             }
         }
     }

@@ -10,10 +10,10 @@ import org.koin.dsl.module
 
 actual val platformModule = module {
     single<MLTranslator> { MLKitTranslationDataSource() }
-    
+
     // SpeechToText singleton for Android with automatic Activity injection
     single { SpeechToText(get(), get() ) }
-    
+
     // Android-specific ConversationViewModel with automatic dependency resolution
     viewModel {
         ConversationViewModel(
@@ -25,7 +25,8 @@ actual val platformModule = module {
             initializeTTSUseCase = get(),
             observeTTSStateUseCase = get(),
             releaseTTSUseCase = get(),
-            speakTextUseCase = get()
+            speakTextUseCase = get(),
+            translatorTextUseCase = get()
         )
     }
 }

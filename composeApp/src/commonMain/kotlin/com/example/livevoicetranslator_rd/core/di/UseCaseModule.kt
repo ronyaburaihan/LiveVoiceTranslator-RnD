@@ -12,6 +12,7 @@ import com.example.livevoicetranslator_rd.domain.usecase.speachtotext.CopyTransc
 import com.example.livevoicetranslator_rd.domain.usecase.speachtotext.RequestPermissionUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.speachtotext.StartSpeechRecognitionUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.speachtotext.StopSpeechRecognitionUseCase
+import com.example.livevoicetranslator_rd.domain.usecase.tranlate.TranslatorTextUseCase
 import org.koin.dsl.module
 
 val useCaseModule = module {
@@ -19,7 +20,7 @@ val useCaseModule = module {
     single { DetectLanguageUseCase(repo = get()) }
     single { SaveFavoriteUseCase(repo = get()) }
     single { GetHistoryUseCase(repo = get()) }
-    
+
     // Speech recognition use cases
     single { StartSpeechRecognitionUseCase(speechToTextRepository = get()) }
     single { StopSpeechRecognitionUseCase(speechToTextRepository = get()) }
@@ -30,5 +31,6 @@ val useCaseModule = module {
     single { ObserveTTSStateUseCase(get()) }
     single { ReleaseTTSUseCase(get()) }
     single { SpeakTextUseCase(get()) }
+    single { TranslatorTextUseCase(get()) }
 
 }
