@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.livevoicetranslator_rd.domain.setActivityProvider
 import com.example.livevoicetranslator_rd.presentation.app.App
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.ClipboardProvider
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.ClipboardService
@@ -26,7 +27,7 @@ class MainActivity : ComponentActivity() {
                 single<Activity> { this@MainActivity }
             }
         )
-     //   setActivityProvider { this }
+        setActivityProvider { this }
         setContent {
             App()
         }
