@@ -50,7 +50,7 @@ fun TranslateScreen(
 
         Column {
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text("Detected: ${uiState.detectedLanguage ?: "--"}")
+                Text("Detected: ${uiState.languageDetectionResult.languageCode ?: "--"}")
                 Text("${uiState.charCount} chars")
             }
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -63,6 +63,11 @@ fun TranslateScreen(
 
         when (val ms = uiState.modelDownloadState) {
             is ModelDownloadState.Downloading -> {
+                /*if (uiState.modelDownloadState is ModelDownloadState.Downloading) {
+                    CircularProgressIndicator()
+                    Text("Downloading model for ${uiState.detectedLanguage ?: "…"}")
+                }*/
+
                 Column {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                     Spacer(Modifier.height(4.dp))
@@ -128,8 +133,9 @@ fun TranslateScreen(
         Text("History", style = MaterialTheme.typography.titleMedium)
         Column(modifier = Modifier.fillMaxWidth()) {
             uiState.history.take(8).forEach { item ->
+                // later create another data class for showing histories
                 Text(
-                    "${item.original} → ${item.translated}",
+                    "${item.engine} → ${item.translatedText}",
                     modifier = Modifier.padding(vertical = 4.dp)
                 )
             }
@@ -142,7 +148,7 @@ fun TargetLanguageDropdown(
     viewModel: TranslateViewModel = koinViewModel()
 ) {
     val uiState = viewModel.uiState.value
-    val languages = viewModel.mlKitSupportedLanguages
+    val languages = mlKitSupportedLanguages
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -174,5 +180,65 @@ fun TargetLanguageDropdown(
         }
     }
 }
+
+val mlKitSupportedLanguages = mapOf(
+    "af" to "Afrikaans",
+    "ar" to "Arabic",
+    "be" to "Belarusian",
+    "bg" to "Bulgarian",
+    "bn" to "Bengali",
+    "ca" to "Catalan",
+    "cs" to "Czech",
+    "da" to "Danish",
+    "de" to "German",
+    "el" to "Greek",
+    "en" to "English",
+    "eo" to "Esperanto",
+    "es" to "Spanish",
+    "et" to "Estonian",
+    "fa" to "Persian",
+    "fi" to "Finnish",
+    "fr" to "French",
+    "ga" to "Irish",
+    "gl" to "Galician",
+    "gu" to "Gujarati",
+    "he" to "Hebrew",
+    "hi" to "Hindi",
+    "hr" to "Croatian",
+    "ht" to "Haitian Creole",
+    "hu" to "Hungarian",
+    "id" to "Indonesian",
+    "is" to "Icelandic",
+    "it" to "Italian",
+    "ja" to "Japanese",
+    "ka" to "Georgian",
+    "ko" to "Korean",
+    "lt" to "Lithuanian",
+    "lv" to "Latvian",
+    "mk" to "Macedonian",
+    "mr" to "Marathi",
+    "ms" to "Malay",
+    "mt" to "Maltese",
+    "nl" to "Dutch",
+    "no" to "Norwegian",
+    "pl" to "Polish",
+    "pt" to "Portuguese",
+    "ro" to "Romanian",
+    "ru" to "Russian",
+    "sk" to "Slovak",
+    "sl" to "Slovenian",
+    "sq" to "Albanian",
+    "sr" to "Serbian",
+    "sv" to "Swedish",
+    "sw" to "Swahili",
+    "ta" to "Tamil",
+    "te" to "Telugu",
+    "th" to "Thai",
+    "tr" to "Turkish",
+    "uk" to "Ukrainian",
+    "ur" to "Urdu",
+    "vi" to "Vietnamese",
+    "zh" to "Chinese"
+)
 
 

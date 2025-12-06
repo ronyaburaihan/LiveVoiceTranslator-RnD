@@ -3,17 +3,19 @@ package com.example.livevoicetranslator_rd.core.di
 import com.example.livevoicetranslator_rd.core.platform.ClipboardService
 import com.example.livevoicetranslator_rd.core.platform.ShareService
 import com.example.livevoicetranslator_rd.core.platform.TTSService
-import android.app.Activity
 import com.example.livevoicetranslator_rd.data.source.MLKitTranslationDataSource
-import com.example.livevoicetranslator_rd.data.source.MLTranslator
 import org.koin.android.ext.koin.androidContext
 import com.example.livevoicetranslator_rd.core.platform.SpeechToText
+import com.example.livevoicetranslator_rd.data.source.MLKitLanguageDetectionDataSource
+import com.example.livevoicetranslator_rd.data.source.provideMLKitLanguageDetection
+import com.example.livevoicetranslator_rd.data.source.provideMLKitTranslation
 import com.example.livevoicetranslator_rd.presentation.screen.conversation.ConversationViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 actual val platformModule = module {
-    single<MLTranslator> { MLKitTranslationDataSource() }
+    single<MLKitTranslationDataSource> { provideMLKitTranslation() }
+    single<MLKitLanguageDetectionDataSource> { provideMLKitLanguageDetection() }
     single { ClipboardService(androidContext()) }
     single { ShareService(androidContext()) }
     single { TTSService(androidContext()) }

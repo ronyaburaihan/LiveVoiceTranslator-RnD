@@ -2,7 +2,8 @@ package com.example.livevoicetranslator_rd.presentation.screen.translate
 
 import com.example.livevoicetranslator_rd.domain.model.LanguageDetectionResult
 import com.example.livevoicetranslator_rd.domain.model.ModelDownloadState
-import com.example.livevoicetranslator_rd.domain.model.TranslationResult
+import com.example.livevoicetranslator_rd.domain.model.OrchestratorResult
+import com.example.livevoicetranslator_rd.domain.model.TranslationEngine
 
 
 data class TranslateUiState(
@@ -10,7 +11,8 @@ data class TranslateUiState(
     val targetLang: String = "en",
     val detectedLanguage: String? = null,
     val translatedText: String? = null,
-    val history: List<TranslationResult> = emptyList(),
+    val detectedEngine: TranslationEngine? = null,
+    val history: List<OrchestratorResult> = emptyList(),
     val charCount: Int = 0,
     val isLoading: Boolean = false,
     val languageDetectionResult: LanguageDetectionResult = LanguageDetectionResult(
