@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.androidx.room)
+    kotlin("native.cocoapods")
 }
 
 kotlin {
@@ -27,6 +28,28 @@ kotlin {
         }
     }
 
+    cocoapods {
+        summary = "Compose application framework"
+        homepage = "empty"
+        version = "1.16.2"
+        ios.deploymentTarget = "14.0"
+        
+        pod("GoogleMLKit/Translate") {
+            version = "~> 4.0.0"
+            extraOpts += listOf("-compiler-option", "-fmodules")
+            moduleName = "MLKitTranslate"
+        }
+        pod("GoogleMLKit/LanguageID") {
+            version = "~> 4.0.0"
+            extraOpts += listOf("-compiler-option", "-fmodules")
+            moduleName = "MLKitLanguageID"
+        }
+        pod("MLKitCommon") {
+            version = "~> 9.0.0"
+            moduleName = "MLKitCommon"
+        }
+    }
+
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
@@ -34,6 +57,7 @@ kotlin {
 
             implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.android)
+            implementation(libs.koin.compose)
 
             //Room
             implementation(libs.androidx.room.sqlite.wrapper)
@@ -83,7 +107,6 @@ kotlin {
 
             // Koin
             api(libs.koin.core)
-            implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
 
             // Ktor
