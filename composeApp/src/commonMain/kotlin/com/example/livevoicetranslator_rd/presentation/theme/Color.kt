@@ -113,4 +113,7 @@ val yearlyBackground = Color(0xFFFEFDE2)
 val monthlyBackground = Color(0xFFE2F2FE)
 val defaultCardBorder = Color(0xFFEEEEEE)
 val billingDescriptionColor = Color(0xFFA7A7A7)
+val billingDescriptionColor2 = Color(0xFFBDBDBD)
+val premiumTextColor = Color(0xFFFFE120)
+
 

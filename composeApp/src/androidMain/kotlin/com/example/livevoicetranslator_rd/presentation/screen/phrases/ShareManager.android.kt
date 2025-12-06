@@ -15,7 +15,7 @@ actual class ShareManager(private val context: Context) {
             title?.let { putExtra(Intent.EXTRA_SUBJECT, it) }
         }
 
-        val chooser = Intent.createChooser(intent, title ?: "Share")
+        val chooser = Intent.createChooser(intent, title ?: "Share Via")
         chooser.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         context.startActivity(chooser)
     }

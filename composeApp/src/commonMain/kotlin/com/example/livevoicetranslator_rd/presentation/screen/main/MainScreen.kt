@@ -116,9 +116,9 @@ fun MainScreenContent(
             NavHost(
                 modifier = Modifier.weight(1f),
                 navController = navController,
-                startDestination = ScreenRoute.Conservation
+                startDestination = ScreenRoute.Conversation
             ) {
-                appNavComposable<ScreenRoute.Conservation> {
+                appNavComposable<ScreenRoute.Conversation> {
                     ConversationScreen()
                 }
                 appNavComposable<ScreenRoute.Translate> {

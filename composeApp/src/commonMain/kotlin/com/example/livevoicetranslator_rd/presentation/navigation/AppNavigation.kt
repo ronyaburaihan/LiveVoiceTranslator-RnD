@@ -21,6 +21,7 @@ import com.example.livevoicetranslator_rd.presentation.app.AppState
 import com.example.livevoicetranslator_rd.presentation.screen.camera.result.OCRResultScreen
 import com.example.livevoicetranslator_rd.presentation.screen.camera.result.ResultViewModel
 import com.example.livevoicetranslator_rd.presentation.screen.main.MainScreen
+import com.example.livevoicetranslator_rd.presentation.screen.offer.OfferScreen
 import com.example.livevoicetranslator_rd.presentation.screen.onboard.OnBoardingScreen
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhraseDetailScreen
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhrasesScreen
@@ -103,6 +104,9 @@ fun AppNavHost(
             SettingScreen(
                 title = title
             )
+        }
+        appNavComposable<ScreenRoute.Offer> {
+            OfferScreen()
         }
         appNavComposable<ScreenRoute.OCRResultScreen> { backStackEntry ->
             OCRResultScreen(

@@ -49,7 +49,7 @@ import com.example.livevoicetranslator_rd.presentation.util.LocalAppState
 import com.example.livevoicetranslator_rd.presentation.theme.PrimaryBrush
 import livevoicetranslatorrd.composeapp.generated.resources.Res
 import livevoicetranslatorrd.composeapp.generated.resources.camera
-import livevoicetranslatorrd.composeapp.generated.resources.conservation
+import livevoicetranslatorrd.composeapp.generated.resources.conversation
 import livevoicetranslatorrd.composeapp.generated.resources.ic_camera
 import livevoicetranslatorrd.composeapp.generated.resources.ic_camera_selected
 import livevoicetranslatorrd.composeapp.generated.resources.ic_conversation
@@ -224,8 +224,8 @@ sealed class AppBottomNavItem(
     val unselectedIcon: DrawableResource,
 ) {
     object Conservation : AppBottomNavItem(
-        label = Res.string.conservation,
-        route = ScreenRoute.Conservation,
+        label = Res.string.conversation,
+        route = ScreenRoute.Conversation,
         selectedIcon = Res.drawable.ic_conversation_selected,
         unselectedIcon = Res.drawable.ic_conversation,
     )
