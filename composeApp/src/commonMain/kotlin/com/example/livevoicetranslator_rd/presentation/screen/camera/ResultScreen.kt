@@ -135,7 +135,10 @@ fun ResultScreen(
                             lineHeightMultiplier = 1.15f // smoother for OCR
                         )
                         val translatedText by produceState(initialValue = block.text, block.text) {
-                            value = translateViewModel.translatePart(block.text)
+                            value = translateViewModel.translatePart(
+                                ocrResult.detectedLanguage ?: "en",
+                                block.text
+                            )
                         }
                         // Draw OCR block text at exact image coordinates
                         Text(
