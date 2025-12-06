@@ -10,7 +10,7 @@ sealed class ScreenRoute {
     object Main : ScreenRoute()
 
     @Serializable
-    object Conservation : ScreenRoute()
+    object Conversation : ScreenRoute()
 
     @Serializable
     object Translate : ScreenRoute()

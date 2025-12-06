@@ -59,6 +59,7 @@ import livevoicetranslatorrd.composeapp.generated.resources.ic_offline_translati
 import livevoicetranslatorrd.composeapp.generated.resources.ic_premium_golden
 import livevoicetranslatorrd.composeapp.generated.resources.ic_voice_custom
 import livevoicetranslatorrd.composeapp.generated.resources.img_mic
+import livevoicetranslatorrd.composeapp.generated.resources.offer_title
 import livevoicetranslatorrd.composeapp.generated.resources.premium_billing_description
 import livevoicetranslatorrd.composeapp.generated.resources.start_free_trial
 import org.jetbrains.compose.resources.painterResource
@@ -69,25 +70,18 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun OfferScreen() {
     val navController = LocalNavController.current
 
-    OfferScreenContent(
-        onClose = { navController.navigateUp() },
-        onStartTrial = {
-        }
-    )
+    OfferScreenContent(onClose = { navController.navigateUp() }, onStartTrial = {})
 
 }
 
 @Composable
 fun OfferScreenContent(
-    onClose: () -> Unit = {},
-    onStartTrial: () -> Unit = {}
+    onClose: () -> Unit = {}, onStartTrial: () -> Unit = {}
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                headerBrush
-            ).navigationBarsPadding()
+        modifier = Modifier.fillMaxSize().background(
+            headerBrush
+        ).navigationBarsPadding()
     ) {
         Box(modifier = Modifier.matchParentSize()) {
             Image(
@@ -134,7 +128,7 @@ fun OfferScreenContent(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Text(
-                        text = "Try Premium for Free",
+                        text = stringResource(Res.string.offer_title),
                         style = MaterialTheme.typography.displaySmall,
                         color = premiumTextColor,
                         textAlign = TextAlign.Center
@@ -182,7 +176,7 @@ fun OfferScreenContent(
                         disabledBackground = Color.White,
                         cornerRadius = dimens.cornerRadiusSmall,
                         contentColor = PrimaryColor,
-                        containerBrush = SolidColor(Color.White)
+                        containerBrush = SolidColor(MaterialTheme.colorScheme.surface)
                     )
 
                     Spacer(modifier = Modifier.height(12.dp))
