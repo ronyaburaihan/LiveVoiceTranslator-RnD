@@ -50,28 +50,29 @@ class AndroidTranslationOrchestratorDataSource(
         val tgtNorm = normalizeLangOrNull(target) ?: target
 
         // decide priority
-        val useAiPreferred = shouldPreferAi(srcNorm, tgtNorm)
-
-        // Try AI first if preferred
-        if (useAiPreferred) {
-            val aiResult = tryAi(text, srcNorm, tgtNorm)
-            if (aiResult.success) return aiResult
-            // else fall through to MLKit or Cloud
-        }
+//        val useAiPreferred = shouldPreferAi(srcNorm, tgtNorm)
+//
+//        // Try AI first if preferred
+//        if (useAiPreferred) {
+//            val aiResult = tryAi(text, srcNorm, tgtNorm)
+//            if (aiResult.success) return aiResult
+//            // else fall through to MLKit or Cloud
+//        }
 
         // Try ML Kit on-device (download model if needed)
         val mlResult = tryMlKit(text, srcLang = srcNorm, targetLang = tgtNorm)
         if (mlResult.success) return mlResult
 
         // If AI wasn't preferred earlier, try AI now (maybe MLKit unsupported)
-        if (!useAiPreferred) {
-            val aiResult = tryAi(text, srcNorm, tgtNorm)
-            if (aiResult.success) return aiResult
-        }
+//        if (!useAiPreferred) {
+//            val aiResult = tryAi(text, srcNorm, tgtNorm)
+//            if (aiResult.success) return aiResult
+//        }
 
         // As last resort, try Cloud
         val cloudResult = tryCloud(text, srcNorm, tgtNorm)
-        return cloudResult // could be success or failure
+//        return cloudResult // could be success or failure
+        return mlResult // could be success or failure
     }
 
     private suspend fun tryAi(text: String, sourceLang: String?, targetLang: String): OrchestratorResult {
