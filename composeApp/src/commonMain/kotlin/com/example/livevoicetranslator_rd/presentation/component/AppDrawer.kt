@@ -88,6 +88,7 @@ fun AppDrawer(
     isPremium: Boolean,
 ) {
     val navController = LocalNavController.current
+    val settingsTitle = stringResource(Res.string.settings)
     ModalDrawerSheet(
         modifier = Modifier.fillMaxHeight(),
         drawerContainerColor = Color.Transparent,
@@ -181,10 +182,15 @@ fun AppDrawer(
                     iconSize = DpSize(18.dp, 18.dp),
                     textColor = textColour,
                     iconTint = Color.Unspecified
-
                 ) {
-                    scope.launch { drawerState.close() }
+                    scope.launch {
+                        drawerState.close()
+                        navController.navigate(
+                            ScreenRoute.Settings(title = settingsTitle)
+                        )
+                    }
                 }
+
                 DrawerItem(
                     icon = Res.drawable.ic_offline_translation,
                     label = stringResource(Res.string.offline_translation),

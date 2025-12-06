@@ -35,5 +35,7 @@ sealed class ScreenRoute {
     @Serializable
     object Referral : ScreenRoute()
 
+    @Serializable
+    data class Settings(val title: String) : ScreenRoute()
 
 }

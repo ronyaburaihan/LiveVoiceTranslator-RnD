@@ -24,7 +24,7 @@ import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhraseDeta
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhrasesScreen
 import com.example.livevoicetranslator_rd.presentation.screen.premium.PremiumScreen
 import com.example.livevoicetranslator_rd.presentation.screen.referral.ReferralScreen
-import com.example.livevoicetranslator_rd.presentation.screen.translate.TranslateScreen
+import com.example.livevoicetranslator_rd.presentation.screen.settings.SettingScreen
 import com.example.livevoicetranslator_rd.presentation.util.LocalAppState
 import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
 import com.example.livevoicetranslator_rd.presentation.util.LocalSnackBarHostState
@@ -93,5 +93,12 @@ fun AppNavHost(
         appNavComposable<ScreenRoute.Referral> {
             ReferralScreen()
         }
+        appNavComposable<ScreenRoute.Settings> { backStackEntry ->
+            val title = backStackEntry.toRoute<ScreenRoute.Settings>().title
+            SettingScreen(
+                title = title
+            )
+        }
+
     }
 }
