@@ -58,12 +58,10 @@ import kotlinx.coroutines.launch
 import livevoicetranslatorrd.composeapp.generated.resources.Res
 import livevoicetranslatorrd.composeapp.generated.resources.ic_swap
 import org.jetbrains.compose.resources.painterResource
-import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun OCRResultScreen(
-    imageBase64: String?,
-    viewModel: ResultViewModel = koinViewModel()
+    viewModel: ResultViewModel
 ) {
     val navController = LocalNavController.current
     val scope = rememberCoroutineScope()
@@ -153,8 +151,7 @@ fun OCRResultScreen(
             val screenHeight = maxHeight
             val density = LocalDensity.current
 
-            val imageBytes = imageBase64?.decodeBase64()
-            val imageBitmap = imageBytes?.toImageBitmap()
+            val imageBitmap = uiState.imageBytes?.toImageBitmap()
 
             imageBitmap?.let { bitmap ->
                 // Calculate scale based on ContentScale.FillWidth
@@ -169,7 +166,7 @@ fun OCRResultScreen(
                 val offsetX = 0f // FillWidth centers horizontally by default
 
                 val cameraImage = CameraImage(
-                    imageData = imageBytes,
+                    imageData = uiState.imageBytes!!,
                     width = 0, // Unknown
                     height = 0, // Unknown
                     source = ImageSource.GALLERY
@@ -186,7 +183,7 @@ fun OCRResultScreen(
                 )
 
                 scope.launch {
-                    val ocrResponse = OCRProcessor().recognizeText(cameraImage, "hi")
+                    val ocrResponse = OCRProcessor().recognizeText(cameraImage, "en")
                     ocrResponse.onSuccess {
                         println("OCR Result: $it")
                         ocrResult = it

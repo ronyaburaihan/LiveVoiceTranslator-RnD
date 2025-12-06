@@ -58,6 +58,7 @@ import com.example.livevoicetranslator_rd.core.platform.rememberCameraController
 import com.example.livevoicetranslator_rd.core.platform.rememberPermissionState
 import com.example.livevoicetranslator_rd.domain.model.OCRResult
 import com.example.livevoicetranslator_rd.presentation.navigation.ScreenRoute
+import com.example.livevoicetranslator_rd.presentation.screen.camera.result.ResultViewModel
 import com.example.livevoicetranslator_rd.presentation.theme.PrimaryBrush
 import com.example.livevoicetranslator_rd.presentation.theme.dimens
 import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
@@ -68,7 +69,9 @@ import livevoicetranslatorrd.composeapp.generated.resources.ic_upload
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun CameraScreen() {
+fun CameraScreen(
+    viewModel: ResultViewModel
+) {
     val cameraPermissionState = rememberPermissionState(Permission.CAMERA)
     var imageByte by remember { mutableStateOf<ByteArray?>(null) }
     val navController = LocalNavController.current
@@ -89,11 +92,8 @@ fun CameraScreen() {
         val imagePicker =
             remember { com.example.livevoicetranslator_rd.core.platform.ImagePicker() }
         imagePicker.RegisterPicker { imageBytes ->
-            navController.navigate(
-                ScreenRoute.OCRResultScreen(
-                    imageBase64 = imageBytes.encodeBase64()
-                )
-            )
+            viewModel.updateImageBytes(imageBytes)
+            navController.navigate(ScreenRoute.OCRResultScreen)
         }
 
         LaunchedEffect(cameraController) {
@@ -135,11 +135,8 @@ fun CameraScreen() {
                     val result = cameraController.capturePhoto()
                     result.onSuccess { image ->
                         imageByte = image.imageData
-                        navController.navigate(
-                            ScreenRoute.OCRResultScreen(
-                                imageBase64 = image.imageData.encodeBase64()
-                            )
-                        )
+                        viewModel.updateImageBytes(image.imageData)
+                        navController.navigate(ScreenRoute.OCRResultScreen)
                         // Perform OCR on captured image
                         /*val ocrResult = OCRProcessor().recognizeText(image, "hi")
                         ocrResult.onSuccess {

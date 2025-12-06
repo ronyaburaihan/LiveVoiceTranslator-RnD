@@ -20,9 +20,7 @@ sealed class ScreenRoute {
     object Camera : ScreenRoute()
 
     @Serializable
-    data class OCRResultScreen(
-        val imageBase64: String
-    ): ScreenRoute()
+    object OCRResultScreen : ScreenRoute()
 
     @Serializable
     object Phrases : ScreenRoute()

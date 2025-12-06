@@ -28,6 +28,10 @@ class ResultViewModel(
         }
     }
 
+    fun updateImageBytes(imageBytes: ByteArray?) {
+        _uiState.update { it.copy(imageBytes = imageBytes) }
+    }
+
     suspend fun translatePart(text: String): String {
         //_uiState.update { it.copy(isLoading = true) }
 

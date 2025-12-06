@@ -5,6 +5,7 @@ import com.example.livevoicetranslator_rd.domain.model.TranslatableLanguages
 data class ResultUiState(
     val sourceLanguage: TranslatableLanguages = TranslatableLanguages.English,
     val targetLanguage: TranslatableLanguages = TranslatableLanguages.Bengali,
+    val imageBytes: ByteArray? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
 )
