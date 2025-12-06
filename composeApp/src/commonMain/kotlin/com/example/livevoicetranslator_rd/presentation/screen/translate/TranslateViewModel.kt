@@ -62,13 +62,13 @@ class TranslateViewModel(
         }
     }
 
-    suspend fun translatePart(text: String): String {
+    suspend fun translatePart(sourceLang: String, text: String): String {
         //_uiState.update { it.copy(isLoading = true) }
 
         val request = TranslationRequest(
             text = text,
-            sourceLang = "en",
-            targetLang = "bn"
+            sourceLang = sourceLang,
+            targetLang = "en"
         )
 
         val result = translateTextUseCase(request)

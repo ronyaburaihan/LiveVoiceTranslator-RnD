@@ -75,7 +75,7 @@ actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
      */
     actual override suspend fun detectLanguage(text: String): String = suspendCoroutine { cont ->
         val languageId = MLKLanguageIdentification.languageIdentification()
-        
+
         languageId.identifyLanguageForText(text) { languageCode, error ->
             if (error != null) {
                 // Return "und" (undetermined) on error
@@ -99,7 +99,7 @@ actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
             // Convert language codes to ML Kit format
             val sourceLanguage = convertToMLKitLanguage(sourceLang)
             val targetLanguage = convertToMLKitLanguage(targetLang)
-            
+
             if (sourceLanguage == null || targetLanguage == null) {
                 cont.resumeWithException(
                     Exception("Unsupported language pair: $sourceLang -> $targetLang")
@@ -112,9 +112,9 @@ actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
                 sourceLanguage = sourceLanguage,
                 targetLanguage = targetLanguage
             )
-            
+
             val translator = MLKTranslator.translatorWithOptions(options)
-            
+
             // Download model if needed and translate
             translator.downloadModelIfNeededWithCompletion { error ->
                 if (error != null) {
@@ -202,9 +202,9 @@ actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
             "uk" -> MLKTranslateLanguageUkrainian
             "ur" -> MLKTranslateLanguageUrdu
             "vi" -> MLKTranslateLanguageVietnamese
-            "zh", "zh-cn" -> MLKTranslateLanguageChinese
-            "und" -> null // Undetermined language
-            else -> null // Unsupported language
+            "zh", "zh-cn", "zh-hans", "zh-sg" -> MLKTranslateLanguageChinese // normalize variants
+            "und" -> null // Undetermined
+            else -> null
         }
     }
 
@@ -218,7 +218,7 @@ actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
         try {
             val sourceLanguage = convertToMLKitLanguage(sourceLang)
             val targetLanguage = convertToMLKitLanguage(targetLang)
-            
+
             if (sourceLanguage == null || targetLanguage == null) {
                 cont.resume(false)
                 return@suspendCoroutine
@@ -228,9 +228,9 @@ actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
                 sourceLanguage = sourceLanguage,
                 targetLanguage = targetLanguage
             )
-            
+
             val translator = MLKTranslator.translatorWithOptions(options)
-            
+
             // Check if model is downloaded by attempting to use it
             // ML Kit will return error if model is not available
             translator.downloadModelIfNeededWithCompletion { error ->
@@ -251,7 +251,7 @@ actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
         try {
             val sourceLanguage = convertToMLKitLanguage(sourceLang)
             val targetLanguage = convertToMLKitLanguage(targetLang)
-            
+
             if (sourceLanguage == null || targetLanguage == null) {
                 cont.resume(Result.failure(Exception("Unsupported language pair")))
                 return@suspendCoroutine
@@ -261,9 +261,9 @@ actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
                 sourceLanguage = sourceLanguage,
                 targetLanguage = targetLanguage
             )
-            
+
             val translator = MLKTranslator.translatorWithOptions(options)
-            
+
             translator.downloadModelIfNeededWithCompletion { error ->
                 if (error != null) {
                     cont.resume(Result.failure(Exception(error.localizedDescription)))
@@ -286,7 +286,7 @@ actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
         try {
             val sourceLanguage = convertToMLKitLanguage(sourceLang)
             val targetLanguage = convertToMLKitLanguage(targetLang)
-            
+
             if (sourceLanguage == null || targetLanguage == null) {
                 cont.resume(Result.failure(Exception("Unsupported language pair")))
                 return@suspendCoroutine
@@ -296,9 +296,9 @@ actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
                 sourceLanguage = sourceLanguage,
                 targetLanguage = targetLanguage
             )
-            
+
             val translator = MLKTranslator.translatorWithOptions(options)
-            
+
             // Delete the model using model manager
             /*MLKModelManager.modelManager().deleteDownloadedModel(
                 translator.
