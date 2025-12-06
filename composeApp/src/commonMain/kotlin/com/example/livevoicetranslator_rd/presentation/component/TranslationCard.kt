@@ -33,6 +33,7 @@ fun TranslationCard(
     translatedText: String,
     accentColor: Color,
     isLeftAccent: Boolean,
+    onSpeakClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -90,7 +91,7 @@ fun TranslationCard(
                         fontWeight = FontWeight.Medium,
                         modifier = Modifier.weight(1f)
                     )
-                    IconButton(onClick = { /* play audio */ }) {
+                    IconButton(onClick = onSpeakClick) {
                         Icon(
                             Icons.AutoMirrored.Filled.VolumeUp,
                             contentDescription = "Listen",

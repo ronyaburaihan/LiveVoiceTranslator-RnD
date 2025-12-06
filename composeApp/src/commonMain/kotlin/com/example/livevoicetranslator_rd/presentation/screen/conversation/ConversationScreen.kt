@@ -44,7 +44,8 @@ fun ConversationScreen() {
         onDismissRequest = viewModel::onDismissRequest,
         openAppSettings = viewModel::openAppSettings,
         onUiEventHandled = viewModel::onUiEventHandled,
-        onClearConversation = viewModel::clearConversation
+        onClearConversation = viewModel::clearConversation,
+        onSpeakClick = viewModel::speak
     )
     
     // Handle UI events
@@ -79,7 +80,8 @@ private fun ConversationScreenContent(
     onDismissRequest: () -> Unit,
     openAppSettings: () -> Unit,
     onUiEventHandled: () -> Unit,
-    onClearConversation: () -> Unit
+    onClearConversation: () -> Unit,
+    onSpeakClick: (String) -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -132,6 +134,7 @@ private fun ConversationScreenContent(
                     translatedText = message.translatedText,
                     accentColor = if (message.isLeftSide) GoogleBlue else GoogleGreen,
                     isLeftAccent = message.isLeftSide,
+                    onSpeakClick = { onSpeakClick(message.translatedText) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -218,7 +221,9 @@ private fun ConversationScreenContent(
                 verticalAlignment = Alignment.Top
             ) {
                 // Left Controls (Blue)
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally) {
                     MicButton(
                         color = if (uiState.isLeftMicActive) GoogleBlue.copy(alpha = 0.8f) else GoogleBlue,
                         onClick = onLeftMicClick,
@@ -249,7 +254,9 @@ private fun ConversationScreenContent(
                 }
 
                 // Right Controls (Green)
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally) {
                     MicButton(
                         color = if (uiState.isRightMicActive) GoogleGreen.copy(alpha = 0.8f) else GoogleGreen,
                         onClick = onRightMicClick,
