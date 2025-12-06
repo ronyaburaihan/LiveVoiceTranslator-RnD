@@ -8,6 +8,9 @@ import org.koin.dsl.module
 val viewModelModule = module {
     viewModel {
         TranslateViewModel(
+            clipboardService = get(),
+            shareService = get(),
+            ttsService = get(),
             translateTextUseCase = get(),
             detectLanguageUseCase = get(),
             saveFavoriteUseCase = get(),

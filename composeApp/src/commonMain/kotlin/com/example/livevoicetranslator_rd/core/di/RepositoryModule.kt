@@ -11,8 +11,7 @@ import org.koin.dsl.module
 val repositoryModule = module {
     single<TranslationRepository> {
         TranslationRepositoryImpl(
-            mlKit = get(),
-            cloud = get(),
+            orchestrator = get(),
             cache = get(),
             history = get()
         )

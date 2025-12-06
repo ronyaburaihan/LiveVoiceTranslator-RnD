@@ -1,8 +1,7 @@
 package com.example.livevoicetranslator_rd.data.source
 
-interface CloudTranslationDataSource {
-
-    suspend fun translateOnline(
+class CloudTranslationDataSourceImpl : CloudTranslationDataSource {
+    override suspend fun translateOnline(
         text: String,
         sourceLang: String?,
         targetLang: String
