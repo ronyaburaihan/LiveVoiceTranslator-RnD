@@ -2,8 +2,6 @@ package com.example.livevoicetranslator_rd.presentation.screen.settings
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.indication
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,11 +15,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CardMembership
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -46,7 +40,6 @@ import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
 import livevoicetranslatorrd.composeapp.generated.resources.Res
 import livevoicetranslatorrd.composeapp.generated.resources.ic_app_language
 import livevoicetranslatorrd.composeapp.generated.resources.ic_auto_save_history
-import livevoicetranslatorrd.composeapp.generated.resources.ic_globe
 import livevoicetranslatorrd.composeapp.generated.resources.ic_history
 import livevoicetranslatorrd.composeapp.generated.resources.ic_premium
 import livevoicetranslatorrd.composeapp.generated.resources.ic_read_translation

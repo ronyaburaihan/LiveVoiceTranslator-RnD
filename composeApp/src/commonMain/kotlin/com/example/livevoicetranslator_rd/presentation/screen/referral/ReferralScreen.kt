@@ -1,8 +1,6 @@
 package com.example.livevoicetranslator_rd.presentation.screen.referral
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,7 +19,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -32,7 +29,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -44,7 +40,6 @@ import androidx.compose.ui.unit.dp
 import com.example.livevoicetranslator_rd.presentation.component.AppTopBar
 import com.example.livevoicetranslator_rd.presentation.component.AppTopBarTitle
 import com.example.livevoicetranslator_rd.presentation.component.CustomSlider
-import com.example.livevoicetranslator_rd.presentation.component.LanguageDropdown
 import com.example.livevoicetranslator_rd.presentation.component.PrimaryButton
 import com.example.livevoicetranslator_rd.presentation.theme.dimens
 import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
@@ -52,7 +47,6 @@ import livevoicetranslatorrd.composeapp.generated.resources.Res
 import livevoicetranslatorrd.composeapp.generated.resources.ic_copy_referral
 import livevoicetranslatorrd.composeapp.generated.resources.ic_gift_box
 import livevoicetranslatorrd.composeapp.generated.resources.ic_or
-import livevoicetranslatorrd.composeapp.generated.resources.ic_swap
 import livevoicetranslatorrd.composeapp.generated.resources.referral__copy_button
 import livevoicetranslatorrd.composeapp.generated.resources.referral__subtitle
 import livevoicetranslatorrd.composeapp.generated.resources.referral__title

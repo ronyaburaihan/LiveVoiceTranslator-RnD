@@ -86,7 +86,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun PremiumScreen() {
-    var selectedPlan by remember { mutableStateOf("monthly") }
+    var selectedPlan by remember { mutableStateOf("yearly") }
     val navController = LocalNavController.current
 
     PremiumScreenContent(
