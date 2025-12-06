@@ -8,7 +8,6 @@ import com.example.livevoicetranslator_rd.domain.usecase.DetectLanguageUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.GetHistoryUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.SaveFavoriteUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.TranslateTextUseCase
-import com.example.livevoicetranslator_rd.presentation.screen.translate.TranslateUiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,7 +67,7 @@ class TranslateViewModel(
 
         val request = TranslationRequest(
             text = text,
-            sourceLang = _uiState.value.detectedLanguage,
+            sourceLang = "en",
             targetLang = "bn"
         )
 

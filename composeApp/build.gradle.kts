@@ -18,35 +18,22 @@ kotlin {
         }
     }
 
-    listOf(
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "ComposeApp"
-            isStatic = true
-        }
-    }
+    iosArm64()
+    iosSimulatorArm64()
 
     cocoapods {
+        name = "ComposeApp"
         summary = "Compose application framework"
         homepage = "empty"
         version = "1.16.2"
-        ios.deploymentTarget = "14.0"
-        
-        pod("GoogleMLKit/Translate") {
-            version = "~> 4.0.0"
-            extraOpts += listOf("-compiler-option", "-fmodules")
-            moduleName = "MLKitTranslate"
-        }
-        pod("GoogleMLKit/LanguageID") {
-            version = "~> 4.0.0"
-            extraOpts += listOf("-compiler-option", "-fmodules")
-            moduleName = "MLKitLanguageID"
-        }
-        pod("MLKitCommon") {
-            version = "~> 9.0.0"
-            moduleName = "MLKitCommon"
+        ios.deploymentTarget = "15.6"
+
+        pod("GoogleMLKit/Translate", "~> 4.0.0", moduleName = "MLKitTranslate")
+        pod("GoogleMLKit/LanguageID", "~> 4.0.0", moduleName = "MLKitLanguageID")
+
+        framework {
+            baseName = "ComposeApp"
+            isStatic = true
         }
     }
 
