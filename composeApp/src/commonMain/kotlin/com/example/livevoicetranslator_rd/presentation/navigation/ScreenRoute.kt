@@ -2,6 +2,7 @@ package com.example.livevoicetranslator_rd.presentation.navigation
 
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.CategoryData
 import kotlinx.serialization.Serializable
+import kotlin.io.encoding.Base64
 
 @Serializable
 sealed class ScreenRoute {
@@ -17,6 +18,11 @@ sealed class ScreenRoute {
 
     @Serializable
     object Camera : ScreenRoute()
+
+    @Serializable
+    data class OCRResultScreen(
+        val imageBase64: String
+    ): ScreenRoute()
 
     @Serializable
     object Phrases : ScreenRoute()

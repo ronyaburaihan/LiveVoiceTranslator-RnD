@@ -19,6 +19,7 @@ import platform.UIKit.UIGraphicsGetImageFromCurrentImageContext
 import platform.UIKit.UIImage
 import platform.UIKit.UIImageJPEGRepresentation
 import platform.posix.memcpy
+import platform.posix.memmove
 import kotlin.math.min
 
 actual fun ByteArray.toImageBitmap(): ImageBitmap {
@@ -99,4 +100,26 @@ actual fun ByteArray.encodeBase64(): String {
         )
     }
     return nsData.base64EncodedStringWithOptions(0u)
+}
+
+@OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
+actual fun String.decodeBase64(): ByteArray {
+    // Decode Base64 string into NSData
+    val nsData = NSData.create(
+        base64EncodedString = this,
+        options = 0u
+    ) ?: return ByteArray(0)
+
+    val length = nsData.length.toInt()
+    val byteArray = ByteArray(length)
+
+    byteArray.usePinned { pinned ->
+        memmove(
+            pinned.addressOf(0),
+            nsData.bytes,
+            nsData.length
+        )
+    }
+
+    return byteArray
 }

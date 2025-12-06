@@ -18,6 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.toRoute
 import com.example.livevoicetranslator_rd.presentation.app.AppState
+import com.example.livevoicetranslator_rd.presentation.screen.camera.OCRResultScreen
 import com.example.livevoicetranslator_rd.presentation.screen.main.MainScreen
 import com.example.livevoicetranslator_rd.presentation.screen.onboard.OnBoardingScreen
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhraseDetailScreen
@@ -97,6 +98,11 @@ fun AppNavHost(
             val title = backStackEntry.toRoute<ScreenRoute.Settings>().title
             SettingScreen(
                 title = title
+            )
+        }
+        appNavComposable<ScreenRoute.OCRResultScreen> { backStackEntry ->
+            OCRResultScreen(
+                imageBase64 = backStackEntry.toRoute<ScreenRoute.OCRResultScreen>().imageBase64
             )
         }
 

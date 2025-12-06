@@ -20,12 +20,15 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
@@ -34,18 +37,24 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.livevoicetranslator_rd.core.platform.OCRProcessor
+import com.example.livevoicetranslator_rd.core.platform.decodeBase64
+import com.example.livevoicetranslator_rd.core.platform.toImageBitmap
+import com.example.livevoicetranslator_rd.domain.model.CameraImage
+import com.example.livevoicetranslator_rd.domain.model.ImageSource
 import com.example.livevoicetranslator_rd.domain.model.OCRResult
 import com.example.livevoicetranslator_rd.presentation.screen.translate.TranslateViewModel
+import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun ResultScreen(
-    imageBitmap: ImageBitmap?,
-    ocrResult: OCRResult,
-    onBack: () -> Unit,
-    onTranslate: (String) -> Unit = {},
+fun OCRResultScreen(
+    imageBase64: String?,
     translateViewModel: TranslateViewModel = koinViewModel()
 ) {
+    val scope = rememberCoroutineScope()
+    var ocrResult by remember { mutableStateOf<OCRResult?>(null) }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
@@ -55,7 +64,7 @@ fun ResultScreen(
                     .padding(16.dp)
             ) {
                 IconButton(
-                    onClick = onBack,
+                    onClick = {},
                     modifier = Modifier.align(Alignment.TopStart)
                 ) {
                     Icon(
@@ -85,6 +94,9 @@ fun ResultScreen(
             val screenHeight = maxHeight
             val density = LocalDensity.current
 
+            val imageBytes = imageBase64?.decodeBase64()
+            val imageBitmap = imageBytes?.toImageBitmap()
+
             imageBitmap?.let { bitmap ->
                 // Calculate scale based on ContentScale.FillWidth
                 val imageAspect = bitmap.height.toFloat() / bitmap.width.toFloat()
@@ -97,6 +109,13 @@ fun ResultScreen(
                 val offsetY = (screenHeight.toPx(density) - displayHeight) / 2f
                 val offsetX = 0f // FillWidth centers horizontally by default
 
+                val cameraImage = CameraImage(
+                    imageData = imageBytes,
+                    width = 0, // Unknown
+                    height = 0, // Unknown
+                    source = ImageSource.GALLERY
+                )
+
                 // Display Image
                 Image(
                     bitmap = bitmap,
@@ -107,10 +126,21 @@ fun ResultScreen(
                         .align(Alignment.Center)
                 )
 
+                scope.launch {
+                    val ocrResponse = OCRProcessor().recognizeText(cameraImage, "hi")
+                    ocrResponse.onSuccess {
+                        println("OCR Result: $it")
+                        ocrResult = it
+                    }.onFailure {
+                        println("OCR Error: $it")
+                        ocrResult = null
+                    }
+                }
+
                 // Overlay OCR Blocks
-                ocrResult.blocks
-                    .filter { it.confidence > 0.45f }
-                    .forEach { block ->
+                ocrResult?.blocks
+                    ?.filter { it.confidence > 0.45f }
+                    ?.forEach { block ->
                         val box = block.boundingBox
                         // Bounding boxes are normalized (0-1), so multiply by display dimensions
                         // Clamp values to ensure we don't exceed bounds
@@ -136,7 +166,7 @@ fun ResultScreen(
                         )
                         val translatedText by produceState(initialValue = block.text, block.text) {
                             value = translateViewModel.translatePart(
-                                ocrResult.detectedLanguage ?: "en",
+                                ocrResult?.detectedLanguage ?: "en",
                                 block.text
                             )
                         }

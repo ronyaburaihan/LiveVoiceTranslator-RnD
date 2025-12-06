@@ -16,14 +16,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FlashOff
 import androidx.compose.material.icons.filled.FlashOn
-import androidx.compose.material.icons.filled.SwapHoriz
-import com.example.livevoicetranslator_rd.core.platform.toImageBitmap
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.TextFields
 import androidx.compose.material3.Button
@@ -56,16 +52,15 @@ import androidx.compose.ui.unit.dp
 import com.example.livevoicetranslator_rd.core.platform.CameraController
 import com.example.livevoicetranslator_rd.core.platform.CameraPreview
 import com.example.livevoicetranslator_rd.core.platform.FlashMode
-import com.example.livevoicetranslator_rd.core.platform.OCRProcessor
 import com.example.livevoicetranslator_rd.core.platform.Permission
+import com.example.livevoicetranslator_rd.core.platform.encodeBase64
 import com.example.livevoicetranslator_rd.core.platform.rememberCameraController
 import com.example.livevoicetranslator_rd.core.platform.rememberPermissionState
-import com.example.livevoicetranslator_rd.core.platform.toImageBitmap
-import com.example.livevoicetranslator_rd.domain.model.CameraImage
-import com.example.livevoicetranslator_rd.domain.model.ImageSource
 import com.example.livevoicetranslator_rd.domain.model.OCRResult
+import com.example.livevoicetranslator_rd.presentation.navigation.ScreenRoute
 import com.example.livevoicetranslator_rd.presentation.theme.PrimaryBrush
 import com.example.livevoicetranslator_rd.presentation.theme.dimens
+import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import livevoicetranslatorrd.composeapp.generated.resources.Res
@@ -76,6 +71,7 @@ import org.jetbrains.compose.resources.painterResource
 fun CameraScreen() {
     val cameraPermissionState = rememberPermissionState(Permission.CAMERA)
     var imageByte by remember { mutableStateOf<ByteArray?>(null) }
+    val navController = LocalNavController.current
 
     LaunchedEffect(Unit) {
         if (!cameraPermissionState.isGranted) {
@@ -93,34 +89,11 @@ fun CameraScreen() {
         val imagePicker =
             remember { com.example.livevoicetranslator_rd.core.platform.ImagePicker() }
         imagePicker.RegisterPicker { imageBytes ->
-            imageByte = imageBytes
-            scope.launch {
-                println("Trying to OCR: imageBytes: ${imageBytes.size}")
-                // We need to convert bytes to CameraImage or InputImage
-                // Since we don't have easy conversion here without platform code,
-                // we might need to move this logic to a helper or use ImageProcessor if it supports ByteArray
-                // For now, let's try to use OCRProcessor directly if we can create InputImage from bytes (Android)
-                // But this is common code.
-                // We should add `recognizeTextFromBytes` to OCRProcessor?
-                // Or just use the existing recognizeText(CameraImage)
-
-                val cameraImage = CameraImage(
-                    imageData = imageBytes,
-                    width = 0, // Unknown
-                    height = 0, // Unknown
-                    source = ImageSource.GALLERY
+            navController.navigate(
+                ScreenRoute.OCRResultScreen(
+                    imageBase64 = imageBytes.encodeBase64()
                 )
-
-                val ocrResult = OCRProcessor()
-                    .recognizeText(cameraImage, "hi")
-                ocrResult.onSuccess {
-                    println("OCR Result: $it")
-                    capturedOcrResult = it
-                }.onFailure {
-                    println("OCR Error: $it")
-                    capturedOcrResult = null
-                }
-            }
+            )
         }
 
         LaunchedEffect(cameraController) {
@@ -136,58 +109,48 @@ fun CameraScreen() {
             }
         }
 
-        if (capturedOcrResult != null) {
-            ResultScreen(
-                ocrResult = capturedOcrResult!!,
-                imageBitmap = imageByte?.toImageBitmap(),
-                onBack = {
-                    capturedOcrResult = null
-                    scope.launch { cameraController.startPreview() }
-                },
-                onTranslate = { text ->
-                    // Handle translation navigation or logic
-                    println("Translate: $text")
-                }
-            )
-        } else {
-            CameraScreenContent(
-                cameraController = cameraController,
-                isLiveMode = isLiveMode,
-                capturedOcrResult = capturedOcrResult,
-                onToggleLiveMode = {
-                    isLiveMode = !isLiveMode
-                    scope.launch {
-                        if (isLiveMode) {
-                            cameraController.startLiveMode { text ->
-                                detectedText = text
-                            }
-                        } else {
-                            cameraController.stopLiveMode()
-                            detectedText = ""
+        CameraScreenContent(
+            cameraController = cameraController,
+            isLiveMode = isLiveMode,
+            capturedOcrResult = capturedOcrResult,
+            onToggleLiveMode = {
+                isLiveMode = !isLiveMode
+                scope.launch {
+                    if (isLiveMode) {
+                        cameraController.startLiveMode { text ->
+                            detectedText = text
                         }
-                    }
-                },
-                onPickImage = {
-                    imagePicker.pickImage()
-                },
-                scope = scope,
-                onCapture = {
-                    scope.launch {
-                        val result = cameraController.capturePhoto()
-                        result.onSuccess { image ->
-                            imageByte = image.imageData
-                            // Perform OCR on captured image
-                            val ocrResult = OCRProcessor().recognizeText(image, "zh-Hans")
-                            ocrResult.onSuccess {
-                                capturedOcrResult = it
-                            }.onFailure {
-                                capturedOcrResult = null
-                            }
-                        }
+                    } else {
+                        cameraController.stopLiveMode()
+                        detectedText = ""
                     }
                 }
-            )
-        }
+            },
+            onPickImage = {
+                imagePicker.pickImage()
+            },
+            scope = scope,
+            onCapture = {
+                scope.launch {
+                    val result = cameraController.capturePhoto()
+                    result.onSuccess { image ->
+                        imageByte = image.imageData
+                        navController.navigate(
+                            ScreenRoute.OCRResultScreen(
+                                imageBase64 = image.imageData.encodeBase64()
+                            )
+                        )
+                        // Perform OCR on captured image
+                        /*val ocrResult = OCRProcessor().recognizeText(image, "hi")
+                        ocrResult.onSuccess {
+                            capturedOcrResult = it
+                        }.onFailure {
+                            capturedOcrResult = null
+                        }*/
+                    }
+                }
+            }
+        )
     } else {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Text("Camera permission required")
