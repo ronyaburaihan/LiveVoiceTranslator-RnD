@@ -38,4 +38,7 @@ sealed class ScreenRoute {
     @Serializable
     data class Settings(val title: String) : ScreenRoute()
 
+    @Serializable
+    object Offer : ScreenRoute()
+
 }
