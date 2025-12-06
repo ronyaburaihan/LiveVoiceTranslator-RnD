@@ -42,3 +42,7 @@ actual fun ByteArray.resizeAndCompress(
 actual fun ByteArray.encodeBase64(): String {
     return Base64.encodeToString(this, Base64.NO_WRAP)
 }
+
+actual fun String.decodeBase64(): ByteArray {
+    return Base64.decode(this, Base64.NO_WRAP)
+}

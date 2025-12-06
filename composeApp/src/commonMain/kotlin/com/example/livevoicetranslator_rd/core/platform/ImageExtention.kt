@@ -11,3 +11,5 @@ expect fun ByteArray.resizeAndCompress(
 ): ByteArray
 
 expect fun ByteArray.encodeBase64(): String
+
+expect fun String.decodeBase64(): ByteArray

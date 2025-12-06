@@ -79,10 +79,10 @@ actual class MLKitTranslationDataSource actual constructor() : MLTranslator {
         languageId.identifyLanguageForText(text) { languageCode, error ->
             if (error != null) {
                 // Return "und" (undetermined) on error
-                cont.resume("und")
+                cont.resume("en")
             } else {
                 // languageCode will be "und" if language cannot be determined
-                cont.resume(languageCode ?: "und")
+                cont.resume(languageCode ?: "en")
             }
         }
     }
