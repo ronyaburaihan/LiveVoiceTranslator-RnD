@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.livevoicetranslator_rd.domain.model.TranslatableLanguages
 import com.example.livevoicetranslator_rd.presentation.theme.PrimaryColor
 import com.example.livevoicetranslator_rd.presentation.theme.SecondaryColor
 
@@ -36,7 +37,7 @@ fun LanguageDropdown(
     onLanguageChange: (String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val languages = listOf("English", "Spanish", "French", "German", "Italian")
+    val languages = TranslatableLanguages.entries
 
     Box {
         Surface(
@@ -72,9 +73,9 @@ fun LanguageDropdown(
         ) {
             languages.forEach { lang ->
                 DropdownMenuItem(
-                    text = { Text(lang) },
+                    text = { Text(lang.title) },
                     onClick = {
-                        onLanguageChange(lang)
+                        onLanguageChange(lang.code)
                         expanded = false
                     }
                 )

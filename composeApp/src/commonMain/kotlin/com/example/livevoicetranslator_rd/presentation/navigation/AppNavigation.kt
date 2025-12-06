@@ -18,7 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.toRoute
 import com.example.livevoicetranslator_rd.presentation.app.AppState
-import com.example.livevoicetranslator_rd.presentation.screen.camera.OCRResultScreen
+import com.example.livevoicetranslator_rd.presentation.screen.camera.result.OCRResultScreen
 import com.example.livevoicetranslator_rd.presentation.screen.main.MainScreen
 import com.example.livevoicetranslator_rd.presentation.screen.onboard.OnBoardingScreen
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhraseDetailScreen
