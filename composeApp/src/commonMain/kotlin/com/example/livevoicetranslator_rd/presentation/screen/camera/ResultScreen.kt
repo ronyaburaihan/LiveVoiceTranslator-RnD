@@ -19,6 +19,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,13 +35,16 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.livevoicetranslator_rd.domain.model.OCRResult
+import com.example.livevoicetranslator_rd.presentation.screen.translate.TranslateViewModel
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun ResultScreen(
     imageBitmap: ImageBitmap?,
     ocrResult: OCRResult,
     onBack: () -> Unit,
-    onTranslate: (String) -> Unit = {}
+    onTranslate: (String) -> Unit = {},
+    translateViewModel: TranslateViewModel = koinViewModel()
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -129,10 +134,12 @@ fun ResultScreen(
                             minFontSize = 6f,
                             lineHeightMultiplier = 1.15f // smoother for OCR
                         )
-
+                        val translatedText by produceState(initialValue = block.text, block.text) {
+                            value = translateViewModel.translatePart(block.text)
+                        }
                         // Draw OCR block text at exact image coordinates
                         Text(
-                            text = block.text,
+                            text = translatedText,
                             color = Color.White,
                             style = MaterialTheme.typography.bodySmall.copy(
                                 fontSize = fontSize.sp,

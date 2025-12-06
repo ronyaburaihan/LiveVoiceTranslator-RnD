@@ -8,7 +8,6 @@ import com.example.livevoicetranslator_rd.domain.usecase.DetectLanguageUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.GetHistoryUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.SaveFavoriteUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.TranslateTextUseCase
-import com.example.livevoicetranslator_rd.presentation.screen.translate.TranslateUiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,12 +29,13 @@ class TranslateViewModel(
 
     private var detectJob: Job? = null
 
-    fun getHistory(){
+    fun getHistory() {
         viewModelScope.launch {
             val result = getHistoryUseCase()
             _uiState.update { it.copy(history = result) }
         }
     }
+
     fun onInputChanged(text: String) {
         _uiState.update { it.copy(inputText = text, charCount = text.length) }
 
@@ -47,13 +47,13 @@ class TranslateViewModel(
         }
     }
 
-    fun translate()  {
+    fun translate() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             val request = TranslationRequest(
                 text = uiState.value.inputText,
-                sourceLang = uiState.value.detectedLanguage,
-                targetLang = "en"
+                sourceLang = "en",
+                targetLang = "bn"
             )
             val result = translateTextUseCase(request)
             _uiState.update {
@@ -62,7 +62,23 @@ class TranslateViewModel(
         }
     }
 
-    fun saveToFavorites()  {
+    suspend fun translatePart(text: String): String {
+        //_uiState.update { it.copy(isLoading = true) }
+
+        val request = TranslationRequest(
+            text = text,
+            sourceLang = "en",
+            targetLang = "bn"
+        )
+
+        val result = translateTextUseCase(request)
+
+        //_uiState.update { it.copy(isLoading = false) }
+
+        return result.translated
+    }
+
+    fun saveToFavorites() {
         viewModelScope.launch {
             saveFavoriteUseCase(
                 TranslationResult(
