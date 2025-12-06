@@ -46,6 +46,9 @@ class TranslationRepositoryImpl(
 
         } catch (offlineError: Exception) {
 
+            println("Offline translation failed: $offlineError")
+
+
             // 3. Cloud fallback
             val translatedCloud = cloud.translateOnline(
                 text = request.text,
