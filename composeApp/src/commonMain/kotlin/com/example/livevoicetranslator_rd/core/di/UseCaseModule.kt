@@ -2,7 +2,11 @@ package com.example.livevoicetranslator_rd.core.di
 
 import com.example.livevoicetranslator_rd.domain.usecase.DetectLanguageUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.GetHistoryUseCase
+import com.example.livevoicetranslator_rd.domain.usecase.InitializeTTSUseCase
+import com.example.livevoicetranslator_rd.domain.usecase.ObserveTTSStateUseCase
+import com.example.livevoicetranslator_rd.domain.usecase.ReleaseTTSUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.SaveFavoriteUseCase
+import com.example.livevoicetranslator_rd.domain.usecase.SpeakTextUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.TranslateTextUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.speachtotext.CopyTranscriptUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.speachtotext.RequestPermissionUseCase
@@ -21,4 +25,10 @@ val useCaseModule = module {
     single { StopSpeechRecognitionUseCase(speechToTextRepository = get()) }
     single { RequestPermissionUseCase(speechToTextRepository = get()) }
     single { CopyTranscriptUseCase(speechToTextRepository = get()) }
+
+    single { InitializeTTSUseCase(get()) }
+    single { ObserveTTSStateUseCase(get()) }
+    single { ReleaseTTSUseCase(get()) }
+    single { SpeakTextUseCase(get()) }
+
 }
