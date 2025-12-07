@@ -41,8 +41,10 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.livevoicetranslator_rd.presentation.component.AppTopBar
 import com.example.livevoicetranslator_rd.presentation.component.AppTopBarTitle
+import com.example.livevoicetranslator_rd.presentation.navigation.ScreenRoute
 import com.example.livevoicetranslator_rd.presentation.theme.PrimaryColor
 import com.example.livevoicetranslator_rd.presentation.theme.dimens
 import com.example.livevoicetranslator_rd.presentation.theme.dividerColor
@@ -54,6 +56,7 @@ import livevoicetranslatorrd.composeapp.generated.resources.ic_auto_save_history
 import livevoicetranslatorrd.composeapp.generated.resources.ic_history
 import livevoicetranslatorrd.composeapp.generated.resources.ic_premium
 import livevoicetranslatorrd.composeapp.generated.resources.ic_read_translation
+import livevoicetranslatorrd.composeapp.generated.resources.ic_translate
 import livevoicetranslatorrd.composeapp.generated.resources.ic_translate_engine
 import livevoicetranslatorrd.composeapp.generated.resources.ic_voice_setting
 import livevoicetranslatorrd.composeapp.generated.resources.setting_sub_title_app_language
@@ -77,6 +80,7 @@ fun SettingScreen(title: String) {
     var autoSaveHistory by remember { mutableStateOf(true) }
 
     SettingsScreenContent(
+        navController = navController,
         title = title,
         autoReadTranslation = autoReadTranslation,
         onAutoReadTranslationChange = { autoReadTranslation = it },
@@ -88,6 +92,7 @@ fun SettingScreen(title: String) {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreenContent(
+    navController: NavController,
     title: String,
     autoReadTranslation: Boolean,
     onAutoReadTranslationChange: (Boolean) -> Unit,
@@ -170,6 +175,15 @@ fun SettingsScreenContent(
                 title = "Clear History",
                 subtitle = null,
                 onClick = {}
+            )
+
+            SettingsNavigationItem(
+                icon = Res.drawable.ic_translate,
+                title = "Translation Model",
+                subtitle = null,
+                onClick = {
+                    navController.navigate(ScreenRoute.TranslationModel)
+                }
             )
 
             Spacer(modifier = Modifier.weight(1f))

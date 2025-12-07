@@ -1,5 +1,6 @@
 package com.example.livevoicetranslator_rd.core.di
 
+import com.example.livevoicetranslator_rd.data.repository.provideTranslationModelRepositoryImpl
 import com.example.livevoicetranslator_rd.data.source.AITranslationDataSource
 import com.example.livevoicetranslator_rd.data.source.AITranslationDataSourceImpl
 import com.example.livevoicetranslator_rd.data.source.CloudTranslationDataSource
@@ -12,6 +13,7 @@ import com.example.livevoicetranslator_rd.data.source.TranslationOrchestratorDat
 import com.example.livevoicetranslator_rd.data.source.provideMLKitLanguageDetection
 import com.example.livevoicetranslator_rd.data.source.provideMLKitTranslation
 import com.example.livevoicetranslator_rd.data.source.provideOrchestrator
+import com.example.livevoicetranslator_rd.domain.repository.TranslationModelRepository
 import org.koin.dsl.module
 
 val localModule = module {
@@ -22,4 +24,5 @@ val localModule = module {
     single<MLKitTranslationDataSource> { provideMLKitTranslation() }
     single<MLKitLanguageDetectionDataSource> { provideMLKitLanguageDetection() }
     single<TranslationOrchestratorDataSource> { provideOrchestrator() }
+    single<TranslationModelRepository> { provideTranslationModelRepositoryImpl() }
 }

@@ -1,0 +1,3 @@
+package com.example.livevoicetranslator_rd.data.source
+
+actual object MlKitTranslatorProvider
