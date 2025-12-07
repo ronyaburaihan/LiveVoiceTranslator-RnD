@@ -25,7 +25,9 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 fun FeatureList(
     features: List<Pair<DrawableResource, String>>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    textColor: Color = Color.White,
+    iconColor: Color = PrimaryColor
 ) {
     Column(
         modifier = modifier,
@@ -48,7 +50,7 @@ fun FeatureList(
                     Image(
                         painter = painterResource(feature.first),
                         contentDescription = null,
-                        colorFilter = ColorFilter.tint(PrimaryColor),
+                        colorFilter = ColorFilter.tint(iconColor),
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -56,7 +58,7 @@ fun FeatureList(
                 Text(
                     text = feature.second,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color(0xFF1A1A1A)
+                    color = textColor
                 )
             }
 

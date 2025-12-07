@@ -2,11 +2,14 @@ package com.example.livevoicetranslator_rd.presentation.screen.settings
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
@@ -16,13 +19,16 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,11 +37,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import com.example.livevoicetranslator_rd.presentation.component.AppTopBar
 import com.example.livevoicetranslator_rd.presentation.component.AppTopBarTitle
+import com.example.livevoicetranslator_rd.presentation.theme.PrimaryColor
 import com.example.livevoicetranslator_rd.presentation.theme.dimens
+import com.example.livevoicetranslator_rd.presentation.theme.dividerColor
+import com.example.livevoicetranslator_rd.presentation.theme.textColour
 import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
 import livevoicetranslatorrd.composeapp.generated.resources.Res
 import livevoicetranslatorrd.composeapp.generated.resources.ic_app_language
@@ -45,14 +56,24 @@ import livevoicetranslatorrd.composeapp.generated.resources.ic_premium
 import livevoicetranslatorrd.composeapp.generated.resources.ic_read_translation
 import livevoicetranslatorrd.composeapp.generated.resources.ic_translate_engine
 import livevoicetranslatorrd.composeapp.generated.resources.ic_voice_setting
+import livevoicetranslatorrd.composeapp.generated.resources.setting_sub_title_app_language
+import livevoicetranslatorrd.composeapp.generated.resources.setting_sub_title_translate_engine
+import livevoicetranslatorrd.composeapp.generated.resources.setting_title_app_language
+import livevoicetranslatorrd.composeapp.generated.resources.setting_title_auto_save_history
+import livevoicetranslatorrd.composeapp.generated.resources.setting_title_automatically_read_translation
+import livevoicetranslatorrd.composeapp.generated.resources.setting_title_clear_history
+import livevoicetranslatorrd.composeapp.generated.resources.setting_title_manage_subscription
+import livevoicetranslatorrd.composeapp.generated.resources.setting_title_translate_engine
+import livevoicetranslatorrd.composeapp.generated.resources.setting_title_voice_settings
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun SettingScreen(title: String) {
     val navController = LocalNavController.current
-    var autoReadTranslation by remember { mutableStateOf(true) }
+    var autoReadTranslation by remember { mutableStateOf(false) }
     var autoSaveHistory by remember { mutableStateOf(true) }
 
     SettingsScreenContent(
@@ -211,6 +232,11 @@ fun SettingsNavigationItem(
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            thickness = DividerDefaults.Thickness,
+            color = dividerColor
+        )
     }
 }
 
@@ -247,14 +273,32 @@ fun SettingsSwitchItem(
                 modifier = Modifier.weight(1f)
             )
 
+            val interactionSource = remember { MutableInteractionSource() }
+
             Switch(
                 checked = checked,
-                onCheckedChange = onCheckedChange
+                onCheckedChange = onCheckedChange,
+                modifier = Modifier
+                    .scale(0.7f)
+                    .indication(interactionSource, null),
+                interactionSource = interactionSource,
+                colors = SwitchDefaults.colors(
+                    checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                    checkedTrackColor = PrimaryColor,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.onBackground,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant
+                )
             )
+
+
         }
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            thickness = DividerDefaults.Thickness,
+            color = dividerColor
+        )
     }
 }
-
 
 
 @Preview(showBackground = true)
