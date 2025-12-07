@@ -13,8 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
@@ -169,9 +171,14 @@ private fun CameraScreenContent(
     onCapture: () -> Unit
 ) {
     Scaffold(
-        modifier = Modifier.fillMaxSize().systemBarsPadding(),
+        modifier = Modifier
+            .fillMaxSize()
+            .systemBarsPadding()
     ) { paddingValues ->
-        Box(modifier = Modifier.fillMaxSize().padding(paddingValues)) {
+        Box(
+            modifier = Modifier.fillMaxSize()
+                .padding(paddingValues)
+        ) {
             CameraPreview(
                 controller = cameraController,
                 modifier = Modifier.fillMaxSize()
@@ -199,16 +206,47 @@ private fun CameraScreenContent(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
-                    .padding(24.dp)
-                    .background(Color.Black.copy(alpha = 0.3f), RoundedCornerShape(16.dp))
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                    .padding(24.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val flashMode by cameraController.flashState.collectAsState()
+
+                Spacer(modifier = Modifier.weight(1f))
                 IconButton(
+                    modifier = Modifier.size(42.dp)
+                        .clip(CircleShape)
+                        .background(Color.Black.copy(alpha = 0.3f)),
                     onClick = {
-                        scope.launch { cameraController.toggleFlash() }
+                        onPickImage()
+                    }
+                ) {
+                    Icon(
+                        Icons.Default.Image,
+                        contentDescription = "Gallery", tint = Color.White
+                    )
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                IconButton(
+                    onClick = onCapture,
+                    modifier = Modifier.size(68.dp)
+                        .clip(CircleShape)
+                        .background(Color.White)
+                ) {
+                    Icon(Icons.Default.Camera, contentDescription = "Capture", tint = Color.Black)
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                IconButton(
+                    modifier = Modifier.size(42.dp)
+                        .clip(CircleShape)
+                        .background(Color.Black.copy(alpha = 0.3f)),
+                    onClick = {
+                        scope.launch {
+                            cameraController.toggleFlash()
+                        }
                     }
                 ) {
                     Icon(
@@ -222,27 +260,16 @@ private fun CameraScreenContent(
                     )
                 }
 
-                IconButton(onClick = { onPickImage() }) {
-                    Icon(Icons.Default.Image, contentDescription = "Gallery", tint = Color.White)
-                }
+                Spacer(modifier = Modifier.weight(1f))
 
-                IconButton(
-                    onClick = onCapture,
-                    modifier = Modifier
-                        .height(64.dp)
-                        .width(64.dp)
-                        .background(Color.White, androidx.compose.foundation.shape.CircleShape)
-                ) {
-                    Icon(Icons.Default.Camera, contentDescription = "Capture", tint = Color.Black)
-                }
 
-                IconButton(onClick = onToggleLiveMode) {
+                /*IconButton(onClick = onToggleLiveMode) {
                     Icon(
                         imageVector = if (isLiveMode) Icons.Default.TextFields else Icons.Default.Camera,
                         contentDescription = "Toggle Live Mode",
                         tint = if (isLiveMode) MaterialTheme.colorScheme.primary else Color.White
                     )
-                }
+                }*/
             }
         }
     }
