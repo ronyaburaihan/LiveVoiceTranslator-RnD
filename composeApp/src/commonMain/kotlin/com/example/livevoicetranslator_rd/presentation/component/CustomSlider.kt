@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.drawOutline
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.livevoicetranslator_rd.presentation.theme.BackgroundColor
 import com.example.livevoicetranslator_rd.presentation.theme.headerBrush
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -41,7 +42,7 @@ fun CustomSlider(
     onProgressChange: (Float) -> Unit,
     progressBarUnFill: Brush? = null,
     progressBarFill: ProgressBarFill = ProgressBarFill.Gradient(headerBrush),
-    unfilledColor: Color = Color(0x40E7EEF6),
+    unfilledColor: Color = BackgroundColor,
     trackHeight: Dp = 15.dp,
 ) {
     val fillBrush: Brush = when (progressBarFill) {

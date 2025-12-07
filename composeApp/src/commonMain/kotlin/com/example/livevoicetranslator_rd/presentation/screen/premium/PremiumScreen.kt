@@ -120,7 +120,7 @@ fun PremiumScreenContent(
                 .fillMaxSize()
                 .systemBarsPadding()
                 .padding(horizontal = 16.dp)
-                .background(color = MaterialTheme.colorScheme.onPrimary)
+                .background(color = MaterialTheme.colorScheme.background)
                 .then(
                     if (scrollNeeded) Modifier.verticalScroll(scrollState)
                     else Modifier
@@ -153,13 +153,13 @@ fun PremiumScreenContent(
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = "Close",
-                                tint = MaterialTheme.colorScheme.onPrimary
+                                tint = MaterialTheme.colorScheme.surface
                             )
                         }
 
                         Text(
                             text = stringResource(Res.string.unlock_pro_access),
-                            color = MaterialTheme.colorScheme.onPrimary,
+                            color = MaterialTheme.colorScheme.surface,
                             style = MaterialTheme.typography.headlineSmall,
                             textAlign = TextAlign.Center,
                             modifier = Modifier.fillMaxWidth()
@@ -235,13 +235,13 @@ fun PremiumScreenContent(
             )
 
 
-            Spacer(modifier = Modifier.height(19.dp))
+            Spacer(modifier = Modifier.height(40.dp))
 
             Spacer(modifier = Modifier.weight(1f))
 
             // Start Free Trial Button
             Row(
-                Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.onPrimary),
+                Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface),
                 horizontalArrangement = Arrangement.Center
             ) {
                 PrimaryButton(
@@ -254,7 +254,7 @@ fun PremiumScreenContent(
 
             // Billing description
             Row(
-                modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.onPrimary),
+                modifier = Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surface),
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(
@@ -295,7 +295,7 @@ fun PricingPlan(
                 2.dp, defaultCardBorder
             ),
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.onPrimary
+                containerColor = MaterialTheme.colorScheme.surface
             )
         )
 
@@ -338,7 +338,7 @@ fun PricingPlan(
                     Text(
                         text = title,
                         style = MaterialTheme.typography.labelMedium,
-                        color = Color.Black
+                        color = textColour
                     )
                 }
 
@@ -350,7 +350,7 @@ fun PricingPlan(
                         Text(
                             text = "USD ",
                             style = MaterialTheme.typography.labelMedium.copy(fontSize = 12.sp),
-                            color = Color.Black
+                            color = textColour
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
@@ -387,7 +387,7 @@ fun OfferTag(
     {
         Text(
             text = label,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.surface,
             fontSize = 9.sp,
             fontWeight = FontWeight.SemiBold,
             modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp)

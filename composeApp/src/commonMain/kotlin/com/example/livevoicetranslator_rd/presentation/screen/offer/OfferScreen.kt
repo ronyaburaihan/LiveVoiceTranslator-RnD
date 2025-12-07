@@ -89,8 +89,8 @@ fun OfferScreenContent(
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align (Alignment.TopStart)
-                    .offset(y = (-15).dp, x = (-150).dp),   // move image
+                    .align(Alignment.TopStart)
+                    .offset(y = (-60).dp, x = (-150).dp),   // move image
                 contentScale = ContentScale.Crop
             )
             Box(
@@ -125,7 +125,7 @@ fun OfferScreenContent(
                         modifier = Modifier.size(74.dp)
                     )
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
 
                     Text(
                         text = stringResource(Res.string.offer_title),
@@ -151,9 +151,9 @@ fun OfferScreenContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp)),
-                        iconColor = MaterialTheme.colorScheme.onPrimary
+                        iconColor = MaterialTheme.colorScheme.surface,
 
-                    )
+                        )
 
                     Spacer(modifier = Modifier.weight(1f))
                     Spacer(modifier = Modifier.height(24.dp))
@@ -164,7 +164,7 @@ fun OfferScreenContent(
                             fontWeight = FontWeight.Normal,
                             fontSize = 14.sp
                         ),
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
+                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
                         textAlign = TextAlign.Center
                     )
 
@@ -173,7 +173,7 @@ fun OfferScreenContent(
                     PrimaryButton(
                         label = stringResource(Res.string.start_free_trial),
                         onClick = onStartTrial,
-                        disabledBackground = Color.White,
+                        disabledBackground = MaterialTheme.colorScheme.surface,
                         cornerRadius = dimens.cornerRadiusSmall,
                         contentColor = PrimaryColor,
                         containerBrush = SolidColor(MaterialTheme.colorScheme.surface)
@@ -191,8 +191,6 @@ fun OfferScreenContent(
                 }
             }
         }
-
-
     }
 }
 

@@ -18,6 +18,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.toRoute
 import com.example.livevoicetranslator_rd.presentation.app.AppState
+import com.example.livevoicetranslator_rd.presentation.component.UnlockPremiumScreen
 import com.example.livevoicetranslator_rd.presentation.screen.camera.result.OCRResultScreen
 import com.example.livevoicetranslator_rd.presentation.screen.camera.result.ResultViewModel
 import com.example.livevoicetranslator_rd.presentation.screen.main.MainScreen
@@ -112,6 +113,9 @@ fun AppNavHost(
             OCRResultScreen(
                 resultViewModel
             )
+        }
+        appNavComposable<ScreenRoute.UnlockPremium> {
+            UnlockPremiumScreen()
         }
 
     }
