@@ -197,7 +197,7 @@ fun PhraseCardContent(
 
                         // Share button
                         IconButton(
-                            onClick = { shareManager.shareText(phrase.targetText, "Translation") },
+                            onClick = { shareManager.shareText(phrase.targetText, "Share Via") },
                             modifier = Modifier.size(36.dp),
                         ) {
                             Box(

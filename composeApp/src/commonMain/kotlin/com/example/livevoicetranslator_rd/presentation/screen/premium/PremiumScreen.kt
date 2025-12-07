@@ -207,6 +207,7 @@ fun PremiumScreenContent(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp))
                         .background(featureBackground)
+                    , textColor = textColour
                 )
 
             }
