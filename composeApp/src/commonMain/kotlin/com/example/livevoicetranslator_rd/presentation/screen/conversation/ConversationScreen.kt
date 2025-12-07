@@ -1,22 +1,48 @@
 package com.example.livevoicetranslator_rd.presentation.screen.conversation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.ClearAll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.livevoicetranslator_rd.presentation.component.*
+import com.example.livevoicetranslator_rd.presentation.component.LanguageDropdownConversation
+import com.example.livevoicetranslator_rd.presentation.component.MicButton
+import com.example.livevoicetranslator_rd.presentation.component.TranslationCard
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -24,20 +50,23 @@ val GoogleBlue = Color(0xFF4285F4)
 val GoogleGreen = Color(0xFF34A853)
 val LightGrayBg = Color(0xFFF8F9FA)
 val GrayText = Color(0xFF757575)
+
 @Composable
 fun ConversationScreen() {
     val viewModel: ConversationViewModel = koinViewModel()
     val uiState by viewModel.uiState.collectAsState()
     val transcriptState by viewModel.transcriptState.collectAsState()
-    
+
     ConversationScreenContent(
         uiState = uiState,
+        liveText = uiState.liveText,
+        statusText = uiState.statusText,
+        targetLanguageCode = uiState.targetLanguageCode,
         transcriptState = transcriptState,
         onLeftMicClick = viewModel::onLeftMicClick,
         onRightMicClick = viewModel::onRightMicClick,
         onLeftMicLongPress = viewModel::onLeftMicLongPress,
         onRightMicLongPress = viewModel::onRightMicLongPress,
-        onMicReleased = viewModel::onMicReleased,
         onLeftLanguageSelected = viewModel::onLeftLanguageSelected,
         onRightLanguageSelected = viewModel::onRightLanguageSelected,
         onCopyClick = viewModel::onClickCopy,
@@ -47,11 +76,11 @@ fun ConversationScreen() {
         onClearConversation = viewModel::clearConversation,
         onSpeakClick = viewModel::speak
     )
-    
+
     // Handle UI events
     val uiEvent by viewModel.uiEvent.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
-    
+
     uiEvent?.let { event ->
         when (event) {
             is ConversationViewModel.UiEvent.ShowSnackbar -> {
@@ -68,12 +97,14 @@ fun ConversationScreen() {
 @Composable
 private fun ConversationScreenContent(
     uiState: ConversationViewModel.ConversationUiState,
+    liveText: String,
+    statusText: String,
+    targetLanguageCode: String,
     transcriptState: com.example.livevoicetranslator_rd.domain.model.speachtotext.TranscriptState,
     onLeftMicClick: () -> Unit,
     onRightMicClick: () -> Unit,
     onLeftMicLongPress: () -> Unit,
     onRightMicLongPress: () -> Unit,
-    onMicReleased: () -> Unit,
     onLeftLanguageSelected: (String) -> Unit,
     onRightLanguageSelected: (String) -> Unit,
     onCopyClick: (String) -> Unit,
@@ -81,14 +112,14 @@ private fun ConversationScreenContent(
     openAppSettings: () -> Unit,
     onUiEventHandled: () -> Unit,
     onClearConversation: () -> Unit,
-    onSpeakClick: (String) -> Unit
+    onSpeakClick: (String, String) -> Unit
 ) {
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(LightGrayBg)
     ) {
-        
+
 //        // Snackbar host
 //        SnackbarHost(
 //            hostState = snackbarHostState,
@@ -127,6 +158,42 @@ private fun ConversationScreenContent(
                     }
                 }
             }
+
+            // Show real-time transcription while listening
+            if (transcriptState.listeningStatus != com.example.livevoicetranslator_rd.domain.model.speachtotext.ListeningStatus.INACTIVE &&
+                !transcriptState.transcript.isNullOrEmpty()
+            ) {
+                item {
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp, horizontal = 16.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.7f)),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.size(16.dp),
+                                strokeWidth = 2.dp,
+                                color = if (uiState.isLeftMicActive) GoogleBlue else GoogleGreen
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(
+                                text = liveText,
+                                color = Color.Gray,
+                                fontSize = 16.sp,
+                                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                            )
+                        }
+                    }
+                }
+            }
             // Show existing messages
             items(uiState.messages.reversed()) { message ->
                 TranslationCard(
@@ -134,11 +201,11 @@ private fun ConversationScreenContent(
                     translatedText = message.translatedText,
                     accentColor = if (message.isLeftSide) GoogleBlue else GoogleGreen,
                     isLeftAccent = message.isLeftSide,
-                    onSpeakClick = { onSpeakClick(message.translatedText) },
+                    onSpeakClick = { onSpeakClick(message.translatedText, targetLanguageCode) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-            
+
             // Empty state
             if (uiState.messages.isEmpty() && transcriptState.listeningStatus == com.example.livevoicetranslator_rd.domain.model.speachtotext.ListeningStatus.INACTIVE) {
                 item {
@@ -168,41 +235,8 @@ private fun ConversationScreenContent(
                     }
                 }
             }
-            
-            // Show real-time transcription while listening
-            if (transcriptState.listeningStatus != com.example.livevoicetranslator_rd.domain.model.speachtotext.ListeningStatus.INACTIVE && 
-                !transcriptState.transcript.isNullOrEmpty()) {
-                item {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp, horizontal = 16.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.7f)),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(16.dp),
-                                strokeWidth = 2.dp,
-                                color = if (uiState.isLeftMicActive) GoogleBlue else GoogleGreen
-                            )
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Text(
-                                text = transcriptState.transcript,
-                                color = Color.Gray,
-                                fontSize = 16.sp,
-                                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
-                            )
-                        }
-                    }
-                }
-            }
+
+
         }
 
         // Bottom controls
@@ -223,20 +257,16 @@ private fun ConversationScreenContent(
                 // Left Controls (Blue)
                 Column(
                     modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     MicButton(
                         color = if (uiState.isLeftMicActive) GoogleBlue.copy(alpha = 0.8f) else GoogleBlue,
-                        onClick = onLeftMicClick,
-                        onLongClick = onLeftMicLongPress,
-                        onLongClickRelease = onMicReleased
+                        onClick = { onLeftMicClick() },
+                        onLongClick = {},//onLeftMicLongPress,
+                        onLongClickRelease = {}
                     )
                     if (uiState.isLeftMicActive) {
                         Spacer(modifier = Modifier.height(8.dp))
-                        val statusText = when (transcriptState.listeningStatus) {
-                            com.example.livevoicetranslator_rd.domain.model.speachtotext.ListeningStatus.LISTENING -> "Listening..."
-                            com.example.livevoicetranslator_rd.domain.model.speachtotext.ListeningStatus.INACTIVE -> "Processing..."
-                            else -> "Ready"
-                        }
                         Text(
                             text = statusText,
                             color = GoogleBlue,
@@ -256,20 +286,16 @@ private fun ConversationScreenContent(
                 // Right Controls (Green)
                 Column(
                     modifier = Modifier.weight(1f),
-                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     MicButton(
                         color = if (uiState.isRightMicActive) GoogleGreen.copy(alpha = 0.8f) else GoogleGreen,
-                        onClick = onRightMicClick,
-                        onLongClick = onRightMicLongPress,
-                        onLongClickRelease = onMicReleased
+                        onClick = { onRightMicClick() },
+                        onLongClick = {},//onRightMicLongPress,
+                        onLongClickRelease = {}
                     )
                     if (uiState.isRightMicActive) {
                         Spacer(modifier = Modifier.height(8.dp))
-                        val statusText = when (transcriptState.listeningStatus) {
-                            com.example.livevoicetranslator_rd.domain.model.speachtotext.ListeningStatus.LISTENING -> "Listening..."
-                            com.example.livevoicetranslator_rd.domain.model.speachtotext.ListeningStatus.INACTIVE -> "Processing..."
-                            else -> "Ready"
-                        }
                         Text(
                             text = statusText,
                             color = GoogleGreen,
@@ -287,7 +313,7 @@ private fun ConversationScreenContent(
                 }
             }
         }
-        
+
         // Permission dialog
         if (transcriptState.showPermissionNeedDialog) {
             AlertDialog(

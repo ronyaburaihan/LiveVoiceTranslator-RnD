@@ -1,16 +1,15 @@
 package com.example.livevoicetranslator_rd.data.repository
 
 import com.example.livevoicetranslator_rd.core.platform.getTTSProvider
-import com.example.livevoicetranslator_rd.domain.model.speachtotext.SpeachResult
 import com.example.livevoicetranslator_rd.domain.model.TTSText
+import com.example.livevoicetranslator_rd.domain.model.speachtotext.SpeachResult
 import com.example.livevoicetranslator_rd.domain.repository.TextToSpeechRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
 class TextToSpeechRepositoryImpl : TextToSpeechRepository {
-    
+
     private val ttsManager = getTTSProvider()
     private val _ttsState = MutableStateFlow(
         TTSText(
@@ -21,13 +20,14 @@ class TextToSpeechRepositoryImpl : TextToSpeechRepository {
             isPaused = false
         )
     )
-    
+
     override fun getTTSState(): Flow<TTSText> = _ttsState.asStateFlow()
-    
-    override fun speak(text: String): SpeachResult<Unit> {
+
+    override fun speak(text: String, languageCode: String?): SpeachResult<Unit> {
         return try {
             ttsManager.speak(
                 text = text,
+                languageCode = languageCode,
                 onWordBoundary = { start, end ->
                     _ttsState.value = _ttsState.value.copy(
                         text = text,
@@ -58,7 +58,7 @@ class TextToSpeechRepositoryImpl : TextToSpeechRepository {
             SpeachResult.Error(e)
         }
     }
-    
+
     override fun pause(): SpeachResult<Unit> {
         return try {
             ttsManager.pause()
@@ -71,7 +71,7 @@ class TextToSpeechRepositoryImpl : TextToSpeechRepository {
             SpeachResult.Error(e)
         }
     }
-    
+
     override fun resume(): SpeachResult<Unit> {
         return try {
             ttsManager.resume()
@@ -84,7 +84,7 @@ class TextToSpeechRepositoryImpl : TextToSpeechRepository {
             SpeachResult.Error(e)
         }
     }
-    
+
     override fun stop(): SpeachResult<Unit> {
         return try {
             ttsManager.stop()
@@ -99,7 +99,7 @@ class TextToSpeechRepositoryImpl : TextToSpeechRepository {
             SpeachResult.Error(e)
         }
     }
-    
+
     override fun initialize(): SpeachResult<Unit> {
         return try {
             ttsManager.initialize { }
@@ -108,7 +108,7 @@ class TextToSpeechRepositoryImpl : TextToSpeechRepository {
             SpeachResult.Error(e)
         }
     }
-    
+
     override fun release(): SpeachResult<Unit> {
         return try {
             ttsManager.release()
