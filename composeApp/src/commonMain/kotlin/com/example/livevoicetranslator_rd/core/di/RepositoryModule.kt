@@ -1,8 +1,10 @@
 package com.example.livevoicetranslator_rd.core.di
 
+import com.example.livevoicetranslator_rd.data.repository.ImageProcessingRepositoryImpl
 import com.example.livevoicetranslator_rd.data.repository.TranslationRepositoryImpl
 import com.example.livevoicetranslator_rd.data.repository.SpeechToTextRepositoryImpl
 import com.example.livevoicetranslator_rd.data.repository.TextToSpeechRepositoryImpl
+import com.example.livevoicetranslator_rd.domain.repository.ImageProcessingRepository
 import com.example.livevoicetranslator_rd.domain.repository.TranslationRepository
 import com.example.livevoicetranslator_rd.domain.repository.SpeechToTextRepository
 import com.example.livevoicetranslator_rd.domain.repository.TextToSpeechRepository
@@ -21,4 +23,6 @@ val repositoryModule = module {
     single<SpeechToTextRepository> { SpeechToTextRepositoryImpl(get()) }
     
     single<TextToSpeechRepository> { TextToSpeechRepositoryImpl() }
+
+    single<ImageProcessingRepository>{ ImageProcessingRepositoryImpl(get()) }
 }

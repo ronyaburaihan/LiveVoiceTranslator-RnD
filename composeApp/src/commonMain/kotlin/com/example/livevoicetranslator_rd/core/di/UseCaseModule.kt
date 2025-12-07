@@ -8,6 +8,7 @@ import com.example.livevoicetranslator_rd.domain.usecase.ReleaseTTSUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.SaveFavoriteUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.SpeakTextUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.TranslateTextUseCase
+import com.example.livevoicetranslator_rd.domain.usecase.ocr.ExtractTextFromImage
 import com.example.livevoicetranslator_rd.domain.usecase.speachtotext.CopyTranscriptUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.speachtotext.RequestPermissionUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.speachtotext.StartSpeechRecognitionUseCase
@@ -30,5 +31,8 @@ val useCaseModule = module {
     single { ObserveTTSStateUseCase(get()) }
     single { ReleaseTTSUseCase(get()) }
     single { SpeakTextUseCase(get()) }
+
+
+    single { ExtractTextFromImage(get()) }
 
 }

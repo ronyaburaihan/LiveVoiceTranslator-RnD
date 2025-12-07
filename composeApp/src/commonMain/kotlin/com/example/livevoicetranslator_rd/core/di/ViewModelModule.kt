@@ -19,6 +19,7 @@ val viewModelModule = module {
     viewModel {
         ResultViewModel(
             get(),
+            get(),
             get()
         )
     }

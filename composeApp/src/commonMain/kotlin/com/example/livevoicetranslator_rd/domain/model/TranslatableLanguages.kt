@@ -66,6 +66,6 @@ enum class TranslatableLanguages(
     Ukrainian("Ukrainian", "uk"),
     Urdu("Urdu", "ur"),
     Vietnamese("Vietnamese", "vi"),
-    ChineseSimplified("Chinese (Simplified)", "zh-Hans"),
+    ChineseSimplified("Chinese (Simplified)", "zh"),
     ChineseTraditional("Chinese (Traditional)", "zh-Hant")
 }

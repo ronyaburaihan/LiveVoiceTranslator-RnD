@@ -6,6 +6,7 @@ import com.example.livevoicetranslator_rd.domain.model.TranslatableLanguages
 import com.example.livevoicetranslator_rd.domain.model.TranslationRequest
 import com.example.livevoicetranslator_rd.domain.usecase.DetectLanguageUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.TranslateTextUseCase
+import com.example.livevoicetranslator_rd.domain.usecase.ocr.ExtractTextFromImage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -14,6 +15,7 @@ import kotlinx.coroutines.launch
 class ResultViewModel(
     private val translateTextUseCase: TranslateTextUseCase,
     private val detectLanguageUseCase: DetectLanguageUseCase,
+    private val extractTextFromImageUseCase: ExtractTextFromImage
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ResultUiState())
     val uiState = _uiState.asStateFlow()
@@ -30,6 +32,31 @@ class ResultViewModel(
 
     fun updateImageBytes(imageBytes: ByteArray?) {
         _uiState.update { it.copy(imageBytes = imageBytes) }
+    }
+
+    fun extractTextFromImage(imageBase64: String?) {
+        _uiState.update {
+            it.copy(isLoading = true, ocrResult = null)
+        }
+        viewModelScope.launch {
+            val result = extractTextFromImageUseCase(imageBase64 ?: return@launch)
+            if (result.isSuccess) {
+                _uiState.update {
+                    it.copy(
+                        ocrResult = result.getOrNull(),
+                        isLoading = false
+                    )
+                }
+            } else {
+                _uiState.update {
+                    it.copy(
+                        ocrResult = null,
+                        isLoading = false,
+                        errorMessage = result.exceptionOrNull()?.message
+                    )
+                }
+            }
+        }
     }
 
     suspend fun translatePart(text: String): String {
