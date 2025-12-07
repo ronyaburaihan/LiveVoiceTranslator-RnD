@@ -4,6 +4,7 @@ interface TTSProvider {
     fun initialize(onInitialized: () -> Unit)
     fun speak(
         text: String,
+        languageCode: String? = null,
         onWordBoundary: (Int, Int) -> Unit,
         onStart: () -> Unit,
         onComplete: () -> Unit

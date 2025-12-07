@@ -6,7 +6,7 @@ import com.example.livevoicetranslator_rd.domain.repository.TextToSpeechReposito
 class SpeakTextUseCase(
     private val textToSpeechRepository: TextToSpeechRepository
 ) {
-    suspend operator fun invoke(text: String): SpeachResult<Unit> {
-        return textToSpeechRepository.speak(text)
+    suspend operator fun invoke(text: String, languageCode: String? = null): SpeachResult<Unit> {
+        return textToSpeechRepository.speak(text, languageCode)
     }
 }

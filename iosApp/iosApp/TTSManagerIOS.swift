@@ -43,41 +43,69 @@ class TTSManagerIOS: ComposeApp.TTSProvider {
         onInitialized()
     }
 
+    // func speak(
+    //     text: String,
+    //     languageCode: String="en-US",
+    //     onWordBoundary: @escaping (KotlinInt, KotlinInt) -> Void,
+    //     onStart: @escaping () -> Void,
+    //     onComplete: @escaping () -> Void
+    // ) {
+    //     print("🗣️ Speak called with text: '\(text.prefix(50))...'")
+    //     print("📊 Current state - isPaused: \(isPausedState), resumeOffset: \(resumeOffset)")
+    //
+    //     // Configure audio session for playback before speaking
+    //     configureAudioSessionForPlayback()
+    //
+    //     // Store callbacks
+    //     onWordBoundaryCallback = onWordBoundary
+    //     onStartCallback = onStart
+    //     onCompleteCallback = onComplete
+    //
+    //     // Check if originalText is empty to determine if this is first time or resume
+    //     let isFirstTimeSpeak = originalText.isEmpty
+    //
+    //     if isFirstTimeSpeak {
+    //         print("🆕 First time speaking - resetting state")
+    //         originalText = text
+    //         pausedPosition = 0
+    //         resumeOffset = 0
+    //     } else {
+    //         print("🔄 Resume speaking - keeping resumeOffset: \(resumeOffset)")
+    //         // This is a resume call - don't reset anything
+    //     }
+    //
+    //     // Set paused state to false after checking
+    //     isPausedState = false
+    //
+    //     let utterance = AVSpeechUtterance(string: text)
+    //     utterance.rate = 0.5
+    //
+    //     synthesizer.speak(utterance)
+    // }
+
     func speak(
         text: String,
+        languageCode: String?,
         onWordBoundary: @escaping (KotlinInt, KotlinInt) -> Void,
         onStart: @escaping () -> Void,
         onComplete: @escaping () -> Void
     ) {
-        print("🗣️ Speak called with text: '\(text.prefix(50))...'")
-        print("📊 Current state - isPaused: \(isPausedState), resumeOffset: \(resumeOffset)")
-
-        // Configure audio session for playback before speaking
+        print("🗣️ Speak called with text: '\(text)'")
         configureAudioSessionForPlayback()
 
-        // Store callbacks
         onWordBoundaryCallback = onWordBoundary
         onStartCallback = onStart
         onCompleteCallback = onComplete
 
-        // Check if originalText is empty to determine if this is first time or resume
-        let isFirstTimeSpeak = originalText.isEmpty
-
-        if isFirstTimeSpeak {
-            print("🆕 First time speaking - resetting state")
-            originalText = text
-            pausedPosition = 0
-            resumeOffset = 0
-        } else {
-            print("🔄 Resume speaking - keeping resumeOffset: \(resumeOffset)")
-            // This is a resume call - don't reset anything
-        }
-
-        // Set paused state to false after checking
-        isPausedState = false
-
         let utterance = AVSpeechUtterance(string: text)
-        utterance.rate = 0.5
+        utterance.rate = 0.50
+
+        // 🔥 FIXED: Set correct voice
+        if let code = languageCode, let voice = AVSpeechSynthesisVoice(language: code) {
+            utterance.voice = voice
+        } else {
+            print("⚠️ No voice found for \(String(describing: languageCode))")
+        }
 
         synthesizer.speak(utterance)
     }
@@ -120,7 +148,7 @@ class TTSManagerIOS: ComposeApp.TTSProvider {
                     // Set paused state to false BEFORE calling speak
                     isPausedState = false
                     print("🔄 Calling speak with remaining text, resumeOffset should stay: \(resumeOffset)")
-                    speak(text: remainingText, onWordBoundary: wordBoundary, onStart: start, onComplete: complete)
+                    speak(text: remainingText, languageCode: nil, onWordBoundary: wordBoundary, onStart: start, onComplete: complete)
                     print("📍 After speak call, resumeOffset is: \(resumeOffset)")
                 }
             }
@@ -195,12 +223,12 @@ class TTSManagerIOS: ComposeApp.TTSProvider {
 
     private func configureAudioSessionForPlayback() {
         let audioSession = AVAudioSession.sharedInstance()
-        
+
         do {
             // Deactivate current session first to ensure clean state
             try audioSession.setActive(false, options: .notifyOthersOnDeactivation)
             print("🔇 Audio session deactivated for TTS setup")
-            
+
             // Configure for playback with speaker output
             try audioSession.setCategory(
                 .playback,
@@ -208,11 +236,11 @@ class TTSManagerIOS: ComposeApp.TTSProvider {
                 options: [.defaultToSpeaker, .duckOthers]
             )
             print("🔊 Audio session configured for playback")
-            
+
             // Activate the session
             try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
             print("🔊 Audio session activated for TTS")
-            
+
         } catch {
             print("❌ Failed to configure audio session for TTS: \(error)")
         }
@@ -220,7 +248,7 @@ class TTSManagerIOS: ComposeApp.TTSProvider {
 
     private func resetAudioSession() {
         let audioSession = AVAudioSession.sharedInstance()
-        
+
         do {
             // Deactivate the session to allow other audio
             try audioSession.setActive(false, options: .notifyOthersOnDeactivation)

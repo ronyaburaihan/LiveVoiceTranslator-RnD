@@ -18,12 +18,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.livevoicetranslator_rd.domain.model.speachtotext.Error
 import com.example.livevoicetranslator_rd.domain.model.speachtotext.ListeningStatus
 import com.example.livevoicetranslator_rd.domain.model.speachtotext.PermissionRequestStatus
 import com.example.livevoicetranslator_rd.domain.model.speachtotext.TranscriptState
-import com.example.livevoicetranslator_rd.domain.model.speachtotext.SpeachResult
-import com.example.livevoicetranslator_rd.domain.model.speachtotext.RecognizerError
-import com.example.livevoicetranslator_rd.domain.model.speachtotext.Error
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 
@@ -126,7 +124,7 @@ actual class SpeechToText(
             }
             return
         }
-        
+
         try {
             Log.d("SpeechToText", "Starting speech recognition...")
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
@@ -163,9 +161,10 @@ actual class SpeechToText(
                 }
 
                 override fun onEndOfSpeech() {
-                    _transcriptState.update {
-                        it.copy(listeningStatus = ListeningStatus.INACTIVE)
-                    }
+                    // Keep listening until user explicitly stops
+                    // _transcriptState.update {
+                    //     it.copy(listeningStatus = ListeningStatus.INACTIVE)
+                    // }
                 }
 
                 override fun onError(error: Int) {
