@@ -18,12 +18,16 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.toRoute
 import com.example.livevoicetranslator_rd.presentation.app.AppState
+import com.example.livevoicetranslator_rd.presentation.screen.camera.result.OCRResultScreen
+import com.example.livevoicetranslator_rd.presentation.screen.camera.result.ResultViewModel
 import com.example.livevoicetranslator_rd.presentation.screen.main.MainScreen
+import com.example.livevoicetranslator_rd.presentation.screen.offer.OfferScreen
 import com.example.livevoicetranslator_rd.presentation.screen.onboard.OnBoardingScreen
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhraseDetailScreen
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhrasesScreen
 import com.example.livevoicetranslator_rd.presentation.screen.premium.PremiumScreen
-import com.example.livevoicetranslator_rd.presentation.screen.translate.TranslateScreen
+import com.example.livevoicetranslator_rd.presentation.screen.referral.ReferralScreen
+import com.example.livevoicetranslator_rd.presentation.screen.settings.SettingScreen
 import com.example.livevoicetranslator_rd.presentation.util.LocalAppState
 import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
 import com.example.livevoicetranslator_rd.presentation.util.LocalSnackBarHostState
@@ -31,6 +35,7 @@ import com.example.livevoicetranslator_rd.presentation.util.appNavComposable
 
 @Composable
 fun AppNavigation(
+    resultViewModel: ResultViewModel,
     navController: NavHostController,
     snackBarHostState: SnackbarHostState,
     appState: AppState?,
@@ -55,6 +60,7 @@ fun AppNavigation(
             LocalAppState provides appState
         ) {
             AppNavHost(
+                resultViewModel = resultViewModel,
                 navController = navController,
                 initialRoute = initialRoute
             )
@@ -64,6 +70,7 @@ fun AppNavigation(
 
 @Composable
 fun AppNavHost(
+    resultViewModel: ResultViewModel,
     navController: NavHostController,
     initialRoute: ScreenRoute
 ) {
@@ -72,7 +79,7 @@ fun AppNavHost(
         startDestination = initialRoute,
     ) {
         appNavComposable<ScreenRoute.Main> {
-            MainScreen()
+            MainScreen(resultViewModel)
         }
         appNavComposable<ScreenRoute.Premium> {
             PremiumScreen()
@@ -89,5 +96,23 @@ fun AppNavHost(
         appNavComposable<ScreenRoute.OnBoardingScreen> {
             OnBoardingScreen()
         }
+        appNavComposable<ScreenRoute.Referral> {
+            ReferralScreen()
+        }
+        appNavComposable<ScreenRoute.Settings> { backStackEntry ->
+            val title = backStackEntry.toRoute<ScreenRoute.Settings>().title
+            SettingScreen(
+                title = title
+            )
+        }
+        appNavComposable<ScreenRoute.Offer> {
+            OfferScreen()
+        }
+        appNavComposable<ScreenRoute.OCRResultScreen> { backStackEntry ->
+            OCRResultScreen(
+                resultViewModel
+            )
+        }
+
     }
 }

@@ -87,26 +87,59 @@ actual class CameraController(
             imageCapture.takePicture(
                 ContextCompat.getMainExecutor(context),
                 object : ImageCapture.OnImageCapturedCallback() {
+                    @OptIn(ExperimentalGetImage::class)
                     override fun onCaptureSuccess(image: ImageProxy) {
-                        // Convert ImageProxy to CameraImage
-                        // For now, we just return a dummy or implement conversion
-                        // Since CameraImage uses ByteArray, we need to convert.
-                        // This is expensive.
+                        try {
+                            // Convert ImageProxy to Bitmap with proper rotation
+                            val bitmap = image.toBitmap()
+                            
+                            // Apply rotation to the bitmap
+                            val rotationDegrees = image.imageInfo.rotationDegrees
+                            val rotatedBitmap = if (rotationDegrees != 0) {
+                                val matrix = android.graphics.Matrix()
+                                matrix.postRotate(rotationDegrees.toFloat())
+                                android.graphics.Bitmap.createBitmap(
+                                    bitmap,
+                                    0,
+                                    0,
+                                    bitmap.width,
+                                    bitmap.height,
+                                    matrix,
+                                    true
+                                )
+                            } else {
+                                bitmap
+                            }
+                            
+                            // Convert to JPEG bytes
+                            val outputStream = java.io.ByteArrayOutputStream()
+                            rotatedBitmap.compress(
+                                android.graphics.Bitmap.CompressFormat.JPEG,
+                                95,
+                                outputStream
+                            )
+                            val jpegBytes = outputStream.toByteArray()
+                            
+                            val cameraImage = CameraImage(
+                                imageData = jpegBytes,
+                                width = rotatedBitmap.width,
+                                height = rotatedBitmap.height,
+                                rotation = 0, // Already rotated, so set to 0
+                                source = com.example.livevoicetranslator_rd.domain.model.ImageSource.CAMERA
+                            )
 
-                        val buffer = image.planes[0].buffer
-                        val bytes = ByteArray(buffer.remaining())
-                        buffer.get(bytes)
-
-                        val cameraImage = CameraImage(
-                            imageData = bytes,
-                            width = image.width,
-                            height = image.height,
-                            rotation = image.imageInfo.rotationDegrees,
-                            source = com.example.livevoicetranslator_rd.domain.model.ImageSource.CAMERA
-                        )
-
-                        image.close()
-                        continuation.resume(Result.success(cameraImage))
+                            // Clean up
+                            if (rotatedBitmap != bitmap) {
+                                rotatedBitmap.recycle()
+                            }
+                            bitmap.recycle()
+                            image.close()
+                            
+                            continuation.resume(Result.success(cameraImage))
+                        } catch (e: Exception) {
+                            image.close()
+                            continuation.resume(Result.failure(e))
+                        }
                     }
 
                     override fun onError(exception: ImageCaptureException) {

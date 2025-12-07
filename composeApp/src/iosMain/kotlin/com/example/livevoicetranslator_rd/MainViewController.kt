@@ -15,4 +15,5 @@ fun MainViewController(ttsProvider: TTSProvider) = ComposeUIViewController(
     }
 ) {
     ClipboardProvider.instance = ClipboardService()
-    App() }
+    App()
+}

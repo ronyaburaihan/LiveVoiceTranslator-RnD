@@ -73,9 +73,9 @@ import livevoicetranslatorrd.composeapp.generated.resources.continue_label
 import livevoicetranslatorrd.composeapp.generated.resources.get_started
 import livevoicetranslatorrd.composeapp.generated.resources.ic_camera_mini
 import livevoicetranslatorrd.composeapp.generated.resources.ic_globe
-import livevoicetranslatorrd.composeapp.generated.resources.ic_man
 import livevoicetranslatorrd.composeapp.generated.resources.ic_mic
-import livevoicetranslatorrd.composeapp.generated.resources.ic_women
+import livevoicetranslatorrd.composeapp.generated.resources.img_man
+import livevoicetranslatorrd.composeapp.generated.resources.img_woman
 import livevoicetranslatorrd.composeapp.generated.resources.on_boarding_description_1
 import livevoicetranslatorrd.composeapp.generated.resources.on_boarding_description_2
 import livevoicetranslatorrd.composeapp.generated.resources.on_boarding_description_3
@@ -166,19 +166,19 @@ fun OnBoardingScreen() {
                             DesignNode(
                                 color = primaryPink,
                                 angle = 45f,
-                                radius = 150f,
-                                avatar = Res.drawable.ic_man
+                                radius = 112f,
+                                avatar = Res.drawable.img_man
                             ), DesignNode(
                                 color = primaryPink,
                                 angle = 225f,
-                                radius = 150f,
-                                avatar = Res.drawable.ic_women
+                                radius = 112f,
+                                avatar = Res.drawable.img_woman
                             )
                         ),
                         dots = listOf(
                             DesignNode("", GreenColor, 35f, 75f),
-                            DesignNode("", GreenColor, 320f, 112f),
-                            DesignNode("", GreenColor, 200f, 112f)
+                            DesignNode("", GreenColor, 320f, 150f),
+                            DesignNode("", GreenColor, 200f, 150f)
                         )
                     ),
                     title = buildAnnotatedString {
@@ -333,7 +333,7 @@ private fun OrbitalSystem(
     val infiniteTransition = rememberInfiniteTransition(label = "orbital")
     val rotation by infiniteTransition.animateFloat(
         initialValue = 0f, targetValue = 360f, animationSpec = infiniteRepeatable(
-            animation = tween(20000, easing = LinearEasing), repeatMode = RepeatMode.Reverse
+            animation = tween(20000, easing = LinearEasing), repeatMode = RepeatMode.Restart
         ), label = "rotation"
     )
 

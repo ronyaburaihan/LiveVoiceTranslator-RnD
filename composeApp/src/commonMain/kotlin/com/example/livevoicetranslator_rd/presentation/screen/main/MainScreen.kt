@@ -13,6 +13,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.livevoicetranslator_rd.presentation.app.isPremium
@@ -24,6 +25,7 @@ import com.example.livevoicetranslator_rd.presentation.component.CustomIconButto
 import com.example.livevoicetranslator_rd.presentation.component.PremiumButton
 import com.example.livevoicetranslator_rd.presentation.navigation.ScreenRoute
 import com.example.livevoicetranslator_rd.presentation.screen.camera.CameraScreen
+import com.example.livevoicetranslator_rd.presentation.screen.camera.result.ResultViewModel
 import com.example.livevoicetranslator_rd.presentation.screen.conversation.ConversationScreen
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhrasesScreen
 import com.example.livevoicetranslator_rd.presentation.screen.translate.TranslateScreen
@@ -39,7 +41,9 @@ import livevoicetranslatorrd.composeapp.generated.resources.pro
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    resultViewModel: ResultViewModel
+) {
     val navController = LocalNavController.current
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -71,6 +75,7 @@ fun MainScreen() {
         gesturesEnabled = true
     ) {
         MainScreenContent(
+            resultViewModel,
             onNavigationClick = {
                 onDrawerOpen()
             },
@@ -83,6 +88,7 @@ fun MainScreen() {
 
 @Composable
 fun MainScreenContent(
+    resultViewModel: ResultViewModel,
     onNavigationClick: () -> Unit = {},
     onProButtonClick: () -> Unit = {}
 ) {
@@ -110,16 +116,16 @@ fun MainScreenContent(
             NavHost(
                 modifier = Modifier.weight(1f),
                 navController = navController,
-                startDestination = ScreenRoute.Conservation
+                startDestination = ScreenRoute.Conversation
             ) {
-                appNavComposable<ScreenRoute.Conservation> {
+                appNavComposable<ScreenRoute.Conversation> {
                     ConversationScreen()
                 }
                 appNavComposable<ScreenRoute.Translate> {
                     TranslateScreen()
                 }
                 appNavComposable<ScreenRoute.Camera> {
-                    CameraScreen()
+                    CameraScreen(viewModel = resultViewModel)
                 }
                 appNavComposable<ScreenRoute.Phrases> {
                     PhrasesScreen()

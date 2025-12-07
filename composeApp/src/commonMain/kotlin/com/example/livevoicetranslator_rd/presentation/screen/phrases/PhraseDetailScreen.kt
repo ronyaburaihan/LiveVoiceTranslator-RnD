@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import com.example.livevoicetranslator_rd.presentation.component.AppTopBar
 import com.example.livevoicetranslator_rd.presentation.component.AppTopBarTitle
 import com.example.livevoicetranslator_rd.presentation.component.LanguageDropdown
-import com.example.livevoicetranslator_rd.presentation.component.LanguageDropdownConversation
 import com.example.livevoicetranslator_rd.presentation.component.PhraseCard
 import com.example.livevoicetranslator_rd.presentation.theme.dimens
 import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
@@ -118,14 +117,14 @@ fun PhraseDetailScreenContent(
                             onLanguageChange = { selectedSourceLanguage = it }
                         )
 
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
 
                         // Swap Button
                         Image(
                             painter = painterResource(Res.drawable.ic_swap),
                             contentDescription = "Swap",
                             modifier = Modifier
-                                .size(16.dp)
+                                .size(24.dp)
                                 .clickable(
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = null
@@ -135,7 +134,7 @@ fun PhraseDetailScreenContent(
                                     selectedTargetLanguage = temp
                                 }
                         )
-                        Spacer(modifier = Modifier.width(4.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
 
                         // Target Language
                         LanguageDropdown(

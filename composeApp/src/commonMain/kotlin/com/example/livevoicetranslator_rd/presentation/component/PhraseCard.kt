@@ -1,7 +1,6 @@
 package com.example.livevoicetranslator_rd.presentation.component
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -28,30 +27,22 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.ClipboardProvider
-import com.example.livevoicetranslator_rd.presentation.screen.phrases.ClipboardService
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhraseItem
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.TTS
-import com.example.livevoicetranslator_rd.presentation.screen.phrases.rememberTTS
+import com.example.livevoicetranslator_rd.presentation.screen.phrases.rememberShareManager
 import com.example.livevoicetranslator_rd.presentation.theme.OnBackgroundColor
 import com.example.livevoicetranslator_rd.presentation.theme.OnSurfaceColor
 import com.example.livevoicetranslator_rd.presentation.theme.OutlineColor
 import com.example.livevoicetranslator_rd.presentation.theme.PremiumButtonColor
 import com.example.livevoicetranslator_rd.presentation.theme.SecondaryColor
 import com.example.livevoicetranslator_rd.presentation.theme.textColour
-import kotlinx.coroutines.delay
 import livevoicetranslatorrd.composeapp.generated.resources.Res
 import livevoicetranslatorrd.composeapp.generated.resources.ic_copy
 import livevoicetranslatorrd.composeapp.generated.resources.ic_play_audio
@@ -82,8 +73,7 @@ fun PhraseCardContent(
     onFavoriteClick: () -> Unit,
     onSpeakerClick: () -> Unit
 ) {
-    var showCopiedMessage by remember { mutableStateOf(false) }
-
+    val shareManager = rememberShareManager()
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -187,7 +177,6 @@ fun PhraseCardContent(
                             onClick = {
                                 if (phrase.targetText.isNotEmpty()) {
                                     ClipboardProvider.instance.copyToClipboard(phrase.targetText)
-                                    showCopiedMessage = true
                                 }
                             },
                             modifier = Modifier.size(36.dp)
@@ -208,7 +197,7 @@ fun PhraseCardContent(
 
                         // Share button
                         IconButton(
-                            onClick = { },
+                            onClick = { shareManager.shareText(phrase.targetText, "Share Via") },
                             modifier = Modifier.size(36.dp),
                         ) {
                             Box(
