@@ -37,7 +37,8 @@ actual val platformModule = module {
             initializeTTSUseCase = get(),
             observeTTSStateUseCase = get(),
             releaseTTSUseCase = get(),
-            speakTextUseCase = get()
+            speakTextUseCase = get(),
+            translateTextUseCase = get()
         )
     }
 }

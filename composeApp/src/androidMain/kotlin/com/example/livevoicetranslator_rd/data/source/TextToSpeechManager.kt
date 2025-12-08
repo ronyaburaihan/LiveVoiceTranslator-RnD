@@ -2,8 +2,9 @@ package com.example.livevoicetranslator_rd.data.source
 
 import android.speech.tts.TextToSpeech
 import android.speech.tts.UtteranceProgressListener
-import com.example.livevoicetranslator_rd.domain.repository.TTSProvider
+import android.speech.tts.Voice
 import com.example.livevoicetranslator_rd.domain.activityProvider
+import com.example.livevoicetranslator_rd.domain.repository.TTSProvider
 import java.util.Locale
 
 class AndroidTTSProvider : TTSProvider {
@@ -34,38 +35,135 @@ class AndroidTTSProvider : TTSProvider {
         }
     }
 
+    //    override fun speak(
+//        text: String,
+//        languageCode: String?,
+//        onWordBoundary: (wordStart: Int, wordEnd: Int) -> Unit,
+//        onStart: () -> Unit,
+//        onComplete: () -> Unit
+//    ) {
+//        println("🗣️ Android Speak called with text: '${text.take(50)}...'")
+//        println("📊 Current state - isPaused: $isPausedState, resumeOffset: $resumeOffset")
+//
+//        // Store callbacks for resume functionality
+//        onWordBoundaryCallback = onWordBoundary
+//        onCompleteCallback = onComplete
+//
+//        // Check if originalText is empty to determine if this is first time or resume
+//        val isFirstTimeSpeak = originalText.isEmpty()
+//
+//        if (isFirstTimeSpeak) {
+//            println("🆕 First time speaking - resetting state")
+//            originalText = text
+//            pausedPosition = 0
+//            resumeOffset = 0
+//        } else {
+//            println("🔄 Resume speaking - keeping resumeOffset: $resumeOffset")
+//        }
+//
+//        // Set paused state to false after checking
+//        isPausedState = false
+//
+//        tts?.let { textToSpeech ->
+//            val utteranceId = "tts_utterance_${System.currentTimeMillis()}"
+//            println("🎬 Starting utterance with ID: $utteranceId")
+//
+//            textToSpeech.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
+//                override fun onStart(utteranceId: String?) {
+//                    println("🎤 Android TTS Started")
+//                    onStart()
+//                }
+//
+//                override fun onDone(utteranceId: String?) {
+//                    println("✅ Android TTS Finished - isPaused: $isPausedState")
+//                    if (!isPausedState) {
+//                        println("🏁 Speech finished normally")
+//                        onWordBoundary(-1, -1) // Reset highlight
+//                        onComplete()
+//                        // Reset everything after completion
+//                        originalText = ""
+//                        pausedPosition = 0
+//                        resumeOffset = 0
+//                        println("🔄 State reset after completion")
+//                    } else {
+//                        println("⏸️ Speech finished due to pause - keeping state")
+//                    }
+//                }
+//
+//                override fun onError(utteranceId: String?) {
+//                    println("❌ Android TTS Error occurred")
+//                    onComplete()
+//                }
+//
+//                override fun onRangeStart(utteranceId: String?, start: Int, end: Int, frame: Int) {
+//                    if (!isPausedState) {
+//                        // Calculate position in original text for resume functionality
+//                        val actualStart = resumeOffset + start
+//                        val actualEnd = resumeOffset + end - 1
+//
+//                        println("🎯 Android word boundary: local($start-$end) -> actual($actualStart-$actualEnd)")
+//                        println("📏 Original text length: ${originalText.length}, resumeOffset: $resumeOffset")
+//
+//                        // Bounds check
+//                        if (actualStart >= 0 && actualStart < originalText.length) {
+//                            // Find word boundaries in original text
+//                            val wordStart = findWordStart(originalText, actualStart)
+//                            val wordEnd =
+//                                findWordEnd(originalText, minOf(actualEnd, originalText.length - 1))
+//
+//                            // Update paused position for future resume
+//                            pausedPosition = wordStart
+//
+//                            println("✨ Android highlighting: $wordStart-$wordEnd, updated pausedPosition: $pausedPosition")
+//
+//                            // Show highlighted text
+//                            if (wordStart <= wordEnd && wordEnd < originalText.length) {
+//                                val highlightedText = originalText.substring(wordStart, wordEnd + 1)
+//                                println("📝 Highlighted text: '$highlightedText'")
+//                            }
+//
+//                            onWordBoundary(wordStart, wordEnd)
+//                        } else {
+//                            println("⚠️ Android word boundary actualStart($actualStart) out of bounds!")
+//                        }
+//                    }
+//                }
+//            })
+//
+//            if (languageCode != null) {
+//                runCatching { textToSpeech.language = Locale.forLanguageTag(languageCode) }
+//            }
+//            textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
+//        }
+//    }
     override fun speak(
         text: String,
+        languageCode: String?,
         onWordBoundary: (wordStart: Int, wordEnd: Int) -> Unit,
         onStart: () -> Unit,
         onComplete: () -> Unit
     ) {
-        println("🗣️ Android Speak called with text: '${text.take(50)}...'")
-        println("📊 Current state - isPaused: $isPausedState, resumeOffset: $resumeOffset")
+        val isFemale = true
+        var voiceName: String? = null // <--- NEW PARAMETER (Optional: specific voice name)
+        println("🗣️ Android Speak called: text='${text.take(20)}...', Lang=$languageCode, Female=$isFemale")
 
-        // Store callbacks for resume functionality
+        // Store callbacks
         onWordBoundaryCallback = onWordBoundary
         onCompleteCallback = onComplete
 
-        // Check if originalText is empty to determine if this is first time or resume
+        // State management (Keep your existing logic)
         val isFirstTimeSpeak = originalText.isEmpty()
-
         if (isFirstTimeSpeak) {
-            println("🆕 First time speaking - resetting state")
             originalText = text
             pausedPosition = 0
             resumeOffset = 0
-        } else {
-            println("🔄 Resume speaking - keeping resumeOffset: $resumeOffset")
         }
-
-        // Set paused state to false after checking
         isPausedState = false
 
         tts?.let { textToSpeech ->
             val utteranceId = "tts_utterance_${System.currentTimeMillis()}"
-            println("🎬 Starting utterance with ID: $utteranceId")
 
+            // Set Listener (Your existing listener logic)
             textToSpeech.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
                 override fun onStart(utteranceId: String?) {
                     println("🎤 Android TTS Started")
@@ -73,60 +171,90 @@ class AndroidTTSProvider : TTSProvider {
                 }
 
                 override fun onDone(utteranceId: String?) {
-                    println("✅ Android TTS Finished - isPaused: $isPausedState")
                     if (!isPausedState) {
-                        println("🏁 Speech finished normally")
-                        onWordBoundary(-1, -1) // Reset highlight
+                        onWordBoundary(-1, -1)
                         onComplete()
-                        // Reset everything after completion
                         originalText = ""
                         pausedPosition = 0
                         resumeOffset = 0
-                        println("🔄 State reset after completion")
-                    } else {
-                        println("⏸️ Speech finished due to pause - keeping state")
                     }
                 }
 
                 override fun onError(utteranceId: String?) {
-                    println("❌ Android TTS Error occurred")
                     onComplete()
                 }
 
                 override fun onRangeStart(utteranceId: String?, start: Int, end: Int, frame: Int) {
                     if (!isPausedState) {
-                        // Calculate position in original text for resume functionality
                         val actualStart = resumeOffset + start
                         val actualEnd = resumeOffset + end - 1
-
-                        println("🎯 Android word boundary: local($start-$end) -> actual($actualStart-$actualEnd)")
-                        println("📏 Original text length: ${originalText.length}, resumeOffset: $resumeOffset")
-
-                        // Bounds check
                         if (actualStart >= 0 && actualStart < originalText.length) {
-                            // Find word boundaries in original text
                             val wordStart = findWordStart(originalText, actualStart)
                             val wordEnd =
                                 findWordEnd(originalText, minOf(actualEnd, originalText.length - 1))
-
-                            // Update paused position for future resume
                             pausedPosition = wordStart
-
-                            println("✨ Android highlighting: $wordStart-$wordEnd, updated pausedPosition: $pausedPosition")
-
-                            // Show highlighted text
-                            if (wordStart <= wordEnd && wordEnd < originalText.length) {
-                                val highlightedText = originalText.substring(wordStart, wordEnd + 1)
-                                println("📝 Highlighted text: '$highlightedText'")
-                            }
-
                             onWordBoundary(wordStart, wordEnd)
-                        } else {
-                            println("⚠️ Android word boundary actualStart($actualStart) out of bounds!")
                         }
                     }
                 }
             })
+
+            // ============================================================
+            // 🎛️ VOICE SELECTION LOGIC START
+            // ============================================================
+
+            // 1. Set the Locale first
+            val targetLocale =
+                if (languageCode != null) Locale.forLanguageTag(languageCode) else textToSpeech.defaultVoice?.locale
+                    ?: Locale.getDefault()
+            textToSpeech.language = targetLocale
+
+            // 2. Find the best matching Voice
+            try {
+                val voices = textToSpeech.voices // Get all installed voices
+
+                if (voices != null) {
+                    // Strategy: Filter voices that match the language
+                    val localeVoices = voices.filter { it.locale.language == targetLocale.language }
+
+                    var selectedVoice: Voice? = null
+
+                    // A. If a specific ID name was passed (e.g., from a dropdown)
+                    if (voiceName != null) {
+                        selectedVoice = localeVoices.find { it.name == voiceName }
+                    }
+
+                    // B. If no specific name, try to match Gender (heuristic)
+                    if (selectedVoice == null) {
+                        // Android doesn't have a direct "Gender" property on Voice objects.
+                        // We look for keywords in the voice name (Google TTS usually puts "female" or "f0" in the name).
+                        val targetGenderKey = if (isFemale) "female" else "male"
+
+                        // Try to find a voice containing the gender keyword
+                        selectedVoice = localeVoices.find {
+                            it.name.contains(targetGenderKey, ignoreCase = true)
+                        }
+                    }
+
+                    // C. Fallback: If we still don't have a voice, just pick the first one for this locale
+                    if (selectedVoice == null) {
+                        selectedVoice = localeVoices.firstOrNull()
+                    }
+
+                    // 3. Apply the voice
+                    if (selectedVoice != null) {
+                        textToSpeech.voice = selectedVoice
+                        println("✅ Voice set to: ${selectedVoice.name}")
+                    } else {
+                        println("⚠️ No specific voice found for locale, using engine default.")
+                    }
+                }
+            } catch (e: Exception) {
+                println("❌ Error setting voice: ${e.message}")
+            }
+            // ============================================================
+            // 🎛️ VOICE SELECTION LOGIC END
+            // ============================================================
 
             textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
         }
@@ -178,7 +306,7 @@ class AndroidTTSProvider : TTSProvider {
             onWordBoundaryCallback?.let { callback ->
                 onCompleteCallback?.let { complete ->
                     println("🔄 Calling speak with remaining text, resumeOffset should stay: $resumeOffset")
-                    speak(remainingText, callback, {}, complete)
+                    speak(remainingText, null, callback, {}, complete)
                     println("📍 After speak call, resumeOffset is: $resumeOffset")
                 }
             }

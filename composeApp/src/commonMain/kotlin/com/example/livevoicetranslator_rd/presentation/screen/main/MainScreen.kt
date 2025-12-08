@@ -13,8 +13,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.livevoicetranslator_rd.presentation.app.isPremium
 import com.example.livevoicetranslator_rd.presentation.component.AppBottomNavigation
@@ -93,14 +93,20 @@ fun MainScreenContent(
     onProButtonClick: () -> Unit = {}
 ) {
     val navController = rememberNavController()
+
+    val screenRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+    val showTopBar = screenRoute != ScreenRoute.Camera::class.qualifiedName
+
     Scaffold(
         modifier = Modifier.fillMaxSize().systemBarsPadding(),
         topBar = {
-            MainTopBar(
-                modifier = Modifier,
-                onNavigationClick = onNavigationClick,
-                onProButtonClick = onProButtonClick
-            )
+            if (showTopBar) {
+                MainTopBar(
+                    modifier = Modifier,
+                    onNavigationClick = onNavigationClick,
+                    onProButtonClick = onProButtonClick
+                )
+            }
         },
         bottomBar = {
             AppBottomNavigation(

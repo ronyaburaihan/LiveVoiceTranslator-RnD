@@ -13,6 +13,7 @@ actual fun CameraPreview(
     AndroidView(
         factory = { context ->
             PreviewView(context).apply {
+                scaleType = PreviewView.ScaleType.FIT_CENTER
                 controller.setPreviewView(this)
             }
         },

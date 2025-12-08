@@ -3,7 +3,7 @@ package com.example.livevoicetranslator_rd.domain.model.speachtotext
 data class TranscriptState(
     val listeningStatus: ListeningStatus,
     val error: Error = Error(),
-    val transcript: String? = null,
+    var transcript: String? = null,
     val selectedLanguage: String = DEFAULT_LANGUAGE,
     val supportedLanguages: List<String> = listOf(),
     val showPermissionNeedDialog: Boolean = false,
