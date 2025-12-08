@@ -70,6 +70,21 @@ class TranslateViewModel(
         _uiState.update { it.copy(targetLang = lang) }
     }
 
+    fun onSourceLangChanged(lang: String) {
+        _uiState.update { it.copy(sourceLang = lang) }
+    }
+
+    fun onSwapLanguages() {
+        _uiState.update {
+            it.copy(
+                sourceLang = it.targetLang,
+                targetLang = it.sourceLang,
+                inputText = it.translatedText ?: "",
+                translatedText = if (it.translatedText != null) it.inputText else null
+            )
+        }
+    }
+
     private suspend fun handleAutoTranslate(text: String) {
         if (text.isBlank()) {
             _uiState.update {

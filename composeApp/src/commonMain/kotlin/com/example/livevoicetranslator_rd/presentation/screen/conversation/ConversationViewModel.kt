@@ -346,14 +346,14 @@ class ConversationViewModel(
             _uiState.update { currentState ->
                 val updatedMessages = currentState.messages.map { message ->
                     if (message.timestamp == newMessage.timestamp && message.sourceText == sourceText) {
-                        message.copy(translatedText = translatedText)
+                        message.copy(translatedText = translatedText.toString())
                     } else {
                         message
                     }
                 }
                 currentState.copy(messages = updatedMessages)
             }
-            speak(translatedText, _uiState.value.targetLanguageCode)
+            speak(translatedText.toString(), _uiState.value.targetLanguageCode)
 
             // Log for debugging
             println("ConversationViewModel: Added message - '$sourceText' -> '$translatedText' (side: ${if (isLeftSide) "left" else "right"})")
@@ -364,7 +364,7 @@ class ConversationViewModel(
         sourceText: String,
         sourceLanguage: String,
         targetLanguage: String
-    ): String {
+    ): String? {
         return when {
             sourceLanguage == targetLanguage -> sourceText // No translation needed
             sourceText.isBlank() -> ""
@@ -379,7 +379,7 @@ class ConversationViewModel(
                         targetLang = targetLangCode
                     )
                     val result = translateTextUseCase(request)
-                    result.translated
+                    result.translatedText
                 } catch (e: Exception) {
                     "Translation error: ${e.message ?: "Unknown error"}"
                 }

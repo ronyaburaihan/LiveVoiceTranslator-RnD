@@ -8,7 +8,8 @@ import com.example.livevoicetranslator_rd.domain.model.TranslationEngine
 
 data class TranslateUiState(
     val inputText: String = "",
-    val targetLang: String = "en",
+    val sourceLang: String = "en",
+    val targetLang: String = "es",
     val detectedLanguage: String? = null,
     val translatedText: String? = null,
     val detectedEngine: TranslationEngine? = null,
