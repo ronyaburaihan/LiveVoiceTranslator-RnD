@@ -23,7 +23,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.livevoicetranslator_rd.presentation.theme.PrimaryBrush
 import com.example.livevoicetranslator_rd.presentation.theme.dimens
-import com.hashtag.generator.ai.post.writer.presentation.theme.TurnerAppTheme
+import com.example.livevoicetranslator_rd.presentation.theme.TurnerAppTheme
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -36,7 +36,7 @@ fun PrimaryButton(
     enabled: Boolean = true,
     leftIcon: DrawableResource? = null,
     rightIcon: DrawableResource? = null,
-    contentColor: Color = MaterialTheme.colorScheme.onPrimary,
+    contentColor: Color = MaterialTheme.colorScheme.surface,
     disabledBackground: Color = MaterialTheme.colorScheme.surfaceVariant,
     containerBrush: Brush = PrimaryBrush,
     buttonHeight: Dp = dimens.buttonHeight,

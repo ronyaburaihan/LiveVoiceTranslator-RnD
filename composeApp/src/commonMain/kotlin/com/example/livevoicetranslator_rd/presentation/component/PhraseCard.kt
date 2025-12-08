@@ -1,5 +1,6 @@
 package com.example.livevoicetranslator_rd.presentation.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -37,8 +38,8 @@ import com.example.livevoicetranslator_rd.presentation.screen.phrases.ClipboardP
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhraseItem
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.TTS
 import com.example.livevoicetranslator_rd.presentation.screen.phrases.rememberShareManager
+import com.example.livevoicetranslator_rd.presentation.theme.GrayIconColor
 import com.example.livevoicetranslator_rd.presentation.theme.OnBackgroundColor
-import com.example.livevoicetranslator_rd.presentation.theme.OnSurfaceColor
 import com.example.livevoicetranslator_rd.presentation.theme.OutlineColor
 import com.example.livevoicetranslator_rd.presentation.theme.PremiumButtonColor
 import com.example.livevoicetranslator_rd.presentation.theme.SecondaryColor
@@ -79,6 +80,7 @@ fun PhraseCardContent(
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 6.dp),
         shape = RoundedCornerShape(8.dp),
+        border = BorderStroke(1.dp, OutlineColor),
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.onPrimary),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
     ) {
@@ -167,7 +169,7 @@ fun PhraseCardContent(
                                     painter = painterResource(Res.drawable.ic_play_audio),
                                     contentDescription = "Copy",
                                     modifier = Modifier.size(20.dp),
-                                    colorFilter = ColorFilter.tint(OnSurfaceColor)
+                                    colorFilter = ColorFilter.tint(GrayIconColor)
                                 )
                             }
                         }
@@ -190,7 +192,7 @@ fun PhraseCardContent(
                                     painter = painterResource(Res.drawable.ic_copy),
                                     contentDescription = "Copy",
                                     modifier = Modifier.size(20.dp),
-                                    colorFilter = ColorFilter.tint(OnSurfaceColor)
+                                    colorFilter = ColorFilter.tint(GrayIconColor)
                                 )
                             }
                         }
@@ -209,7 +211,7 @@ fun PhraseCardContent(
                                     painter = painterResource(Res.drawable.ic_share),
                                     contentDescription = "Copy",
                                     modifier = Modifier.size(20.dp),
-                                    colorFilter = ColorFilter.tint(OnSurfaceColor)
+                                    colorFilter = ColorFilter.tint(GrayIconColor)
                                 )
                             }
                         }
@@ -223,7 +225,7 @@ fun PhraseCardContent(
                         Icon(
                             if (phrase.isFavorite) Icons.Filled.Star else Icons.Default.StarBorder,
                             contentDescription = "Favorite",
-                            tint = if (phrase.isFavorite) PremiumButtonColor else OnSurfaceColor,
+                            tint = if (phrase.isFavorite) PremiumButtonColor else GrayIconColor,
                             modifier = Modifier.size(20.dp)
                         )
                     }

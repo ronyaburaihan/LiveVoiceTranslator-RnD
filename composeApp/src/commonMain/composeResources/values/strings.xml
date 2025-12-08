@@ -46,6 +46,10 @@
     <string name="setting_title_manage_subscription">Manage Subscription</string>
     <string name="setting_title_clear_history">Clear History</string>
     <string name="offer_title">Try Premium for Free</string>
+    <string name="limit_reached_offer_title">Unlock Premium for Free</string>
+    <string name="limit_reached_offer_description">You've reached your free limit. Upgrade to\ncontinue without restrictions.</string>
+    <string name="upgrade_now_button">Upgrade Now</string>
+    <string name="cancel_anytime_description">Cancel anytime. USD 19.99/year after trial\nends unless cancelled.</string>
 
 
 </resources>

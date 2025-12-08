@@ -15,6 +15,8 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
+import androidx.compose.material3.MenuItemColors
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,6 +32,8 @@ import androidx.compose.ui.unit.sp
 import com.example.livevoicetranslator_rd.domain.model.TranslatableLanguages
 import com.example.livevoicetranslator_rd.presentation.theme.PrimaryColor
 import com.example.livevoicetranslator_rd.presentation.theme.SecondaryColor
+import com.example.livevoicetranslator_rd.presentation.theme.black
+import com.example.livevoicetranslator_rd.presentation.theme.textColour
 
 @Composable
 fun LanguageDropdown(
@@ -54,7 +58,7 @@ fun LanguageDropdown(
             ) {
                 Text(
                     text = language,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.surface,
                     fontSize = 12.sp
                 )
                 Spacer(modifier = Modifier.width(4.dp))
@@ -73,11 +77,12 @@ fun LanguageDropdown(
         ) {
             languages.forEach { lang ->
                 DropdownMenuItem(
-                    text = { Text(lang.title) },
+                    text = { Text(lang.title)},
                     onClick = {
                         onLanguageChange(lang.code)
                         expanded = false
-                    }
+                    },
+                    colors = MenuDefaults.itemColors( textColour)
                 )
             }
         }

@@ -7,7 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.livevoicetranslator_rd.presentation.navigation.AppNavigation
 import com.example.livevoicetranslator_rd.presentation.navigation.ScreenRoute
 import com.example.livevoicetranslator_rd.presentation.screen.camera.result.ResultViewModel
-import com.hashtag.generator.ai.post.writer.presentation.theme.TurnerAppTheme
+import com.example.livevoicetranslator_rd.presentation.theme.TurnerAppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
