@@ -25,7 +25,7 @@ fun CustomIconButton(
                 modifier = Modifier.size(dimens.iconSize),
                 painter = painterResource(icon),
                 contentDescription = contentDescription,
-                tint = MaterialTheme.colorScheme.onPrimary
+                tint = MaterialTheme.colorScheme.surface
             )
         }
     )

@@ -97,7 +97,7 @@ fun ReferralScreenContent(
                                 modifier = Modifier.size(dimens.iconSize),
                                 imageVector = Icons.AutoMirrored.Default.ArrowBack,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimary
+                                tint = MaterialTheme.colorScheme.surface
                             )
                         }
                     )

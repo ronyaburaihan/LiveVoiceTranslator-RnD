@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -82,9 +83,10 @@ fun SettingScreen(title: String) {
         onAutoReadTranslationChange = { autoReadTranslation = it },
         autoSaveHistory = autoSaveHistory,
         onAutoSaveHistoryChange = { autoSaveHistory = it },
-        onBackClick = {navController.navigateUp()}
+        onBackClick = { navController.navigateUp() }
     )
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreenContent(
@@ -108,7 +110,7 @@ fun SettingsScreenContent(
                             modifier = Modifier.size(dimens.iconSize),
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            tint = MaterialTheme.colorScheme.surface
                         )
                     }
                 }
@@ -204,7 +206,7 @@ fun SettingsNavigationItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
-                painter = painterResource( icon),
+                painter = painterResource(icon),
                 contentDescription = null,
                 modifier = Modifier.size(24.dp)
             )
@@ -214,7 +216,8 @@ fun SettingsNavigationItem(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = textColour
                 )
                 if (subtitle != null) {
                     Text(
@@ -224,13 +227,14 @@ fun SettingsNavigationItem(
                     )
                 }
             }
-
-            Icon(
-                modifier = Modifier.clickable(onClick = onClick),
-                imageVector = Icons.Default.ChevronRight,
-                contentDescription = "Navigate",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+            Box(modifier = Modifier.size(32.dp).clickable(onClick = onClick)) {
+                Icon(
+                    modifier = Modifier.align(Alignment.Center),
+                    imageVector = Icons.Default.ChevronRight,
+                    contentDescription = "Navigate",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
         HorizontalDivider(
             modifier = Modifier.padding(horizontal = 16.dp),
@@ -270,6 +274,7 @@ fun SettingsSwitchItem(
             Text(
                 text = title,
                 style = MaterialTheme.typography.bodyLarge,
+                color = textColour,
                 modifier = Modifier.weight(1f)
             )
 
@@ -283,10 +288,10 @@ fun SettingsSwitchItem(
                     .indication(interactionSource, null),
                 interactionSource = interactionSource,
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                    checkedThumbColor = MaterialTheme.colorScheme.surface,
                     checkedTrackColor = PrimaryColor,
                     uncheckedThumbColor = MaterialTheme.colorScheme.onBackground,
-                    uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant
+                    uncheckedTrackColor = MaterialTheme.colorScheme.onSurface
                 )
             )
 

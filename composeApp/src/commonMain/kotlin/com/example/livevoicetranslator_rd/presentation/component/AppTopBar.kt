@@ -47,7 +47,7 @@ fun AppTopBar(
     windowInsets: WindowInsets = WindowInsets.systemBars
         .only(WindowInsetsSides.Horizontal),
     containerColor: Color = MaterialTheme.colorScheme.surface,
-    contentColor: Color = MaterialTheme.colorScheme.onPrimary,
+    contentColor: Color = MaterialTheme.colorScheme.onSurface,
     contentAlignment: Alignment = Alignment.CenterStart
 ) {
     Surface(
@@ -80,7 +80,7 @@ fun AppTopBar(
                 ProvideTextStyle(
                     value = MaterialTheme.typography.titleMedium.copy(
                         fontWeight = FontWeight.SemiBold,
-                        color = Color.White
+                        color = MaterialTheme.colorScheme.surface
                     )
                 ) {
                     title()
@@ -121,7 +121,7 @@ fun AppTopbarWithBack(
                             .padding(2.dp),
                         imageVector = Icons.AutoMirrored.Filled.ArrowBackIos,
                         contentDescription = title,
-                        tint = MaterialTheme.colorScheme.onPrimary
+                        tint = MaterialTheme.colorScheme.surface
                     )
                 }
             )
@@ -137,7 +137,7 @@ fun AppTopBarTitle(
         text = title,
         style = MaterialTheme.typography.titleMedium.copy(
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onPrimary
+            color = MaterialTheme.colorScheme.surface
         ),
         maxLines = 1,
         overflow = TextOverflow.Ellipsis

@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -123,7 +124,7 @@ fun OnBoardingScreen() {
     val coroutineScope = rememberCoroutineScope()
 
     BoxWithConstraints(
-        modifier = Modifier.fillMaxSize().background(BackgroundColor)
+        modifier = Modifier.fillMaxSize().background(BackgroundColor).systemBarsPadding()
     ) {
         val isLandscape = maxWidth > maxHeight
 
@@ -274,12 +275,12 @@ fun OnBoardingScreen() {
         } else {
             // Portrait layout (original)
             Column(
-                modifier = Modifier.fillMaxSize().padding(24.dp)
+                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp)
                     .verticalScroll(rememberScrollState()),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Spacer(modifier = Modifier.height(40.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 // Horizontal Pager for orbital systems
                 HorizontalPager(
@@ -296,7 +297,7 @@ fun OnBoardingScreen() {
                     currentPage = pagerState.currentPage, pages = pages, isLandscape = false
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(40.dp))
 
                 // Call to action button
                 PrimaryButton(
@@ -320,7 +321,7 @@ fun OnBoardingScreen() {
                         }
                     })
 
-                Spacer(modifier = Modifier.height(32.dp))
+                Spacer(modifier = Modifier.height(18.dp))
             }
         }
     }
@@ -423,7 +424,7 @@ private fun OrbitingNode(
 private fun CircleBadge(
     code: String?,
     color: Color,
-    textColor: Color = Color.White,
+    textColor: Color = MaterialTheme.colorScheme.surface,
     avatar: DrawableResource? = null,
     modifier: Modifier = Modifier
 ) {
