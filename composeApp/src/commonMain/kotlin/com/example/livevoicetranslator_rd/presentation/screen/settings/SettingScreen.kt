@@ -108,7 +108,7 @@ fun SettingsScreenContent(
                             modifier = Modifier.size(dimens.iconSize),
                             imageVector = Icons.AutoMirrored.Default.ArrowBack,
                             contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            tint = MaterialTheme.colorScheme.surface
                         )
                     }
                 }
@@ -283,7 +283,7 @@ fun SettingsSwitchItem(
                     .indication(interactionSource, null),
                 interactionSource = interactionSource,
                 colors = SwitchDefaults.colors(
-                    checkedThumbColor = MaterialTheme.colorScheme.onPrimary,
+                    checkedThumbColor = MaterialTheme.colorScheme.surface,
                     checkedTrackColor = PrimaryColor,
                     uncheckedThumbColor = MaterialTheme.colorScheme.onBackground,
                     uncheckedTrackColor = MaterialTheme.colorScheme.surfaceVariant

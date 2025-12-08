@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -70,13 +72,16 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun OfferScreen() {
     val navController = LocalNavController.current
 
-    OfferScreenContent(onClose = { navController.navigateUp() }, onStartTrial = {})
+    OfferScreenContent(
+        onCloseClick = { navController.navigateUp() },
+        onStartTrial = {}
+    )
 
 }
 
 @Composable
 fun OfferScreenContent(
-    onClose: () -> Unit = {}, onStartTrial: () -> Unit = {}
+    onCloseClick: () -> Unit, onStartTrial: () -> Unit
 ) {
     Box(
         modifier = Modifier.fillMaxSize().background(
@@ -89,7 +94,7 @@ fun OfferScreenContent(
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .align (Alignment.TopStart)
+                    .align(Alignment.TopStart)
                     .offset(y = (-15).dp, x = (-150).dp),   // move image
                 contentScale = ContentScale.Crop
             )
@@ -97,28 +102,15 @@ fun OfferScreenContent(
                 modifier = Modifier.matchParentSize()
                     .background(headerBrush, alpha = 0.9f)
             ) {
-                IconButton(
-                    onClick = onClose,
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(16.dp)
-                        .statusBarsPadding()
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = "Close",
-                        tint = Color.White
-                    )
-                }
-
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 24.dp)
+                        .padding(horizontal = 16.dp)
                         .padding(top = 60.dp, bottom = 24.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Spacer(modifier = Modifier.weight(1f))
                     Image(
                         painter = painterResource(Res.drawable.ic_premium_golden),
                         contentDescription = null,
@@ -134,7 +126,7 @@ fun OfferScreenContent(
                         textAlign = TextAlign.Center
                     )
 
-                    Spacer(modifier = Modifier.height(32.dp))
+                    Spacer(modifier = Modifier.height(25.dp))
 
                     val premiumFeatures = listOf(
                         Res.drawable.ic_mic to stringResource(Res.string.feature_1),
@@ -151,7 +143,9 @@ fun OfferScreenContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(bottomStart = 8.dp, bottomEnd = 8.dp)),
-                        iconColor = MaterialTheme.colorScheme.onPrimary
+                        iconColor = MaterialTheme.colorScheme.surface,
+                        dividerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.2f),
+                        dividerPadding = PaddingValues(horizontal = 12.dp)
 
                     )
 
@@ -164,7 +158,7 @@ fun OfferScreenContent(
                             fontWeight = FontWeight.Normal,
                             fontSize = 14.sp
                         ),
-                        color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.9f),
+                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.9f),
                         textAlign = TextAlign.Center
                     )
 
@@ -173,7 +167,7 @@ fun OfferScreenContent(
                     PrimaryButton(
                         label = stringResource(Res.string.start_free_trial),
                         onClick = onStartTrial,
-                        disabledBackground = Color.White,
+                        disabledBackground = MaterialTheme.colorScheme.surface,
                         cornerRadius = dimens.cornerRadiusSmall,
                         contentColor = PrimaryColor,
                         containerBrush = SolidColor(MaterialTheme.colorScheme.surface)
@@ -189,18 +183,23 @@ fun OfferScreenContent(
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
+
+                IconButton(
+                    onClick = onCloseClick,
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(end = 8.dp)
+                        .statusBarsPadding()
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close",
+                        tint = MaterialTheme.colorScheme.surface
+                    )
+                }
             }
         }
 
 
-    }
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewPremiumTrialScreen() {
-    MaterialTheme {
-        OfferScreenContent()
     }
 }

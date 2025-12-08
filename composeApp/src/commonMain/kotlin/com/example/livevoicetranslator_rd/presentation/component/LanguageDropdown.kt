@@ -54,14 +54,14 @@ fun LanguageDropdown(
             ) {
                 Text(
                     text = language,
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.surface,
                     fontSize = 12.sp
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(
                     imageVector = Icons.Default.ArrowDropDown,
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onPrimary,
+                    tint = MaterialTheme.colorScheme.surface,
                     modifier = Modifier.size(12.dp)
                 )
             }

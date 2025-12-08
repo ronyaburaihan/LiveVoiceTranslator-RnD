@@ -102,7 +102,7 @@ fun PhraseDetailScreenContent(
                                 modifier = Modifier.size(dimens.iconSize),
                                 imageVector = Icons.AutoMirrored.Default.ArrowBack,
                                 contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onPrimary
+                                tint = MaterialTheme.colorScheme.surface
                             )
                         }
                     )
@@ -147,7 +147,7 @@ fun PhraseDetailScreenContent(
                             Icon(
                                 Icons.Default.Search,
                                 contentDescription = "Search",
-                                tint = MaterialTheme.colorScheme.onPrimary
+                                tint = MaterialTheme.colorScheme.surface
                             )
                         }
                     }

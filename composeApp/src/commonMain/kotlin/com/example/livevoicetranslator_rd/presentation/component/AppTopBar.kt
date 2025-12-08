@@ -47,7 +47,7 @@ fun AppTopBar(
     windowInsets: WindowInsets = WindowInsets.systemBars
         .only(WindowInsetsSides.Horizontal),
     containerColor: Color = MaterialTheme.colorScheme.surface,
-    contentColor: Color = MaterialTheme.colorScheme.onPrimary,
+    contentColor: Color = MaterialTheme.colorScheme.surface,
     contentAlignment: Alignment = Alignment.CenterStart
 ) {
     Surface(
