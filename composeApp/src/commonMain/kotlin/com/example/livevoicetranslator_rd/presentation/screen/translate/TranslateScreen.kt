@@ -7,16 +7,21 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
 import androidx.compose.material.icons.filled.ContentCopy
@@ -30,6 +35,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -49,45 +55,55 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.livevoicetranslator_rd.domain.model.TranslatableLanguages
+import com.example.livevoicetranslator_rd.presentation.component.MicButton
 import com.example.livevoicetranslator_rd.presentation.theme.GrayIconColor
 import com.example.livevoicetranslator_rd.presentation.theme.OutlineColor
 import com.example.livevoicetranslator_rd.presentation.theme.PrimaryColor
+import livevoicetranslatorrd.composeapp.generated.resources.Res
+import livevoicetranslatorrd.composeapp.generated.resources.ic_arrow_two_way
+import livevoicetranslatorrd.composeapp.generated.resources.ic_chevron_down
+import livevoicetranslatorrd.composeapp.generated.resources.ic_copy
+import livevoicetranslatorrd.composeapp.generated.resources.ic_copy_outline
+import livevoicetranslatorrd.composeapp.generated.resources.ic_mic
+import livevoicetranslatorrd.composeapp.generated.resources.ic_paste
+import livevoicetranslatorrd.composeapp.generated.resources.ic_rating_star
+import livevoicetranslatorrd.composeapp.generated.resources.ic_share
+import livevoicetranslatorrd.composeapp.generated.resources.ic_share_outline
+import livevoicetranslatorrd.composeapp.generated.resources.ic_star_filled
+import livevoicetranslatorrd.composeapp.generated.resources.ic_voice_custom
+import livevoicetranslatorrd.composeapp.generated.resources.ic_volume_outline
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
-// ================================
-// Main TranslateScreen Composable
-// ================================
 @Composable
 fun TranslateScreen(
     viewModel: TranslateViewModel = koinViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    Scaffold { paddingValues ->
-        TranslateScreenContent(
-            uiState = uiState,
-            onInputChanged = viewModel::onInputChanged,
-            onSourceLangChanged = viewModel::onSourceLangChanged,
-            onTargetLangChanged = viewModel::onTargetLangChanged,
-            onSwapLanguages = viewModel::onSwapLanguages,
-            onPasteClicked = viewModel::onPasteClicked,
-            onMicClicked = { /* TODO: Implement mic functionality */ },
-            onSpeakClicked = viewModel::onSpeakClicked,
-            onCopyClicked = viewModel::onCopyClicked,
-            onShareClicked = viewModel::onShareClicked,
-            onFavoriteClicked = viewModel::manualSaveFavorite,
-            modifier = Modifier.padding(paddingValues)
-        )
-    }
+    TranslateScreenContent(
+        uiState = uiState,
+        onInputChanged = viewModel::onInputChanged,
+        onSourceLangChanged = viewModel::onSourceLangChanged,
+        onTargetLangChanged = viewModel::onTargetLangChanged,
+        onSwapLanguages = viewModel::onSwapLanguages,
+        onPasteClicked = viewModel::onPasteClicked,
+        onMicClicked = { /* TODO: Implement mic functionality */ },
+        onSpeakClicked = viewModel::onSpeakClicked,
+        onCopyClicked = viewModel::onCopyClicked,
+        onShareClicked = viewModel::onShareClicked,
+        onFavoriteClicked = viewModel::manualSaveFavorite
+    )
 }
 
-// ================================
-// TranslateScreenContent Composable
-// ================================
 @Composable
 fun TranslateScreenContent(
     uiState: TranslateUiState,
@@ -100,51 +116,51 @@ fun TranslateScreenContent(
     onSpeakClicked: () -> Unit,
     onCopyClicked: () -> Unit,
     onShareClicked: () -> Unit,
-    onFavoriteClicked: () -> Unit,
-    modifier: Modifier = Modifier
+    onFavoriteClicked: () -> Unit
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-    ) {
-        // Language Selector Row
-        LanguageSelectorRow(
-            sourceLang = uiState.sourceLang,
-            targetLang = uiState.targetLang,
-            onSourceLangChanged = onSourceLangChanged,
-            onTargetLangChanged = onTargetLangChanged,
-            onSwapLanguages = onSwapLanguages
-        )
+    Scaffold { paddingValues ->
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize()
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+        ) {
+            // Language Selector Row
+            LanguageSelectorRow(
+                sourceLang = uiState.sourceLang,
+                targetLang = uiState.targetLang,
+                onSourceLangChanged = onSourceLangChanged,
+                onTargetLangChanged = onTargetLangChanged,
+                onSwapLanguages = onSwapLanguages
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        // Source Input Card
-        SourceInputCard(
-            inputText = uiState.inputText,
-            onInputChanged = onInputChanged,
-            onPasteClicked = onPasteClicked,
-            onMicClicked = onMicClicked
-        )
+            // Source Input Card
+            SourceInputCard(
+                inputText = uiState.inputText,
+                onInputChanged = onInputChanged,
+                onPasteClicked = onPasteClicked,
+                onMicClicked = onMicClicked
+            )
 
-        Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
-        // Translated Output Card
-        TranslatedOutputCard(
-            translatedText = uiState.translatedText,
-            charCount = uiState.charCount,
-            isLoading = uiState.isLoading,
-            onSpeakClicked = onSpeakClicked,
-            onCopyClicked = onCopyClicked,
-            onShareClicked = onShareClicked,
-            onFavoriteClicked = onFavoriteClicked
-        )
+            // Translated Output Card
+            TranslatedOutputCard(
+                translatedText = uiState.translatedText,
+                charCount = uiState.charCount,
+                isLoading = uiState.isLoading,
+                onSpeakClicked = onSpeakClicked,
+                onCopyClicked = onCopyClicked,
+                onShareClicked = onShareClicked,
+                onFavoriteClicked = onFavoriteClicked
+            )
+        }
     }
 }
 
-// ================================
-// Language Selector Row
-// ================================
+
 @Composable
 private fun LanguageSelectorRow(
     sourceLang: String,
@@ -166,16 +182,21 @@ private fun LanguageSelectorRow(
             modifier = Modifier.weight(1f)
         )
 
-        // Swap Button
         IconButton(
             onClick = onSwapLanguages,
-            modifier = Modifier.padding(horizontal = 8.dp)
+            modifier = Modifier
+                .padding(start = 13.dp, end = 13.dp)
+                .border(
+                    BorderStroke(0.4.dp, Color(0xFFE2E2E2)),
+                    shape = RoundedCornerShape(50.dp)
+                )
+                .size(40.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.SwapHoriz,
+                painter = painterResource(Res.drawable.ic_arrow_two_way),
                 contentDescription = "Swap Languages",
                 tint = PrimaryColor,
-                modifier = Modifier.size(28.dp)
+                modifier = Modifier.size(18.dp)
             )
         }
 
@@ -188,9 +209,7 @@ private fun LanguageSelectorRow(
     }
 }
 
-// ================================
-// Language Dropdown Button
-// ================================
+
 @Composable
 private fun LanguageDropdownButton(
     selectedLanguageCode: String,
@@ -205,29 +224,29 @@ private fun LanguageDropdownButton(
         Surface(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(44.dp),
+                .height(40.dp),
             onClick = { expanded = true },
-            shape = RoundedCornerShape(22.dp),
+            shape = RoundedCornerShape(30.dp),
             color = MaterialTheme.colorScheme.surface,
-            border = BorderStroke(1.dp, OutlineColor)
+            border = BorderStroke(0.4.dp, Color( 0xFFE2E2E2))
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
+                    .fillMaxSize(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = selectedLanguage?.title ?: "Select",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurface
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Color(0xFF333333),
+                    modifier = Modifier.padding(start = 20.5.dp)
                 )
                 Icon(
-                    imageVector = Icons.Default.KeyboardArrowDown,
+                    painter = painterResource(Res.drawable.ic_chevron_down),
                     contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(20.dp)
+                    tint = Color(0xFF333333),
+                    modifier = Modifier.padding(end = 20.5.dp)
                 )
             }
         }
@@ -238,7 +257,11 @@ private fun LanguageDropdownButton(
         ) {
             languages.forEach { lang ->
                 DropdownMenuItem(
-                    text = { Text(lang.title) },
+                    text = { Text(
+                        text = lang.title,
+                        style = MaterialTheme.typography.labelLarge,
+                        color = Color(0xFF333333)
+                    ) },
                     onClick = {
                         onLanguageSelected(lang.code)
                         expanded = false
@@ -249,9 +272,6 @@ private fun LanguageDropdownButton(
     }
 }
 
-// ================================
-// Source Input Card
-// ================================
 @Composable
 private fun SourceInputCard(
     inputText: String,
@@ -260,139 +280,104 @@ private fun SourceInputCard(
     onMicClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Box(
-        modifier = modifier
+    Column(
+        modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp)
+            .border(
+                BorderStroke(1.dp, Color(0xFFEAEAEA)),
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(16.dp)
     ) {
-        Card(
-            modifier = Modifier.fillMaxSize(),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.surface
-            ),
-            border = BorderStroke(2.dp, PrimaryColor)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                // Text Input Field
-                TextField(
-                    value = inputText,
-                    onValueChange = onInputChanged,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    placeholder = {
-                        Text(
-                            text = "Type or paste text here...",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    },
-                    textStyle = MaterialTheme.typography.bodyLarge,
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Bottom Row with Paste Button
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+        BasicTextField(
+            value = inputText,
+            onValueChange = onInputChanged,
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            textStyle = MaterialTheme.typography.labelLarge.copy(color = Color(0xFF333333)),
+            decorationBox = { innerTextField ->
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.TopStart
                 ) {
-                    // Paste Button
-                    PasteButton(onClick = onPasteClicked)
-
-                    Spacer(modifier = Modifier.weight(1f))
+                    if (inputText.isEmpty()) {
+                        Text(
+                            modifier = Modifier
+                                .verticalScroll(rememberScrollState()),
+                            text = "Type or paste text here...",
+                            color = Color(0xFFAAAAAA),
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                    }
+                    innerTextField()
                 }
             }
-        }
-
-        // Floating Mic Button
-        MicrophoneButton(
-            onClick = onMicClicked,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 16.dp, bottom = 16.dp)
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Bottom Row with Paste Button
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            // Paste Button
+            PasteButton(onClick = onPasteClicked)
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Floating Mic Button
+            MicButton(
+                onClick = onMicClicked
+            )
+        }
     }
 }
 
-// ================================
-// Paste Button
-// ================================
 @Composable
 private fun PasteButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Surface(
-        modifier = modifier,
-        onClick = onClick,
-        shape = RoundedCornerShape(8.dp),
-        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f),
-        border = BorderStroke(1.dp, OutlineColor)
-    ) {
-        Row(
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.ContentPaste,
-                contentDescription = null,
-                tint = PrimaryColor,
-                modifier = Modifier.size(18.dp)
-            )
-            Spacer(modifier = Modifier.width(6.dp))
-            Text(
-                text = "Paste",
-                style = MaterialTheme.typography.labelMedium,
-                color = PrimaryColor
-            )
-        }
-    }
-}
-
-// ================================
-// Microphone Button
-// ================================
-@Composable
-private fun MicrophoneButton(
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Box(
+    Row(
         modifier = modifier
-            .size(56.dp)
-            .shadow(elevation = 8.dp, shape = CircleShape)
-            .clip(CircleShape)
-            .background(PrimaryColor)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
+            .height(28.dp)
+            .background(
+                Color(0xFFE1EBFF).copy(alpha = 0.7f),
+                RoundedCornerShape(30.dp)
+            )
+            .border(
+                BorderStroke(0.4.dp, Color(0xFF0252FF).copy(0.08f)),
+                RoundedCornerShape(30.dp)
+            )
+            .clickable(
+                onClick = onClick
+            )
+            .padding(horizontal = 10.5.dp, vertical = 6.5.dp, )
+            ,
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            imageVector = Icons.Default.Mic,
-            contentDescription = "Voice Input",
-            tint = Color.White,
-            modifier = Modifier.size(28.dp)
+            painter = painterResource(Res.drawable.ic_paste),
+            contentDescription = null,
+            tint = PrimaryColor,
+            modifier = Modifier.size(16.dp)
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            text = "Paste",
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontWeight = FontWeight.Medium
+            ),
+            color = PrimaryColor
         )
     }
 }
 
-// ================================
-// Translated Output Card
-// ================================
+
 @Composable
 private fun TranslatedOutputCard(
     translatedText: String?,
@@ -404,51 +389,51 @@ private fun TranslatedOutputCard(
     onFavoriteClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier
+    Column(
+        modifier = Modifier
             .fillMaxWidth()
-            .height(200.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        border = BorderStroke(1.dp, OutlineColor)
-    ) {
-        Column(
+            .background(
+                Color(0xFFF4F7FC),
+                shape = RoundedCornerShape(8.dp)
+            )
+            .border(
+                BorderStroke(1.dp, Color(0xFFEAEAEA)),
+                shape = RoundedCornerShape(8.dp)
+            )
+            .padding(16.dp)
+    ){
+        // Translated Text Display
+        Text(
+            text = translatedText ?: "Translation will appear here...",
+            style = MaterialTheme.typography.bodyMedium,
+            color = if (translatedText != null)
+                MaterialTheme.colorScheme.onSurface
+            else
+                MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-        ) {
-            // Translated Text Display
-            Text(
-                text = translatedText ?: "Translation will appear here...",
-                style = MaterialTheme.typography.bodyLarge,
-                color = if (translatedText != null)
-                    MaterialTheme.colorScheme.onSurface
-                else
-                    MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            )
+                .fillMaxWidth()
+                .weight(1f)
+                .padding(bottom = 8.dp)
+                .verticalScroll(rememberScrollState())
+        )
 
-            Spacer(modifier = Modifier.height(12.dp))
+        HorizontalDivider(
+            modifier = Modifier.height(1.dp),
+            color = Color(0xFFE1EBFF)
+        )
 
-            // Bottom Action Row
-            TranslationActionRow(
-                charCount = charCount,
-                onSpeakClicked = onSpeakClicked,
-                onCopyClicked = onCopyClicked,
-                onShareClicked = onShareClicked,
-                onFavoriteClicked = onFavoriteClicked
-            )
-        }
+        // Bottom Action Row
+        TranslationActionRow(
+            charCount = charCount,
+            onSpeakClicked = onSpeakClicked,
+            onCopyClicked = onCopyClicked,
+            onShareClicked = onShareClicked,
+            onFavoriteClicked = onFavoriteClicked
+        )
     }
 }
 
-// ================================
-// Translation Action Row
-// ================================
+
 @Composable
 private fun TranslationActionRow(
     charCount: Int,
@@ -459,39 +444,39 @@ private fun TranslationActionRow(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().padding(top = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Action Icons Row
         Row(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Speaker Button
-            TranslationActionButton(
-                icon = Icons.AutoMirrored.Filled.VolumeUp,
+             TranslationActionButton(
+                icon = painterResource(Res.drawable.ic_volume_outline),
                 contentDescription = "Read aloud",
                 onClick = onSpeakClicked
             )
 
             // Copy Button
             TranslationActionButton(
-                icon = Icons.Default.ContentCopy,
+                icon = painterResource(Res.drawable.ic_copy_outline),
                 contentDescription = "Copy",
                 onClick = onCopyClicked
             )
 
             // Share Button
             TranslationActionButton(
-                icon = Icons.Default.Share,
+                icon = painterResource(Res.drawable.ic_share_outline),
                 contentDescription = "Share",
                 onClick = onShareClicked
             )
 
             // Favorite Button
             TranslationActionButton(
-                icon = Icons.Default.Star,
+                icon = painterResource(Res.drawable.ic_star_filled),
                 contentDescription = "Save to favorites",
                 onClick = onFavoriteClicked
             )
@@ -500,32 +485,38 @@ private fun TranslationActionRow(
         // Character Counter
         Text(
             text = "$charCount/3000",
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            textAlign = TextAlign.End
+            style = MaterialTheme.typography.bodySmall.copy(
+                fontSize = 11.sp,
+                fontStyle = FontStyle.Italic,
+                fontWeight = FontWeight.Medium
+            ),
+            color = Color(0xFF6A6A6A),
+            textAlign = TextAlign.End,
+            modifier = Modifier.align(Alignment.CenterVertically)
         )
     }
 }
 
-// ================================
-// Translation Action Button
-// ================================
 @Composable
 private fun TranslationActionButton(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    icon: Painter,
+    color: Color = PrimaryColor,
     contentDescription: String,
     onClick: () -> Unit,
+    size: Dp = 28.dp,
     modifier: Modifier = Modifier
 ) {
-    IconButton(
-        onClick = onClick,
-        modifier = modifier.size(40.dp)
+    Box(
+        modifier = modifier
+            .size(size)
+            .clip(CircleShape)
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
     ) {
         Icon(
-            imageVector = icon,
+            painter = icon,
             contentDescription = contentDescription,
-            tint = GrayIconColor,
-            modifier = Modifier.size(22.dp)
+            tint = color
         )
     }
 }
