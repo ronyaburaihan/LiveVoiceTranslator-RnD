@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -123,8 +124,10 @@ fun TranslateScreenContent(
             modifier = Modifier
                 .padding(paddingValues)
                 .fillMaxSize()
-                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(horizontal = 16.dp)
         ) {
+            Spacer(modifier = Modifier.height(12.dp))
+
             // Language Selector Row
             LanguageSelectorRow(
                 sourceLang = uiState.sourceLang,
@@ -141,10 +144,11 @@ fun TranslateScreenContent(
                 inputText = uiState.inputText,
                 onInputChanged = onInputChanged,
                 onPasteClicked = onPasteClicked,
-                onMicClicked = onMicClicked
+                onMicClicked = onMicClicked,
+                modifier = Modifier.weight(1f)
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(19.dp))
 
             // Translated Output Card
             TranslatedOutputCard(
@@ -154,8 +158,11 @@ fun TranslateScreenContent(
                 onSpeakClicked = onSpeakClicked,
                 onCopyClicked = onCopyClicked,
                 onShareClicked = onShareClicked,
-                onFavoriteClicked = onFavoriteClicked
+                onFavoriteClicked = onFavoriteClicked,
+                modifier = Modifier.weight(1f)
             )
+
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
@@ -281,7 +288,7 @@ private fun SourceInputCard(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .border(
                 BorderStroke(1.dp, Color(0xFFEAEAEA)),
@@ -390,7 +397,7 @@ private fun TranslatedOutputCard(
     modifier: Modifier = Modifier
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(
                 Color(0xFFF4F7FC),
