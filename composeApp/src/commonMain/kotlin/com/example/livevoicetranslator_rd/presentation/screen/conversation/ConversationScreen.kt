@@ -28,6 +28,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -39,10 +40,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.livevoicetranslator_rd.domain.model.speachtotext.ListeningStatus
+import com.example.livevoicetranslator_rd.domain.model.speachtotext.TranscriptState
 import com.example.livevoicetranslator_rd.presentation.component.LanguageDropdownConversation
 import com.example.livevoicetranslator_rd.presentation.component.MicButton
 import com.example.livevoicetranslator_rd.presentation.component.TranslationCard
@@ -106,7 +112,7 @@ private fun ConversationScreenContent(
     liveText: String,
     statusText: String,
     targetLanguageCode: String,
-    transcriptState: com.example.livevoicetranslator_rd.domain.model.speachtotext.TranscriptState,
+    transcriptState: TranscriptState,
     onLeftMicClick: () -> Unit,
     onRightMicClick: () -> Unit,
     onLeftMicLongPress: () -> Unit,
@@ -120,260 +126,327 @@ private fun ConversationScreenContent(
     onClearConversation: () -> Unit,
     onSpeakClick: (String, String) -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LightGrayBg)
-    ) {
-        // Radial Gradient Background
-        val density = androidx.compose.ui.platform.LocalDensity.current
-        BoxWithConstraints(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            val centerOffset = androidx.compose.ui.geometry.Offset(
-                x = constraints.maxWidth / 2f,
-                y = constraints.maxHeight / 2f - with(density) { 52.dp.toPx() } // Shift up to match visual center
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        brush = androidx.compose.ui.graphics.Brush.radialGradient(
-                            colors = listOf(Color(0xFF237CCC).copy(alpha = 0.11f), Color.Transparent),
-                            radius = with(density) { 240.dp.toPx() },
-                            center = centerOffset
-                        )
-                    )
-            )
-        }
-
-//        // Snackbar host
-//        SnackbarHost(
-//            hostState = snackbarHostState,
-//            modifier = Modifier.align(Alignment.TopCenter)
-//        )
-        // Messages area
-        LazyColumn(
+    Scaffold { paddingValues ->
+        Box(
             modifier = Modifier
+                .padding(paddingValues)
                 .fillMaxSize()
-                .padding(top = 16.dp, bottom = 120.dp) // 101dp bar + padding
-                .padding(horizontal = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            reverseLayout = true
+                .background(LightGrayBg)
         ) {
-            // Clear button at the top
-            if (uiState.messages.isNotEmpty()) {
-                item {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        TextButton(
-                            onClick = onClearConversation,
-                            colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.ClearAll,
-                                contentDescription = "Clear",
-                                modifier = Modifier.size(16.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("Clear", fontSize = 12.sp)
-                        }
-                    }
-                }
-            }
-
-            // Show real-time transcription while listening
-            if (transcriptState.listeningStatus != com.example.livevoicetranslator_rd.domain.model.speachtotext.ListeningStatus.INACTIVE &&
-                !transcriptState.transcript.isNullOrEmpty()
+            val density = LocalDensity.current
+            BoxWithConstraints(
+                modifier = Modifier.fillMaxSize()
             ) {
-                item {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp, horizontal = 16.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.7f)),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            CircularProgressIndicator(
-                                modifier = Modifier.size(16.dp),
-                                strokeWidth = 2.dp,
-                                color = if (uiState.isLeftMicActive) GoogleBlue else GoogleGreen
+                val centerOffset = Offset(
+                    x = constraints.maxWidth / 2f,
+                    y = constraints.maxHeight / 2f - with(density) { 52.dp.toPx() }
+                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.radialGradient(
+                                colors = listOf(Color(0xFF237CCC).copy(alpha = 0.11f), Color.Transparent),
+                                radius = with(density) { 240.dp.toPx() },
+                                center = centerOffset
                             )
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Text(
-                                text = liveText,
-                                color = Color.Gray,
-                                fontSize = 16.sp,
-                                fontStyle = FontStyle.Italic
-                            )
-                        }
-                    }
-                }
-            }
-            // Show existing messages
-            items(uiState.messages.reversed()) { message ->
-                TranslationCard(
-                    sourceText = message.sourceText,
-                    translatedText = message.translatedText,
-                    accentColor = if (message.isLeftSide) GoogleBlue else GoogleGreen,
-                    isLeftAccent = message.isLeftSide,
-                    onSpeakClick = { onSpeakClick(message.translatedText, targetLanguageCode) },
-                    modifier = Modifier.fillMaxWidth()
+                        )
                 )
             }
 
-            // Empty state
-            if (uiState.messages.isEmpty() && transcriptState.listeningStatus == com.example.livevoicetranslator_rd.domain.model.speachtotext.ListeningStatus.INACTIVE) {
-                item {
-                    BoxWithConstraints(
-                        modifier = Modifier.fillParentMaxHeight()
-                    ) {
-                        val availableHeight = maxHeight
-                        val iconSize = availableHeight * 0.2563f
-
-                        Box(
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize(),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                reverseLayout = true
+            ) {
+                if (uiState.messages.isNotEmpty()) {
+                    item {
+                        Row(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .padding(32.dp),
-                            contentAlignment = Alignment.Center
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            horizontalArrangement = Arrangement.End
                         ) {
-                            Column(
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.SpaceBetween
+                            TextButton(
+                                onClick = onClearConversation,
+                                colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray)
                             ) {
                                 Icon(
-                                    painter = painterResource(Res.drawable.ic_mic_default_conversation),
-                                    contentDescription = "Mic icon.",
-                                    modifier = Modifier.size(iconSize),
-                                    tint = Color.Unspecified
+                                    imageVector = Icons.Default.ClearAll,
+                                    contentDescription = "Clear",
+                                    modifier = Modifier.size(16.dp)
                                 )
-                                Spacer(modifier = Modifier.height(5.dp))
-                                Text(
-                                    text = "Start your conversation",
-                                    color = Color(0xFF333333),
-                                    style = MaterialTheme.typography.headlineLarge,
-                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("Clear", fontSize = 12.sp)
+                            }
+                        }
+                    }
+                }
+
+                if (transcriptState.listeningStatus != ListeningStatus.INACTIVE &&
+                    !transcriptState.transcript.isNullOrEmpty()
+                ) {
+                    item {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp, horizontal = 16.dp),
+                            shape = RoundedCornerShape(12.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.7f)),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                CircularProgressIndicator(
+                                    modifier = Modifier.size(16.dp),
+                                    strokeWidth = 2.dp,
+                                    color = if (uiState.isLeftMicActive) GoogleBlue else GoogleGreen
                                 )
-                                Spacer(modifier = Modifier.height(9.dp))
+                                Spacer(modifier = Modifier.width(12.dp))
                                 Text(
-                                    text = "Tap a microphone below and start speaking.",
-                                    color = Color(0xFF777777),
-                                    style = MaterialTheme.typography.bodyMedium.copy(
-                                        fontSize = 13.sp
-                                    ),
-                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                    text = liveText,
+                                    color = Color.Gray,
+                                    fontSize = 16.sp,
+                                    fontStyle = FontStyle.Italic
                                 )
                             }
                         }
                     }
                 }
-            }
 
-
-        }
-
-        // Bottom controls
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .height(101.dp) // 26dp (half mic) + 75dp (bar)
-        ) {
-            // White Background Bar
-            Surface(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .height(75.dp),
-                color = Color.White,
-                shadowElevation = 16.dp,
-                content = {}
-            )
-
-            // Controls
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                // Left Controls
-                Column(
-                    modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    MicButton(
-                        color = if (uiState.isLeftMicActive) GoogleBlue.copy(alpha = 0.8f) else GoogleBlue,
-                        onClick = { onLeftMicClick() },
-                        onLongClick = {},
-                        onLongClickRelease = {},
-                        modifier = Modifier.size(52.dp)
-                    )
-                    Spacer(modifier = Modifier.height(5.dp))
-                    LanguageDropdownConversation(
-                        backgroundColor = Color(0xFFEFF4FF),
-                        selectedLanguage = uiState.leftLanguage,
-                        availableLanguages = uiState.availableLanguages,
-                        color = Color(0xFF0252FF),
-                        onLanguageSelected = onLeftLanguageSelected
+                items(uiState.messages.reversed()) { message ->
+                    TranslationCard(
+                        sourceText = message.sourceText,
+                        translatedText = message.translatedText,
+                        accentColor = if (message.isLeftSide) GoogleBlue else GoogleGreen,
+                        isLeftAccent = message.isLeftSide,
+                        onSpeakClick = { onSpeakClick(message.translatedText, targetLanguageCode) },
+                        onEditClick = {},
+                        onSavedClick = {},
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
 
-                // Right Controls
-                Column(
+                if (uiState.messages.isEmpty() && transcriptState.listeningStatus == ListeningStatus.INACTIVE) {
+                    items(
+                        listOf(
+                            ConversationViewModel.ConversationMessage(
+                                sourceText = "hey how its going",
+                                translatedText = "Hola, ¿cómo está?",
+                                isLeftSide = true
+                            ),
+                            ConversationViewModel.ConversationMessage(
+                                sourceText = "yes i think its going alright. are you good man?",
+                                translatedText = "Sí, creo que está bien. ¿Estás bien, hombre?",
+                                isLeftSide = false
+                            ),
+                            ConversationViewModel.ConversationMessage(
+                                sourceText = "yes i am good man. thanks for asking.",
+                                translatedText = "Sí, estoy bien, hombre. Gracias por preguntar.",
+                                isLeftSide = true
+                            ),
+                            ConversationViewModel.ConversationMessage(
+                                sourceText = "i am good too. thanks.",
+                                translatedText = "Estoy bien, también. Gracias.",
+                                isLeftSide = false
+                            ),
+                            ConversationViewModel.ConversationMessage(
+                                sourceText = "that's all for now. thanks again.",
+                                translatedText = "Eso es todo por ahora. Gracias de nuevo.",
+                                isLeftSide = true
+                            ),
+                            ConversationViewModel.ConversationMessage(
+                                sourceText = "bye",
+                                translatedText = "Adiós",
+                                isLeftSide = true
+                            ),
+                            ConversationViewModel.ConversationMessage(
+                                sourceText = "see you later",
+                                translatedText = "Hasta luego",
+                                isLeftSide = true
+                            ),
+                            ConversationViewModel.ConversationMessage(
+                                sourceText = "bye bye",
+                                translatedText = "Adiós",
+                                isLeftSide = false
+                            ),
+                            ConversationViewModel.ConversationMessage(
+                                sourceText = "bye bye",
+                                translatedText = "Adiós",
+                                isLeftSide = true
+                            ),
+                            ConversationViewModel.ConversationMessage(
+                                sourceText = "bye bye",
+                                translatedText = "Adiós",
+                                isLeftSide = false
+                            )
+                        ).reversed()
+                    ){
+                        TranslationCard(
+                            sourceText = it.sourceText,
+                            translatedText = it.translatedText,
+                            accentColor = if (it.isLeftSide) GoogleBlue else GoogleGreen,
+                            isLeftAccent = it.isLeftSide,
+                            onSpeakClick = { onSpeakClick(it.translatedText, targetLanguageCode) },
+                            onEditClick = {},
+                            onSavedClick = {},
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+//                item {
+//                    BoxWithConstraints(
+//                        modifier = Modifier.fillParentMaxHeight()
+//                    ) {
+//                        val availableHeight = maxHeight
+//                        val iconSize = availableHeight * 0.2563f
+//
+//                        Box(
+//                            modifier = Modifier
+//                                .fillMaxSize()
+//                                .padding(32.dp),
+//                            contentAlignment = Alignment.Center
+//                        ) {
+//                            Column(
+//                                horizontalAlignment = Alignment.CenterHorizontally,
+//                                verticalArrangement = Arrangement.SpaceBetween
+//                            ) {
+//                                Icon(
+//                                    painter = painterResource(Res.drawable.ic_mic_default_conversation),
+//                                    contentDescription = "Mic icon.",
+//                                    modifier = Modifier.size(iconSize),
+//                                    tint = Color.Unspecified
+//                                )
+//                                Spacer(modifier = Modifier.height(5.dp))
+//                                Text(
+//                                    text = "Start your conversation",
+//                                    color = Color(0xFF333333),
+//                                    style = MaterialTheme.typography.headlineLarge,
+//                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+//                                )
+//                                Spacer(modifier = Modifier.height(9.dp))
+//                                Text(
+//                                    text = "Tap a microphone below and start speaking.",
+//                                    color = Color(0xFF777777),
+//                                    style = MaterialTheme.typography.bodyMedium.copy(
+//                                        fontSize = 13.sp
+//                                    ),
+//                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+//                                )
+//                            }
+//                        }
+//                    }
+//                }
+                }
+
+
+            }
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .height(101.dp)
+            ) {
+                Surface(
                     modifier = Modifier
-                        .weight(1f)
-                        .fillMaxHeight(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .height(75.dp),
+                    color = Color.White,
+                    shadowElevation = 16.dp,
+                    content = {}
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.SpaceAround
                 ) {
-                    MicButton(
-                        shadowColor = Color(0x4D00B253),
-                        color = if (uiState.isRightMicActive) GoogleGreen.copy(alpha = 0.8f) else GoogleGreen,
-                        onClick = { onRightMicClick() },
-                        onLongClick = {},
-                        onLongClickRelease = {},
-                        modifier = Modifier.size(52.dp)
-                    )
-                    Spacer(modifier = Modifier.height(5.dp))
-                    LanguageDropdownConversation(
-                        selectedLanguage = uiState.rightLanguage,
+                    ConversationMicWithLanguage(
+                        modifier = Modifier.weight(1f),
+                        isActive = uiState.isLeftMicActive,
+                        micColor = GoogleBlue,
+                        shadowColor = Color(0x4D0252FF),
+                        language = uiState.leftLanguage,
                         availableLanguages = uiState.availableLanguages,
-                        color = Color(0xFF00B155),
+                        backgroundColor = Color(0xFFEFF4FF),
+                        onMicClick = onLeftMicClick,
+                        onLanguageSelected = onLeftLanguageSelected
+                    )
+
+                    ConversationMicWithLanguage(
+                        modifier = Modifier.weight(1f),
+                        isActive = uiState.isRightMicActive,
+                        micColor = GoogleGreen,
+                        shadowColor = Color(0x4D00B253),
+                        language = uiState.rightLanguage,
+                        availableLanguages = uiState.availableLanguages,
                         backgroundColor = Color(0xFF00B154).copy(0.10f),
+                        onMicClick = onRightMicClick,
                         onLanguageSelected = onRightLanguageSelected
                     )
                 }
             }
-        }
 
-        // Permission dialog
-        if (transcriptState.showPermissionNeedDialog) {
-            AlertDialog(
-                onDismissRequest = onDismissRequest,
-                title = { Text("Permission Required") },
-                text = { Text("This app needs microphone permission to use speech recognition. Please grant the permission in app settings.") },
-                confirmButton = {
-                    TextButton(onClick = openAppSettings) {
-                        Text("Open Settings")
+            if (transcriptState.showPermissionNeedDialog) {
+                AlertDialog(
+                    onDismissRequest = onDismissRequest,
+                    title = { Text("Permission Required") },
+                    text = { Text("This app needs microphone permission to use speech recognition. Please grant the permission in app settings.") },
+                    confirmButton = {
+                        TextButton(onClick = openAppSettings) {
+                            Text("Open Settings")
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = onDismissRequest) {
+                            Text("Cancel")
+                        }
                     }
-                },
-                dismissButton = {
-                    TextButton(onClick = onDismissRequest) {
-                        Text("Cancel")
-                    }
-                }
-            )
+                )
+            }
         }
+    }
+}
+
+
+@Composable
+fun ConversationMicWithLanguage(
+    modifier: Modifier = Modifier,
+    isActive: Boolean,
+    micColor: Color,
+    shadowColor: Color,
+    language: String,
+    availableLanguages: List<String>,
+    backgroundColor: Color,
+    onMicClick: () -> Unit,
+    onLanguageSelected: (String) -> Unit
+) {
+    Column(
+        modifier = modifier.fillMaxHeight(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        MicButton(
+            color = if (isActive) micColor.copy(alpha = 0.8f) else micColor,
+            shadowColor = shadowColor,
+            onClick = onMicClick,
+            onLongClick = {},
+            onLongClickRelease = {},
+            modifier = Modifier.size(52.dp)
+        )
+
+        Spacer(modifier = Modifier.height(5.dp))
+
+        LanguageDropdownConversation(
+            selectedLanguage = language,
+            availableLanguages = availableLanguages,
+            color = micColor,
+            backgroundColor = backgroundColor,
+            onLanguageSelected = onLanguageSelected
+        )
     }
 }

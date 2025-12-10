@@ -64,7 +64,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.livevoicetranslator_rd.domain.model.TranslatableLanguages
+import com.example.livevoicetranslator_rd.presentation.component.GeneralActionButton
 import com.example.livevoicetranslator_rd.presentation.component.MicButton
+import com.example.livevoicetranslator_rd.presentation.component.SpeakButton
 import com.example.livevoicetranslator_rd.presentation.theme.GrayIconColor
 import com.example.livevoicetranslator_rd.presentation.theme.OutlineColor
 import com.example.livevoicetranslator_rd.presentation.theme.PrimaryColor
@@ -324,18 +326,15 @@ private fun SourceInputCard(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Bottom Row with Paste Button
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
-            // Paste Button
             PasteButton(onClick = onPasteClicked)
 
             Spacer(modifier = Modifier.weight(1f))
 
-            // Floating Mic Button
             MicButton(
                 onClick = onMicClicked
             )
@@ -359,11 +358,11 @@ private fun PasteButton(
                 BorderStroke(0.4.dp, Color(0xFF0252FF).copy(0.08f)),
                 RoundedCornerShape(30.dp)
             )
+            .clip(RoundedCornerShape(30.dp))
             .clickable(
                 onClick = onClick
             )
-            .padding(horizontal = 10.5.dp, vertical = 6.5.dp, )
-            ,
+            .padding(horizontal = 10.5.dp, vertical = 6.5.dp),
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -409,7 +408,6 @@ private fun TranslatedOutputCard(
             )
             .padding(16.dp)
     ){
-        // Translated Text Display
         Text(
             text = translatedText ?: "Translation will appear here...",
             style = MaterialTheme.typography.bodyMedium,
@@ -426,7 +424,6 @@ private fun TranslatedOutputCard(
             color = Color(0xFFE1EBFF)
         )
 
-        // Bottom Action Row
         TranslationActionRow(
             charCount = charCount,
             onSpeakClicked = onSpeakClicked,
@@ -452,41 +449,35 @@ private fun TranslationActionRow(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Action Icons Row
         Row(
             horizontalArrangement = Arrangement.SpaceAround,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Speaker Button
-             TranslationActionButton(
+            GeneralActionButton(
                 icon = painterResource(Res.drawable.ic_volume_outline),
                 contentDescription = "Read aloud",
-                onClick = onSpeakClicked
+                onClick = { onSpeakClicked()}
             )
 
-            // Copy Button
-            TranslationActionButton(
+            GeneralActionButton(
                 icon = painterResource(Res.drawable.ic_copy_outline),
                 contentDescription = "Copy",
                 onClick = onCopyClicked
             )
 
-            // Share Button
-            TranslationActionButton(
+            GeneralActionButton(
                 icon = painterResource(Res.drawable.ic_share_outline),
                 contentDescription = "Share",
                 onClick = onShareClicked
             )
 
-            // Favorite Button
-            TranslationActionButton(
+            GeneralActionButton(
                 icon = painterResource(Res.drawable.ic_star_filled),
                 contentDescription = "Save to favorites",
                 onClick = onFavoriteClicked
             )
         }
 
-        // Character Counter
         Text(
             text = "$charCount/3000",
             style = MaterialTheme.typography.bodySmall.copy(
@@ -501,26 +492,3 @@ private fun TranslationActionRow(
     }
 }
 
-@Composable
-private fun TranslationActionButton(
-    icon: Painter,
-    color: Color = PrimaryColor,
-    contentDescription: String,
-    onClick: () -> Unit,
-    size: Dp = 28.dp,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .size(size)
-            .clip(CircleShape)
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            painter = icon,
-            contentDescription = contentDescription,
-            tint = color
-        )
-    }
-}

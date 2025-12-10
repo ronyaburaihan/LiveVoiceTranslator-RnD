@@ -35,7 +35,7 @@ fun MicButton(
         contentAlignment = Alignment.Center
     ) {
         val density = LocalDensity.current
-        val blurRadius = with(density) { 15.dp.toPx() }
+        val blurRadius = with(density) { 14.dp.toPx() }
         val shadowOffsetY = with(density) { 3.dp.toPx() }
         val buttonRadius = with(density) { 26.dp.toPx() }
 

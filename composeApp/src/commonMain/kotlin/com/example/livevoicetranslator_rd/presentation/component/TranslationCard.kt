@@ -1,6 +1,8 @@
 package com.example.livevoicetranslator_rd.presentation.component
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -19,15 +21,24 @@ import androidx.compose.material.icons.outlined.StarBorder
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import livevoicetranslatorrd.composeapp.generated.resources.Res
+import livevoicetranslatorrd.composeapp.generated.resources.ic_copy_outline
+import livevoicetranslatorrd.composeapp.generated.resources.ic_edit
+import livevoicetranslatorrd.composeapp.generated.resources.ic_star
+import livevoicetranslatorrd.composeapp.generated.resources.ic_volume_outline
+import org.jetbrains.compose.resources.painterResource
 
 
 val GoogleBlue = Color(0xFF4285F4)
@@ -42,85 +53,118 @@ fun TranslationCard(
     accentColor: Color,
     isLeftAccent: Boolean = true,
     onSpeakClick: () -> Unit,
+    onEditClick: () -> Unit,
+    onSavedClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier
+    Row(
+        modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp, horizontal = 16.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            .height(IntrinsicSize.Min)
+            .clip(
+                RoundedCornerShape(
+                    topStart = if (isLeftAccent) 2.dp else 8.dp,
+                    bottomStart = if (isLeftAccent) 2.dp else 8.dp,
+                    topEnd = if (isLeftAccent) 8.dp else 2.dp,
+                    bottomEnd = if (isLeftAccent) 8.dp else 2.dp,
+                )
+            )
+            .background(Color.White)
+            .border(
+                BorderStroke(1.dp, Color(0xFFEAEAEA)),
+                shape = RoundedCornerShape(
+                    topStart = if (isLeftAccent) 2.dp else 8.dp,
+                    bottomStart = if (isLeftAccent) 2.dp else 8.dp,
+                    topEnd = if (isLeftAccent) 8.dp else 2.dp,
+                    bottomEnd = if (isLeftAccent) 8.dp else 2.dp,
+                )
+            )
     ) {
-        Row(modifier = Modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
-            // Optional Left Accent Bar
-            if (isLeftAccent) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(4.dp)
-                        .background(accentColor)
-                )
-            }
-
-            Column(
+        if (isLeftAccent) {
+            Box(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(16.dp)
+                    .fillMaxHeight()
+                    .width(4.dp)
+                    .background(accentColor)
+            )
+        }
+
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(12.dp)
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.Top
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.Top
-                ) {
-                    Text(
-                        text = sourceText,
-                        color = GrayText,
-                        fontSize = 16.sp,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Icon(
-                        Icons.Outlined.Edit,
-                        contentDescription = "Edit",
-                        tint = GrayText,
-                        modifier = Modifier.size(20.dp)
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Icon(
-                        Icons.Outlined.StarBorder,
-                        contentDescription = "Save",
-                        tint = GrayText,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
+                Text(
+                    text = sourceText,
+                    color = GrayText,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.weight(1f)
+                )
 
-                Spacer(modifier = Modifier.height(12.dp))
-                Divider(color = LightGrayBg)
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.width(37.dp))
 
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = translatedText,
-                        color = accentColor,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Medium,
-                        modifier = Modifier.weight(1f)
-                    )
-                    SpeakButton(onClick = onSpeakClick)
-                }
-            }
+                GeneralActionButton(
+                    icon = painterResource(Res.drawable.ic_edit),
+                    contentDescription = "Edit Translation",
+                    onClick = onEditClick,
+                    color = Color.Unspecified,
+                    iconSize = 14.dp,
+                    boxSize = 22.dp
+                )
 
-            if (!isLeftAccent) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(4.dp)
-                        .background(accentColor)
+                GeneralActionButton(
+                    icon = painterResource(Res.drawable.ic_star),
+                    contentDescription = "Save Translation",
+                    onClick = onSavedClick,
+                    color = Color.Unspecified,
+                    iconSize = 14.dp,
+                    boxSize = 22.dp
                 )
             }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            HorizontalDivider(color = Color(0xFFEEEEEE))
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = translatedText,
+                    color = accentColor,
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontWeight = FontWeight.Medium
+                    ),
+                    fontWeight = FontWeight.Medium,
+                    modifier = Modifier.weight(1f)
+                )
+
+                Spacer(modifier = Modifier.width(33.dp))
+
+                GeneralActionButton(
+                    icon = painterResource(Res.drawable.ic_volume_outline),
+                    contentDescription = "Read aloud",
+                    onClick = { onSpeakClick() },
+                    iconSize = 16.dp,
+                    boxSize = 24.dp
+                )
+            }
+        }
+
+        if (!isLeftAccent) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(4.dp)
+                    .background(accentColor)
+            )
         }
     }
 }

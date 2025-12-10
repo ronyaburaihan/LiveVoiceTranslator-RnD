@@ -70,7 +70,14 @@ fun LanguageDropdownConversation(
         ) {
             availableLanguages.forEach { language ->
                 DropdownMenuItem(
-                    text = { Text(text = language, fontSize = 14.sp) },
+                    text = { Text(
+                        text = language,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Medium
+                        ),
+                        color = Color(0xFF333333)
+                    ) },
                     onClick = {
                         onLanguageSelected(language)
                         expanded = false
