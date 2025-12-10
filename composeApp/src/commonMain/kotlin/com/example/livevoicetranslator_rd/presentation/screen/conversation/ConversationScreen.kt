@@ -244,68 +244,7 @@ fun ConversationList(
     onSpeakClick: (String, String) -> Unit,
     onClearConversation: () -> Unit,
 ) {
-    val messages = listOf(
-        ConversationViewModel.ConversationMessage(
-            sourceText = "hey how its going",
-            translatedText = "Hola, ¿cómo está?",
-            isLeftSide = true,
-            timestamp = 1700000000000L
-        ),
-        ConversationViewModel.ConversationMessage(
-            sourceText = "yes i think its going alright. are you good man?",
-            translatedText = "Sí, creo que está bien. ¿Estás bien, hombre?",
-            isLeftSide = false,
-            1710000000000L
-        ),
-        ConversationViewModel.ConversationMessage(
-            sourceText = "yes i am good man. thanks for asking.",
-            translatedText = "Sí, estoy bien, hombre. Gracias por preguntar.",
-            isLeftSide = true,
-            1720000000000L
-        ),
-        ConversationViewModel.ConversationMessage(
-            sourceText = "i am good too. thanks.",
-            translatedText = "Estoy bien, también. Gracias.",
-            isLeftSide = false,
-            1730000000000L
-        ),
-        ConversationViewModel.ConversationMessage(
-            sourceText = "that's all for now. thanks again.",
-            translatedText = "Eso es todo por ahora. Gracias de nuevo.",
-            isLeftSide = true,
-            1740000000000L
-        ),
-        ConversationViewModel.ConversationMessage(
-            sourceText = "bye",
-            translatedText = "Adiós",
-            isLeftSide = true,
-            1750000000000L
-        ),
-        ConversationViewModel.ConversationMessage(
-            sourceText = "see you later",
-            translatedText = "Hasta luego",
-            isLeftSide = true,
-            1760000000000L
-        ),
-        ConversationViewModel.ConversationMessage(
-            sourceText = "bye bye",
-            translatedText = "Adiós",
-            isLeftSide = false,
-            1770000000000L
-        ),
-        ConversationViewModel.ConversationMessage(
-            sourceText = "bye bye",
-            translatedText = "Adiós",
-            isLeftSide = true,
-            1780000000000L
-        ),
-        ConversationViewModel.ConversationMessage(
-            sourceText = "bye bye",
-            translatedText = "Adiós",
-            isLeftSide = false,
-            1790000000000L
-        )).asReversed()
-//    val messages = remember(uiState.messages) { uiState.messages.asReversed() }
+    val messages = remember(uiState.messages) { uiState.messages.asReversed() }
 
     LazyColumn(
         modifier = Modifier
