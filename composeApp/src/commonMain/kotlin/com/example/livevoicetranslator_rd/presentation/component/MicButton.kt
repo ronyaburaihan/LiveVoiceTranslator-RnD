@@ -31,7 +31,7 @@ fun MicButton(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier.size(92.dp),
+        modifier = modifier.size(52.dp),
         contentAlignment = Alignment.Center
     ) {
         val density = LocalDensity.current
