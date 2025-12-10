@@ -1,6 +1,7 @@
 package com.example.livevoicetranslator_rd.presentation.component
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -10,8 +11,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import livevoicetranslatorrd.composeapp.generated.resources.Res
+import livevoicetranslatorrd.composeapp.generated.resources.ic_chevron_down
+import org.jetbrains.compose.resources.painterResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -19,6 +24,7 @@ fun LanguageDropdownConversation(
     selectedLanguage: String,
     availableLanguages: List<String> = emptyList(),
     color: Color = Color.Blue,
+    backgroundColor: Color = Color.White,
     onLanguageSelected: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -31,28 +37,29 @@ fun LanguageDropdownConversation(
     ) {
         Surface(
             modifier = Modifier
-                .height(36.dp)
+                .height(20.dp)
                 .menuAnchor(),
-            shape = RoundedCornerShape(18.dp),
-            border = BorderStroke(1.dp, color.copy(alpha = 0.5f)),
-            color = Color.White
+            shape = RoundedCornerShape(20.dp),
+            border = BorderStroke(0.4.dp, color),
+            color = backgroundColor
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier.padding(horizontal = 7.dp)
             ) {
                 Text(
                     text = selectedLanguage,
                     color = color,
-                    fontSize = 14.sp,
-                    modifier = Modifier.weight(1f)
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Medium
+                    )
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(
-                    Icons.Default.KeyboardArrowDown,
+                    painter = painterResource(Res.drawable.ic_chevron_down),
                     contentDescription = null,
-                    tint = color,
-                    modifier = Modifier.size(18.dp)
+                    tint = color
                 )
             }
         }

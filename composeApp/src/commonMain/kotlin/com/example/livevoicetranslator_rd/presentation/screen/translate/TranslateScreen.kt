@@ -413,10 +413,7 @@ private fun TranslatedOutputCard(
         Text(
             text = translatedText ?: "Translation will appear here...",
             style = MaterialTheme.typography.bodyMedium,
-            color = if (translatedText != null)
-                MaterialTheme.colorScheme.onSurface
-            else
-                MaterialTheme.colorScheme.onSurfaceVariant,
+            color = Color(0xFF333333),
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)

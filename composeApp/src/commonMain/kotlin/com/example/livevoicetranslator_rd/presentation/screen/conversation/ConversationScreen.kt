@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +26,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -43,6 +45,9 @@ import androidx.compose.ui.unit.sp
 import com.example.livevoicetranslator_rd.presentation.component.LanguageDropdownConversation
 import com.example.livevoicetranslator_rd.presentation.component.MicButton
 import com.example.livevoicetranslator_rd.presentation.component.TranslationCard
+import livevoicetranslatorrd.composeapp.generated.resources.Res
+import livevoicetranslatorrd.composeapp.generated.resources.ic_mic_default_conversation
+import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
 
@@ -129,7 +134,7 @@ private fun ConversationScreenContent(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(top = 16.dp, bottom = 180.dp)
+                .padding(top = 16.dp, bottom = 120.dp) // 101dp bar + padding
                 .padding(horizontal = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             reverseLayout = true
@@ -212,6 +217,7 @@ private fun ConversationScreenContent(
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
+                            .padding(bottom = 75.dp) // Offset by bar height for visual centering
                             .padding(32.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -220,15 +226,23 @@ private fun ConversationScreenContent(
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Chat,
+                                painter = painterResource(Res.drawable.ic_mic_default_conversation),
                                 contentDescription = "No messages",
                                 modifier = Modifier.size(64.dp),
-                                tint = Color.Gray.copy(alpha = 0.5f)
+                                tint = Color.Unspecified
                             )
                             Text(
-                                text = "Tap the microphone to start translating",
-                                color = Color.Gray,
-                                fontSize = 16.sp,
+                                text = "Start your conversation",
+                                color = Color(0xFF333333),
+                                style = MaterialTheme.typography.headlineLarge,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            )
+                            Text(
+                                text = "Tap a microphone below and start speaking.",
+                                color = Color(0xFF777777),
+                                style = MaterialTheme.typography.bodyMedium.copy(
+                                    fontSize = 13.sp
+                                ),
                                 textAlign = androidx.compose.ui.text.style.TextAlign.Center
                             )
                         }
@@ -240,74 +254,72 @@ private fun ConversationScreenContent(
         }
 
         // Bottom controls
-        Surface(
+        Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .fillMaxWidth(),
-            color = Color.White,
-            shadowElevation = 16.dp // Strong shadow for the bottom sheet effect
+                .fillMaxWidth()
+                .height(101.dp) // 26dp (half mic) + 75dp (bar)
         ) {
-            Row(
+            // White Background Bar
+            Surface(
                 modifier = Modifier
-                    .padding(vertical = 24.dp, horizontal = 32.dp)
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceAround,
-                verticalAlignment = Alignment.Top
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .height(75.dp),
+                color = Color.White,
+                shadowElevation = 16.dp,
+                content = {}
+            )
+
+            // Controls
+            Row(
+                modifier = Modifier.fillMaxSize(),
+                horizontalArrangement = Arrangement.SpaceAround
             ) {
-                // Left Controls (Blue)
+                // Left Controls
                 Column(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     MicButton(
                         color = if (uiState.isLeftMicActive) GoogleBlue.copy(alpha = 0.8f) else GoogleBlue,
                         onClick = { onLeftMicClick() },
-                        onLongClick = {},//onLeftMicLongPress,
-                        onLongClickRelease = {}
+                        onLongClick = {},
+                        onLongClickRelease = {},
+                        modifier = Modifier.size(52.dp)
                     )
-                    if (uiState.isLeftMicActive) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = statusText,
-                            color = GoogleBlue,
-                            fontSize = 12.sp,
-                            fontStyle = FontStyle.Italic
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(5.dp))
                     LanguageDropdownConversation(
+                        backgroundColor = Color(0xFFEFF4FF),
                         selectedLanguage = uiState.leftLanguage,
                         availableLanguages = uiState.availableLanguages,
-                        color = GoogleBlue,
+                        color = Color(0xFF0252FF),
                         onLanguageSelected = onLeftLanguageSelected
                     )
                 }
 
-                // Right Controls (Green)
+                // Right Controls
                 Column(
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .fillMaxHeight(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     MicButton(
                         color = if (uiState.isRightMicActive) GoogleGreen.copy(alpha = 0.8f) else GoogleGreen,
                         onClick = { onRightMicClick() },
-                        onLongClick = {},//onRightMicLongPress,
-                        onLongClickRelease = {}
+                        onLongClick = {},
+                        onLongClickRelease = {},
+                        modifier = Modifier.size(52.dp)
                     )
-                    if (uiState.isRightMicActive) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = statusText,
-                            color = GoogleGreen,
-                            fontSize = 12.sp,
-                            fontStyle = FontStyle.Italic
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(5.dp))
                     LanguageDropdownConversation(
                         selectedLanguage = uiState.rightLanguage,
                         availableLanguages = uiState.availableLanguages,
-                        color = GoogleGreen,
+                        color = Color(0xFF00B155),
+                        backgroundColor = Color(0xFF00B154).copy(0.10f),
                         onLanguageSelected = onRightLanguageSelected
                     )
                 }
