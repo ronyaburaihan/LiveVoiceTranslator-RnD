@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.livevoicetranslator_rd.domain.model.speachtotext.ListeningStatus
@@ -146,7 +147,10 @@ private fun ConversationScreenContent(
                         .fillMaxSize()
                         .background(
                             brush = Brush.radialGradient(
-                                colors = listOf(Color(0xFF237CCC).copy(alpha = 0.11f), Color.Transparent),
+                                colors = listOf(
+                                    Color(0xFF237CCC).copy(alpha = 0.11f),
+                                    Color.Transparent
+                                ),
                                 radius = with(density) { 240.dp.toPx() },
                                 center = centerOffset
                             )
@@ -154,197 +158,14 @@ private fun ConversationScreenContent(
                 )
             }
 
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                reverseLayout = true
-            ) {
-                if (uiState.messages.isNotEmpty()) {
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            TextButton(
-                                onClick = onClearConversation,
-                                colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray)
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.ClearAll,
-                                    contentDescription = "Clear",
-                                    modifier = Modifier.size(16.dp)
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text("Clear", fontSize = 12.sp)
-                            }
-                        }
-                    }
-                }
-
-                if (transcriptState.listeningStatus != ListeningStatus.INACTIVE &&
-                    !transcriptState.transcript.isNullOrEmpty()
-                ) {
-                    item {
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp, horizontal = 16.dp),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.7f)),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(16.dp),
-                                    strokeWidth = 2.dp,
-                                    color = if (uiState.isLeftMicActive) GoogleBlue else GoogleGreen
-                                )
-                                Spacer(modifier = Modifier.width(12.dp))
-                                Text(
-                                    text = liveText,
-                                    color = Color.Gray,
-                                    fontSize = 16.sp,
-                                    fontStyle = FontStyle.Italic
-                                )
-                            }
-                        }
-                    }
-                }
-
-                items(uiState.messages.reversed()) { message ->
-                    TranslationCard(
-                        sourceText = message.sourceText,
-                        translatedText = message.translatedText,
-                        accentColor = if (message.isLeftSide) GoogleBlue else GoogleGreen,
-                        isLeftAccent = message.isLeftSide,
-                        onSpeakClick = { onSpeakClick(message.translatedText, targetLanguageCode) },
-                        onEditClick = {},
-                        onSavedClick = {},
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-
-                if (uiState.messages.isEmpty() && transcriptState.listeningStatus == ListeningStatus.INACTIVE) {
-                    items(
-                        listOf(
-                            ConversationViewModel.ConversationMessage(
-                                sourceText = "hey how its going",
-                                translatedText = "Hola, ¿cómo está?",
-                                isLeftSide = true
-                            ),
-                            ConversationViewModel.ConversationMessage(
-                                sourceText = "yes i think its going alright. are you good man?",
-                                translatedText = "Sí, creo que está bien. ¿Estás bien, hombre?",
-                                isLeftSide = false
-                            ),
-                            ConversationViewModel.ConversationMessage(
-                                sourceText = "yes i am good man. thanks for asking.",
-                                translatedText = "Sí, estoy bien, hombre. Gracias por preguntar.",
-                                isLeftSide = true
-                            ),
-                            ConversationViewModel.ConversationMessage(
-                                sourceText = "i am good too. thanks.",
-                                translatedText = "Estoy bien, también. Gracias.",
-                                isLeftSide = false
-                            ),
-                            ConversationViewModel.ConversationMessage(
-                                sourceText = "that's all for now. thanks again.",
-                                translatedText = "Eso es todo por ahora. Gracias de nuevo.",
-                                isLeftSide = true
-                            ),
-                            ConversationViewModel.ConversationMessage(
-                                sourceText = "bye",
-                                translatedText = "Adiós",
-                                isLeftSide = true
-                            ),
-                            ConversationViewModel.ConversationMessage(
-                                sourceText = "see you later",
-                                translatedText = "Hasta luego",
-                                isLeftSide = true
-                            ),
-                            ConversationViewModel.ConversationMessage(
-                                sourceText = "bye bye",
-                                translatedText = "Adiós",
-                                isLeftSide = false
-                            ),
-                            ConversationViewModel.ConversationMessage(
-                                sourceText = "bye bye",
-                                translatedText = "Adiós",
-                                isLeftSide = true
-                            ),
-                            ConversationViewModel.ConversationMessage(
-                                sourceText = "bye bye",
-                                translatedText = "Adiós",
-                                isLeftSide = false
-                            )
-                        ).reversed()
-                    ){
-                        TranslationCard(
-                            sourceText = it.sourceText,
-                            translatedText = it.translatedText,
-                            accentColor = if (it.isLeftSide) GoogleBlue else GoogleGreen,
-                            isLeftAccent = it.isLeftSide,
-                            onSpeakClick = { onSpeakClick(it.translatedText, targetLanguageCode) },
-                            onEditClick = {},
-                            onSavedClick = {},
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                    }
-//                item {
-//                    BoxWithConstraints(
-//                        modifier = Modifier.fillParentMaxHeight()
-//                    ) {
-//                        val availableHeight = maxHeight
-//                        val iconSize = availableHeight * 0.2563f
-//
-//                        Box(
-//                            modifier = Modifier
-//                                .fillMaxSize()
-//                                .padding(32.dp),
-//                            contentAlignment = Alignment.Center
-//                        ) {
-//                            Column(
-//                                horizontalAlignment = Alignment.CenterHorizontally,
-//                                verticalArrangement = Arrangement.SpaceBetween
-//                            ) {
-//                                Icon(
-//                                    painter = painterResource(Res.drawable.ic_mic_default_conversation),
-//                                    contentDescription = "Mic icon.",
-//                                    modifier = Modifier.size(iconSize),
-//                                    tint = Color.Unspecified
-//                                )
-//                                Spacer(modifier = Modifier.height(5.dp))
-//                                Text(
-//                                    text = "Start your conversation",
-//                                    color = Color(0xFF333333),
-//                                    style = MaterialTheme.typography.headlineLarge,
-//                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
-//                                )
-//                                Spacer(modifier = Modifier.height(9.dp))
-//                                Text(
-//                                    text = "Tap a microphone below and start speaking.",
-//                                    color = Color(0xFF777777),
-//                                    style = MaterialTheme.typography.bodyMedium.copy(
-//                                        fontSize = 13.sp
-//                                    ),
-//                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
-//                                )
-//                            }
-//                        }
-//                    }
-//                }
-                }
-
-
-            }
+                ConversationList(
+                    uiState = uiState,
+                    transcriptState = transcriptState,
+                    liveText = liveText,
+                    targetLanguageCode = targetLanguageCode,
+                    onSpeakClick = onSpeakClick,
+                    onClearConversation = onClearConversation
+                )
 
             Box(
                 modifier = Modifier
@@ -409,6 +230,147 @@ private fun ConversationScreenContent(
                     }
                 )
             }
+        }
+    }
+}
+
+
+@Composable
+fun ConversationList(
+    uiState: ConversationViewModel.ConversationUiState,
+    transcriptState: TranscriptState,
+    liveText: String,
+    targetLanguageCode: String,
+    onSpeakClick: (String, String) -> Unit,
+    onClearConversation: () -> Unit,
+) {
+    val messages = remember(uiState.messages) { uiState.messages.asReversed() }
+
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
+        reverseLayout = true
+    ) {
+
+        item(key = "bottomSpacer") {
+            Spacer(modifier = Modifier.height(120.dp))
+        }
+
+        if (messages.isNotEmpty()) {
+            item(key = "clearBtn") {
+                ClearConversationButton(onClearConversation)
+            }
+        }
+
+        if (transcriptState.listeningStatus != ListeningStatus.INACTIVE &&
+            !transcriptState.transcript.isNullOrEmpty()
+        ) {
+            item(key = "listeningCard") {
+                LiveListeningCard(liveText, uiState.isLeftMicActive)
+            }
+        }
+
+        items(
+            items = messages,
+            key = { it.timestamp }
+        ) { message ->
+            TranslationCard(
+                sourceText = message.sourceText,
+                translatedText = message.translatedText,
+                accentColor = if (message.isLeftSide) GoogleBlue else GoogleGreen,
+                isLeftAccent = message.isLeftSide,
+                onSpeakClick = { onSpeakClick(message.translatedText, targetLanguageCode) },
+                onEditClick = {},
+                onSavedClick = {},
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        if (messages.isEmpty() && transcriptState.listeningStatus == ListeningStatus.INACTIVE) {
+            item(key = "emptyState") {
+                EmptyConversationView()
+            }
+        }
+
+        item(key = "topSpacer") {
+            Spacer(modifier = Modifier.height(16.dp))
+        }
+
+    }
+}
+
+@Composable
+private fun ClearConversationButton(onClearConversation: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.End
+    ) {
+        TextButton(
+            onClick = onClearConversation,
+            colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray)
+        ) {
+            Icon(Icons.Default.ClearAll, null, Modifier.size(16.dp))
+            Spacer(Modifier.width(4.dp))
+            Text("Clear", fontSize = 12.sp)
+        }
+    }
+}
+
+
+@Composable
+private fun LiveListeningCard(text: String, leftActive: Boolean) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(Color.White.copy(0.7f)),
+        elevation = CardDefaults.cardElevation(2.dp)
+    ) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(16.dp),
+                strokeWidth = 2.dp,
+                color = if (leftActive) GoogleBlue else GoogleGreen
+            )
+            Spacer(Modifier.width(12.dp))
+            Text(text, color = Color.Gray, fontSize = 16.sp, fontStyle = FontStyle.Italic)
+        }
+    }
+}
+
+@Composable
+private fun EmptyConversationView() {
+    BoxWithConstraints(Modifier.fillMaxSize()) {
+        val iconSize = maxHeight * 0.2563f
+
+        Column(
+            modifier = Modifier.fillMaxSize().padding(32.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                painter = painterResource(Res.drawable.ic_mic_default_conversation),
+                contentDescription = null,
+                modifier = Modifier.size(iconSize),
+                tint = Color.Unspecified
+            )
+            Spacer(Modifier.height(5.dp))
+            Text("Start your conversation", color = Color(0xFF333333), style = MaterialTheme.typography.headlineLarge)
+            Spacer(Modifier.height(9.dp))
+            Text(
+                "Tap a microphone below and start speaking.",
+                color = Color(0xFF777777),
+                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                textAlign = TextAlign.Center
+            )
         }
     }
 }

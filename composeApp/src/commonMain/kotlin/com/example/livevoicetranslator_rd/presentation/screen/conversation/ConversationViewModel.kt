@@ -16,10 +16,14 @@ import com.example.livevoicetranslator_rd.domain.usecase.speachtotext.CopyTransc
 import com.example.livevoicetranslator_rd.domain.usecase.speachtotext.RequestPermissionUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.speachtotext.StartSpeechRecognitionUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.speachtotext.StopSpeechRecognitionUseCase
+import com.example.livevoicetranslator_rd.domain.util.currentTimeMillis
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.random.Random
+import kotlin.time.Clock
+import kotlin.time.Clock.System
 
 class ConversationViewModel(
     private val speechToText: SpeechToText,
@@ -74,7 +78,7 @@ class ConversationViewModel(
         val sourceText: String,
         val translatedText: String,
         val isLeftSide: Boolean,
-        val timestamp: Long = 0L
+        val timestamp: Long = currentTimeMillis()
     )
 
     private val _ttsState = MutableStateFlow(TTSState.IDLE)
@@ -326,7 +330,7 @@ class ConversationViewModel(
             sourceText = sourceText,
             translatedText = "Translating...", // Placeholder
             isLeftSide = isLeftSide,
-            timestamp = 0L
+            timestamp = currentTimeMillis()
         )
 
         // Add message immediately to show source text

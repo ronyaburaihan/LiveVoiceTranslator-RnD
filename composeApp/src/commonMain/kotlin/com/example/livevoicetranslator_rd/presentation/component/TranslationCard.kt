@@ -41,11 +41,6 @@ import livevoicetranslatorrd.composeapp.generated.resources.ic_volume_outline
 import org.jetbrains.compose.resources.painterResource
 
 
-val GoogleBlue = Color(0xFF4285F4)
-val GoogleGreen = Color(0xFF34A853)
-val LightGrayBg = Color(0xFFF8F9FA)
-val GrayText = Color(0xFF757575)
-
 @Composable
 fun TranslationCard(
     sourceText: String,
@@ -57,36 +52,28 @@ fun TranslationCard(
     onSavedClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val shape = RoundedCornerShape(
+        topStart = if (isLeftAccent) 2.dp else 8.dp,
+        bottomStart = if (isLeftAccent) 2.dp else 8.dp,
+        topEnd = if (isLeftAccent) 8.dp else 2.dp,
+        bottomEnd = if (isLeftAccent) 8.dp else 2.dp,
+    )
+
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
             .clip(
-                RoundedCornerShape(
-                    topStart = if (isLeftAccent) 2.dp else 8.dp,
-                    bottomStart = if (isLeftAccent) 2.dp else 8.dp,
-                    topEnd = if (isLeftAccent) 8.dp else 2.dp,
-                    bottomEnd = if (isLeftAccent) 8.dp else 2.dp,
-                )
+                shape
             )
             .background(Color.White)
             .border(
                 BorderStroke(1.dp, Color(0xFFEAEAEA)),
-                shape = RoundedCornerShape(
-                    topStart = if (isLeftAccent) 2.dp else 8.dp,
-                    bottomStart = if (isLeftAccent) 2.dp else 8.dp,
-                    topEnd = if (isLeftAccent) 8.dp else 2.dp,
-                    bottomEnd = if (isLeftAccent) 8.dp else 2.dp,
-                )
+                shape = shape
             )
     ) {
         if (isLeftAccent) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(4.dp)
-                    .background(accentColor)
-            )
+            AccentBar(accentColor, true)
         }
 
         Column(
@@ -100,7 +87,7 @@ fun TranslationCard(
             ) {
                 Text(
                     text = sourceText,
-                    color = GrayText,
+                    color = Color(0xFF6A6A6A),
                     style = MaterialTheme.typography.bodySmall,
                     modifier = Modifier.weight(1f)
                 )
@@ -126,11 +113,7 @@ fun TranslationCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            HorizontalDivider(color = Color(0xFFEEEEEE))
-
-            Spacer(modifier = Modifier.height(12.dp))
+            HorizontalDivider(Modifier.padding(vertical = 12.dp), color = Color(0xFFEEEEEE))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -159,12 +142,25 @@ fun TranslationCard(
         }
 
         if (!isLeftAccent) {
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(4.dp)
-                    .background(accentColor)
-            )
+            AccentBar(accentColor, false)
         }
     }
+}
+
+@Composable
+private fun AccentBar(color: Color, left: Boolean) {
+    Box(
+        modifier = Modifier
+            .width(4.dp)
+            .fillMaxHeight()
+            .clip(
+                RoundedCornerShape(
+                    topStart = if (left) 2.dp else 0.dp,
+                    bottomStart = if (left) 2.dp else 0.dp,
+                    topEnd = if (!left) 2.dp else 0.dp,
+                    bottomEnd = if (!left) 2.dp else 0.dp,
+                )
+            )
+            .background(color)
+    )
 }
