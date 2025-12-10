@@ -3,6 +3,7 @@ package com.example.livevoicetranslator_rd.presentation.screen.conversation
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -124,6 +125,27 @@ private fun ConversationScreenContent(
             .fillMaxSize()
             .background(LightGrayBg)
     ) {
+        // Radial Gradient Background
+        val density = androidx.compose.ui.platform.LocalDensity.current
+        BoxWithConstraints(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            val centerOffset = androidx.compose.ui.geometry.Offset(
+                x = constraints.maxWidth / 2f,
+                y = constraints.maxHeight / 2f - with(density) { 52.dp.toPx() } // Shift up to match visual center
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = androidx.compose.ui.graphics.Brush.radialGradient(
+                            colors = listOf(Color(0xFF237CCC).copy(alpha = 0.11f), Color.Transparent),
+                            radius = with(density) { 240.dp.toPx() },
+                            center = centerOffset
+                        )
+                    )
+            )
+        }
 
 //        // Snackbar host
 //        SnackbarHost(
@@ -193,7 +215,7 @@ private fun ConversationScreenContent(
                                 text = liveText,
                                 color = Color.Gray,
                                 fontSize = 16.sp,
-                                fontStyle = androidx.compose.ui.text.font.FontStyle.Italic
+                                fontStyle = FontStyle.Italic
                             )
                         }
                     }
@@ -214,37 +236,45 @@ private fun ConversationScreenContent(
             // Empty state
             if (uiState.messages.isEmpty() && transcriptState.listeningStatus == com.example.livevoicetranslator_rd.domain.model.speachtotext.ListeningStatus.INACTIVE) {
                 item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = 75.dp) // Offset by bar height for visual centering
-                            .padding(32.dp),
-                        contentAlignment = Alignment.Center
+                    BoxWithConstraints(
+                        modifier = Modifier.fillParentMaxHeight()
                     ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        val availableHeight = maxHeight
+                        val iconSize = availableHeight * 0.2563f
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(32.dp),
+                            contentAlignment = Alignment.Center
                         ) {
-                            Icon(
-                                painter = painterResource(Res.drawable.ic_mic_default_conversation),
-                                contentDescription = "No messages",
-                                modifier = Modifier.size(64.dp),
-                                tint = Color.Unspecified
-                            )
-                            Text(
-                                text = "Start your conversation",
-                                color = Color(0xFF333333),
-                                style = MaterialTheme.typography.headlineLarge,
-                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                            )
-                            Text(
-                                text = "Tap a microphone below and start speaking.",
-                                color = Color(0xFF777777),
-                                style = MaterialTheme.typography.bodyMedium.copy(
-                                    fontSize = 13.sp
-                                ),
-                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                            )
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Icon(
+                                    painter = painterResource(Res.drawable.ic_mic_default_conversation),
+                                    contentDescription = "Mic icon.",
+                                    modifier = Modifier.size(iconSize),
+                                    tint = Color.Unspecified
+                                )
+                                Spacer(modifier = Modifier.height(5.dp))
+                                Text(
+                                    text = "Start your conversation",
+                                    color = Color(0xFF333333),
+                                    style = MaterialTheme.typography.headlineLarge,
+                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                )
+                                Spacer(modifier = Modifier.height(9.dp))
+                                Text(
+                                    text = "Tap a microphone below and start speaking.",
+                                    color = Color(0xFF777777),
+                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                        fontSize = 13.sp
+                                    ),
+                                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                                )
+                            }
                         }
                     }
                 }
