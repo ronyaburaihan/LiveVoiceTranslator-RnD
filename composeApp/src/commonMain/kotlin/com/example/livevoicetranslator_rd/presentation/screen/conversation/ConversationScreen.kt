@@ -338,6 +338,7 @@ private fun ConversationScreenContent(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     MicButton(
+                        shadowColor = Color(0x4D00B253),
                         color = if (uiState.isRightMicActive) GoogleGreen.copy(alpha = 0.8f) else GoogleGreen,
                         onClick = { onRightMicClick() },
                         onLongClick = {},
