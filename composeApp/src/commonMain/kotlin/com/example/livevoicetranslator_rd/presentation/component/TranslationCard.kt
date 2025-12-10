@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -59,91 +60,100 @@ fun TranslationCard(
         bottomEnd = if (isLeftAccent) 8.dp else 2.dp,
     )
 
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min)
-            .clip(
-                shape
-            )
-            .background(Color.White)
-            .border(
-                BorderStroke(1.dp, Color(0xFFEAEAEA)),
-                shape = shape
-            )
-    ) {
-        if (isLeftAccent) {
-            AccentBar(accentColor, true)
-        }
+    BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
+        val horizontalPadding = maxWidth * 0.1182f
 
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(12.dp)
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+                .padding(
+                    start = if (!isLeftAccent) horizontalPadding else 0.dp,
+                    end = if (isLeftAccent) horizontalPadding else 0.dp
+                )
+                .clip(
+                    shape
+                )
+                .background(Color.White)
+                .border(
+                    BorderStroke(1.dp, Color(0xFFEAEAEA)),
+                    shape = shape
+                )
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.Top
-            ) {
-                Text(
-                    text = sourceText,
-                    color = Color(0xFF6A6A6A),
-                    style = MaterialTheme.typography.bodySmall,
-                    modifier = Modifier.weight(1f)
-                )
-
-                Spacer(modifier = Modifier.width(37.dp))
-
-                GeneralActionButton(
-                    icon = painterResource(Res.drawable.ic_edit),
-                    contentDescription = "Edit Translation",
-                    onClick = onEditClick,
-                    color = Color.Unspecified,
-                    iconSize = 14.dp,
-                    boxSize = 22.dp
-                )
-
-                GeneralActionButton(
-                    icon = painterResource(Res.drawable.ic_star),
-                    contentDescription = "Save Translation",
-                    onClick = onSavedClick,
-                    color = Color.Unspecified,
-                    iconSize = 14.dp,
-                    boxSize = 22.dp
-                )
+            if (isLeftAccent) {
+                AccentBar(accentColor, true)
             }
 
-            HorizontalDivider(Modifier.padding(vertical = 12.dp), color = Color(0xFFEEEEEE))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(12.dp)
             ) {
-                Text(
-                    text = translatedText,
-                    color = accentColor,
-                    style = MaterialTheme.typography.bodySmall.copy(
-                        fontWeight = FontWeight.Medium
-                    ),
-                    fontWeight = FontWeight.Medium,
-                    modifier = Modifier.weight(1f)
-                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Text(
+                        text = sourceText,
+                        color = Color(0xFF6A6A6A),
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.weight(1f)
+                    )
 
-                Spacer(modifier = Modifier.width(33.dp))
+                    Spacer(modifier = Modifier.width(37.dp))
 
-                GeneralActionButton(
-                    icon = painterResource(Res.drawable.ic_volume_outline),
-                    contentDescription = "Read aloud",
-                    onClick = { onSpeakClick() },
-                    iconSize = 16.dp,
-                    boxSize = 24.dp
-                )
+                    GeneralActionButton(
+                        icon = painterResource(Res.drawable.ic_edit),
+                        contentDescription = "Edit Translation",
+                        onClick = onEditClick,
+                        color = Color.Unspecified,
+                        iconSize = 14.dp,
+                        boxSize = 22.dp
+                    )
+
+                    GeneralActionButton(
+                        icon = painterResource(Res.drawable.ic_star),
+                        contentDescription = "Save Translation",
+                        onClick = onSavedClick,
+                        color = Color.Unspecified,
+                        iconSize = 14.dp,
+                        boxSize = 22.dp
+                    )
+                }
+
+                HorizontalDivider(Modifier.padding(vertical = 12.dp), color = Color(0xFFEEEEEE))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = translatedText,
+                        color = accentColor,
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            fontWeight = FontWeight.Medium
+                        ),
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.weight(1f)
+                    )
+
+                    Spacer(modifier = Modifier.width(33.dp))
+
+                    GeneralActionButton(
+                        icon = painterResource(Res.drawable.ic_volume_outline),
+                        contentDescription = "Read aloud",
+                        onClick = { onSpeakClick() },
+                        iconSize = 16.dp,
+                        boxSize = 24.dp
+                    )
+                }
+            }
+
+            if (!isLeftAccent) {
+                AccentBar(accentColor, false)
             }
         }
 
-        if (!isLeftAccent) {
-            AccentBar(accentColor, false)
-        }
     }
 }
 
