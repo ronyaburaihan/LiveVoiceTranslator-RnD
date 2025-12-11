@@ -251,7 +251,7 @@ fun ConversationList(
         modifier = Modifier
             .fillMaxSize()
             .padding(horizontal = dimens.screenHorizontalPaddingSmall),
-        verticalArrangement = Arrangement.spacedBy(dimens.verticalPaddingSmall),
+        verticalArrangement = Arrangement.spacedBy(dimens.verticalPaddingMedium),
         reverseLayout = true
     ) {
 

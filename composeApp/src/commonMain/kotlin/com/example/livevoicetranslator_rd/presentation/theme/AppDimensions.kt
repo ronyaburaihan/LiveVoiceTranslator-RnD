@@ -48,6 +48,7 @@ data class AppDimensions(
 
     val horizontalPadding: Dp = 20.dp,
     val verticalPadding: Dp = 20.dp,
+    val verticalPaddingMedium: Dp = 12.dp,
     val verticalPaddingSmall: Dp = 8.dp,
 
     val screenHorizontalPaddingSmall: Dp = 16.dp,
