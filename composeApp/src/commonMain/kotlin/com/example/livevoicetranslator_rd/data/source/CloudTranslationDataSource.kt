@@ -1,6 +1,6 @@
 package com.example.livevoicetranslator_rd.data.source
 
-class CloudTranslationDataSource {
+interface CloudTranslationDataSource {
 
     fun translateOnline(
         text: String,

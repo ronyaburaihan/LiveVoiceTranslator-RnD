@@ -22,7 +22,7 @@ class ResultViewModel(
         viewModelScope.launch {
             val language = detectLanguageUseCase(text)
             val lang = TranslatableLanguages.entries
-                .firstOrNull { it.code == language }
+                .firstOrNull { it.code == language.languageCode }
                 ?: TranslatableLanguages.English
             _uiState.update { it.copy(sourceLanguage = lang) }
         }
@@ -45,7 +45,7 @@ class ResultViewModel(
 
         //_uiState.update { it.copy(isLoading = false) }
 
-        return result.translated
+        return result.translatedText!!
     }
 
     fun updateTargetLanguage(targetLang: String) {

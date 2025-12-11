@@ -46,6 +46,9 @@ sealed class ScreenRoute {
     object Offer : ScreenRoute()
 
     @Serializable
+    object TranslationModel : ScreenRoute()
+
+    @Serializable
     object UnlockPremium : ScreenRoute()
 
 }

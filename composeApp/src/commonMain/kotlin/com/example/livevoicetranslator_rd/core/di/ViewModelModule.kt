@@ -3,6 +3,7 @@ package com.example.livevoicetranslator_rd.core.di
 import com.example.livevoicetranslator_rd.presentation.screen.camera.result.ResultViewModel
 import com.example.livevoicetranslator_rd.presentation.screen.conversation.ConversationViewModel
 import com.example.livevoicetranslator_rd.presentation.screen.translate.TranslateViewModel
+import com.example.livevoicetranslator_rd.presentation.settings.translation_model.TranslationModelViewModel
 import livevoicetranslatorrd.composeapp.generated.resources.Res
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
@@ -10,10 +11,19 @@ import org.koin.dsl.module
 val viewModelModule = module {
     viewModel {
         TranslateViewModel(
+            clipboardService = get(),
+            shareService = get(),
+            ttsService = get(),
             translateTextUseCase = get(),
             detectLanguageUseCase = get(),
             saveFavoriteUseCase = get(),
             getHistoryUseCase = get()
+        )
+    }
+    viewModel {
+        TranslationModelViewModel(
+            get(),
+            get()
         )
     }
     viewModel {

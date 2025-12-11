@@ -29,6 +29,7 @@ import com.example.livevoicetranslator_rd.presentation.screen.phrases.PhrasesScr
 import com.example.livevoicetranslator_rd.presentation.screen.premium.PremiumScreen
 import com.example.livevoicetranslator_rd.presentation.screen.referral.ReferralScreen
 import com.example.livevoicetranslator_rd.presentation.screen.settings.SettingScreen
+import com.example.livevoicetranslator_rd.presentation.settings.translation_model.TranslationModelScreen
 import com.example.livevoicetranslator_rd.presentation.util.LocalAppState
 import com.example.livevoicetranslator_rd.presentation.util.LocalNavController
 import com.example.livevoicetranslator_rd.presentation.util.LocalSnackBarHostState
@@ -113,6 +114,9 @@ fun AppNavHost(
             OCRResultScreen(
                 resultViewModel
             )
+        }
+        appNavComposable<ScreenRoute.TranslationModel> {
+            TranslationModelScreen()
         }
         appNavComposable<ScreenRoute.UnlockPremium> {
             UnlockPremiumScreen()

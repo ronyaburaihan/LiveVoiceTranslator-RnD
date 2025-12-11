@@ -1,9 +1,11 @@
 package com.example.livevoicetranslator_rd.core.di
 
 import com.example.livevoicetranslator_rd.domain.usecase.DetectLanguageUseCase
+import com.example.livevoicetranslator_rd.domain.usecase.DownloadTranslationModelUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.GetHistoryUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.InitializeTTSUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.ObserveTTSStateUseCase
+import com.example.livevoicetranslator_rd.domain.usecase.ObserveTranslationModelStatusesUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.ReleaseTTSUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.SaveFavoriteUseCase
 import com.example.livevoicetranslator_rd.domain.usecase.SpeakTextUseCase
@@ -19,6 +21,8 @@ val useCaseModule = module {
     single { DetectLanguageUseCase(repo = get()) }
     single { SaveFavoriteUseCase(repo = get()) }
     single { GetHistoryUseCase(repo = get()) }
+    single { ObserveTranslationModelStatusesUseCase(get()) }
+    single { DownloadTranslationModelUseCase(get())}
     
     // Speech recognition use cases
     single { StartSpeechRecognitionUseCase(speechToTextRepository = get()) }

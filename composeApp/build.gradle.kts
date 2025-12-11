@@ -73,8 +73,9 @@ kotlin {
             implementation(libs.kotlinx.coroutines.play.services)
 
             // Translate
-            implementation(libs.language.id.common)
+            implementation(libs.language.id)
             implementation(libs.translate)
+            implementation(libs.play.services.language.id)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="share_app_description">Hey, Check LiveVoiceTranslator app: %s</string>
+    <string name="share_to">Share To:</string>
+    <string name="contact_email">app@envobyte.com</string>
+    <string name="email_subject">I’m contacting from %s App</string>
+    <string name="send_mail">Send mail…</string>
+</resources>
