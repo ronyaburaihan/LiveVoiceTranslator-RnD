@@ -245,59 +245,64 @@ fun ConversationList(
     onClearConversation: () -> Unit,
 ) {
     val messages = remember(uiState.messages) { uiState.messages.asReversed() }
+    val showEmptyState = messages.isEmpty() && transcriptState.listeningStatus == ListeningStatus.INACTIVE
 
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        reverseLayout = true
-    ) {
-
-        item(key = "bottomSpacer") {
-            Spacer(modifier = Modifier.height(120.dp))
-        }
-
-        if (messages.isNotEmpty()) {
-            item(key = "clearBtn") {
-                ClearConversationButton(onClearConversation)
-            }
-        }
-
-        if (transcriptState.listeningStatus != ListeningStatus.INACTIVE &&
-            !transcriptState.transcript.isNullOrEmpty()
+    Box(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            reverseLayout = true
         ) {
-            item(key = "listeningCard") {
-                LiveListeningCard(liveText, uiState.isLeftMicActive)
+
+            item(key = "bottomSpacer") {
+                Spacer(modifier = Modifier.height(120.dp))
             }
+
+            if (messages.isNotEmpty()) {
+                item(key = "clearBtn") {
+                    ClearConversationButton(onClearConversation)
+                }
+            }
+
+            if (transcriptState.listeningStatus != ListeningStatus.INACTIVE &&
+                !transcriptState.transcript.isNullOrEmpty()
+            ) {
+                item(key = "listeningCard") {
+                    LiveListeningCard(liveText, uiState.isLeftMicActive)
+                }
+            }
+
+            items(
+                items = messages,
+                key = { it.timestamp }
+            ) { message ->
+                TranslationCard(
+                    sourceText = message.sourceText,
+                    translatedText = message.translatedText,
+                    accentColor = if (message.isLeftSide) GoogleBlue else GoogleGreen,
+                    isLeftAccent = message.isLeftSide,
+                    onSpeakClick = { onSpeakClick(message.translatedText, targetLanguageCode) },
+                    onEditClick = {},
+                    onSavedClick = {},
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+
+            item(key = "topSpacer") {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+
         }
 
-        items(
-            items = messages,
-            key = { it.timestamp }
-        ) { message ->
-            TranslationCard(
-                sourceText = message.sourceText,
-                translatedText = message.translatedText,
-                accentColor = if (message.isLeftSide) GoogleBlue else GoogleGreen,
-                isLeftAccent = message.isLeftSide,
-                onSpeakClick = { onSpeakClick(message.translatedText, targetLanguageCode) },
-                onEditClick = {},
-                onSavedClick = {},
-                modifier = Modifier.fillMaxWidth()
+        if (showEmptyState) {
+            EmptyConversationView(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 100.dp)
             )
         }
-
-        if (messages.isEmpty() && transcriptState.listeningStatus == ListeningStatus.INACTIVE) {
-            item(key = "emptyState") {
-                EmptyConversationView()
-            }
-        }
-
-        item(key = "topSpacer") {
-            Spacer(modifier = Modifier.height(16.dp))
-        }
-
     }
 }
 
@@ -347,8 +352,8 @@ private fun LiveListeningCard(text: String, leftActive: Boolean) {
 }
 
 @Composable
-private fun EmptyConversationView() {
-    BoxWithConstraints(Modifier.fillMaxSize()) {
+private fun EmptyConversationView(modifier: Modifier = Modifier) {
+    BoxWithConstraints(modifier) {
         val iconSize = maxHeight * 0.2563f
 
         Column(
