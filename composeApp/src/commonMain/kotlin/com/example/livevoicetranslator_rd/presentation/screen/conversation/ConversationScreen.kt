@@ -168,6 +168,14 @@ private fun ConversationScreenContent(
                     onClearConversation = onClearConversation
                 )
 
+            if (uiState.messages.isEmpty() && transcriptState.listeningStatus == ListeningStatus.INACTIVE) {
+                EmptyConversationView(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(bottom = dimens.conversationBottomContainerHeight)
+                )
+            }
+
             Box(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -284,17 +292,9 @@ fun ConversationList(
                 isLeftAccent = message.isLeftSide,
                 onSpeakClick = { onSpeakClick(message.translatedText, targetLanguageCode) },
                 onEditClick = {},
-                onSavedClick = {},
-                modifier = Modifier.fillMaxWidth()
+                onSavedClick = {}
             )
         }
-
-        if (messages.isEmpty() && transcriptState.listeningStatus == ListeningStatus.INACTIVE) {
-            item(key = "emptyState") {
-                EmptyConversationView(modifier = Modifier.fillParentMaxSize())
-            }
-        }
-
 
         item(key = "topSpacer") {
             Spacer(modifier = Modifier.height(dimens.smallSpacing))
