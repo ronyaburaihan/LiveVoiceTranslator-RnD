@@ -291,12 +291,13 @@ fun ConversationList(
 
         if (messages.isEmpty() && transcriptState.listeningStatus == ListeningStatus.INACTIVE) {
             item(key = "emptyState") {
-                EmptyConversationView()
+                EmptyConversationView(modifier = Modifier.fillParentMaxSize())
             }
         }
 
+
         item(key = "topSpacer") {
-            Spacer(modifier = Modifier.height(dimens.spaceBetween))
+            Spacer(modifier = Modifier.height(dimens.smallSpacing))
         }
 
     }
