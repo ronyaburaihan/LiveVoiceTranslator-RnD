@@ -53,6 +53,7 @@ import com.example.livevoicetranslator_rd.domain.model.speachtotext.TranscriptSt
 import com.example.livevoicetranslator_rd.presentation.component.LanguageDropdownConversation
 import com.example.livevoicetranslator_rd.presentation.component.MicButton
 import com.example.livevoicetranslator_rd.presentation.component.TranslationCard
+import com.example.livevoicetranslator_rd.presentation.theme.dimens
 import livevoicetranslatorrd.composeapp.generated.resources.Res
 import livevoicetranslatorrd.composeapp.generated.resources.ic_mic_default_conversation
 import org.jetbrains.compose.resources.painterResource
@@ -171,15 +172,15 @@ private fun ConversationScreenContent(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
-                    .height(101.dp)
+                    .height(dimens.conversationBottomContainerHeight)
             ) {
                 Surface(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .fillMaxWidth()
-                        .height(75.dp),
+                        .height(dimens.conversationBottomSurfaceHeight),
                     color = Color.White,
-                    shadowElevation = 16.dp,
+                    shadowElevation = dimens.shadowElevationLarge,
                     content = {}
                 )
 
@@ -245,64 +246,59 @@ fun ConversationList(
     onClearConversation: () -> Unit,
 ) {
     val messages = remember(uiState.messages) { uiState.messages.asReversed() }
-    val showEmptyState = messages.isEmpty() && transcriptState.listeningStatus == ListeningStatus.INACTIVE
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            reverseLayout = true
-        ) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = dimens.screenHorizontalPaddingSmall),
+        verticalArrangement = Arrangement.spacedBy(dimens.verticalPaddingSmall),
+        reverseLayout = true
+    ) {
 
-            item(key = "bottomSpacer") {
-                Spacer(modifier = Modifier.height(120.dp))
-            }
-
-            if (messages.isNotEmpty()) {
-                item(key = "clearBtn") {
-                    ClearConversationButton(onClearConversation)
-                }
-            }
-
-            if (transcriptState.listeningStatus != ListeningStatus.INACTIVE &&
-                !transcriptState.transcript.isNullOrEmpty()
-            ) {
-                item(key = "listeningCard") {
-                    LiveListeningCard(liveText, uiState.isLeftMicActive)
-                }
-            }
-
-            items(
-                items = messages,
-                key = { it.timestamp }
-            ) { message ->
-                TranslationCard(
-                    sourceText = message.sourceText,
-                    translatedText = message.translatedText,
-                    accentColor = if (message.isLeftSide) GoogleBlue else GoogleGreen,
-                    isLeftAccent = message.isLeftSide,
-                    onSpeakClick = { onSpeakClick(message.translatedText, targetLanguageCode) },
-                    onEditClick = {},
-                    onSavedClick = {},
-                    modifier = Modifier.fillMaxWidth()
-                )
-            }
-
-            item(key = "topSpacer") {
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-
+        item(key = "bottomSpacer") {
+            Spacer(modifier = Modifier.height(120.dp))
         }
 
-        if (showEmptyState) {
-            EmptyConversationView(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(bottom = 100.dp)
+        if (messages.isNotEmpty()) {
+            item(key = "clearBtn") {
+                ClearConversationButton(onClearConversation)
+            }
+        }
+
+        if (transcriptState.listeningStatus != ListeningStatus.INACTIVE &&
+            !transcriptState.transcript.isNullOrEmpty()
+        ) {
+            item(key = "listeningCard") {
+                LiveListeningCard(liveText, uiState.isLeftMicActive)
+            }
+        }
+
+        items(
+            items = messages,
+            key = { it.timestamp }
+        ) { message ->
+            TranslationCard(
+                sourceText = message.sourceText,
+                translatedText = message.translatedText,
+                accentColor = if (message.isLeftSide) GoogleBlue else GoogleGreen,
+                isLeftAccent = message.isLeftSide,
+                onSpeakClick = { onSpeakClick(message.translatedText, targetLanguageCode) },
+                onEditClick = {},
+                onSavedClick = {},
+                modifier = Modifier.fillMaxWidth()
             )
         }
+
+        if (messages.isEmpty() && transcriptState.listeningStatus == ListeningStatus.INACTIVE) {
+            item(key = "emptyState") {
+                EmptyConversationView()
+            }
+        }
+
+        item(key = "topSpacer") {
+            Spacer(modifier = Modifier.height(dimens.spaceBetween))
+        }
+
     }
 }
 
@@ -311,16 +307,16 @@ private fun ClearConversationButton(onClearConversation: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = dimens.verticalPaddingSmall),
         horizontalArrangement = Arrangement.End
     ) {
         TextButton(
             onClick = onClearConversation,
             colors = ButtonDefaults.textButtonColors(contentColor = Color.Gray)
         ) {
-            Icon(Icons.Default.ClearAll, null, Modifier.size(16.dp))
-            Spacer(Modifier.width(4.dp))
-            Text("Clear", fontSize = 12.sp)
+            Icon(Icons.Default.ClearAll, null, Modifier.size(dimens.smallIconSizeConversation))
+            Spacer(Modifier.width(dimens.smallSpacing))
+            Text("Clear", style = MaterialTheme.typography.bodySmall)
         }
     }
 }
@@ -330,23 +326,28 @@ private fun ClearConversationButton(onClearConversation: () -> Unit) {
 private fun LiveListeningCard(text: String, leftActive: Boolean) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(dimens.cornerRadiusMedium),
         colors = CardDefaults.cardColors(Color.White.copy(0.7f)),
-        elevation = CardDefaults.cardElevation(2.dp)
+        elevation = CardDefaults.cardElevation(dimens.smallElevation)
     ) {
         Row(
             Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(dimens.screenPaddingSmall),
             verticalAlignment = Alignment.CenterVertically
         ) {
             CircularProgressIndicator(
-                modifier = Modifier.size(16.dp),
-                strokeWidth = 2.dp,
+                modifier = Modifier.size(dimens.circularIconSize),
+                strokeWidth = dimens.progressStrokeWidth,
                 color = if (leftActive) GoogleBlue else GoogleGreen
             )
-            Spacer(Modifier.width(12.dp))
-            Text(text, color = Color.Gray, fontSize = 16.sp, fontStyle = FontStyle.Italic)
+            Spacer(Modifier.width(dimens.spaceBetweenSmall))
+            Text(
+                text,
+                color = Color.Gray,
+                style = MaterialTheme.typography.labelLarge,
+                fontStyle = FontStyle.Italic
+            )
         }
     }
 }
@@ -357,7 +358,7 @@ private fun EmptyConversationView(modifier: Modifier = Modifier) {
         val iconSize = maxHeight * 0.2563f
 
         Column(
-            modifier = Modifier.fillMaxSize().padding(32.dp),
+            modifier = Modifier.fillMaxSize().padding(dimens.screenPaddingLarge),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -403,7 +404,7 @@ fun ConversationMicWithLanguage(
             onClick = onMicClick,
             onLongClick = {},
             onLongClickRelease = {},
-            modifier = Modifier.size(52.dp)
+            modifier = Modifier.size(dimens.micButtonSize)
         )
 
         Spacer(modifier = Modifier.height(5.dp))
